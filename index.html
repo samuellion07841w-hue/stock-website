@@ -85,7 +85,28 @@ let ltcPrice=parseFloat(ltcData.data.amount);
 document.getElementById("ltc").innerHTML="$"+ltcPrice;
 updateTrend(ltcPrice,lastLTC,"ltcTrend");
 lastLTC=ltcPrice;
+let chart;
 
+function updateChart(btc,eth,doge,ltc){
+
+let ctx=document.getElementById("priceChart").getContext("2d");
+
+if(chart){
+chart.destroy();
+}
+
+chart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Bitcoin","Ethereum","Dogecoin","Litecoin"],
+datasets:[{
+label:"Price USD",
+data:[btc,eth,doge,ltc]
+}]
+}
+});
+
+}
 }
   <head>
 
