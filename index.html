@@ -109,7 +109,28 @@ setInterval(getPrices,10000);
 src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark" 
 width="600" 
 height="400">
-</script>function searchCoin(){
+<script>
+
+async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+document.getElementById("btc").innerHTML="$"+btcData.data.amount;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+document.getElementById("eth").innerHTML="$"+ethData.data.amount;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+document.getElementById("doge").innerHTML="$"+dogeData.data.amount;
+
+}
+
+getPrices();
+setInterval(getPrices,10000);
+
+function searchCoin(){
 let input=document.getElementById("search").value.toLowerCase();
 let rows=document.querySelectorAll("table tr");
 
@@ -119,4 +140,69 @@ let coin=row.children[0].innerText.toLowerCase();
 row.style.display=coin.includes(input)?"":"none";
 });
 }
-</iframe>
+
+<script>
+
+async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+document.getElementById("btc").innerHTML="$"+btcData.data.amount;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+document.getElementById("eth").innerHTML="$"+ethData.data.amount;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+document.getElementById("doge").innerHTML="$"+dogeData.data.amount;
+
+}
+
+getPrices();
+setInterval(getPrices,10000);
+
+function searchCoin(){
+let input=document.getElementById("search").value.toLowerCase();
+let rows=document.querySelectorAll("table tr");
+
+rows.forEach((row,i)=>{
+if(i===0) return;
+let coin=row.children[0].innerText.toLowerCase();
+row.style.display=coin.includes(input)?"":"none";
+});
+}
+
+</script>
+
+ async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+document.getElementById("btc").innerHTML="$"+btcData.data.amount;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+document.getElementById("eth").innerHTML="$"+ethData.data.amount;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+document.getElementById("doge").innerHTML="$"+dogeData.data.amount;
+
+}
+
+getPrices();
+setInterval(getPrices,10000);
+
+function searchCoin(){
+let input=document.getElementById("search").value.toLowerCase();
+let rows=document.querySelectorAll("table tr");
+
+rows.forEach((row,i)=>{
+if(i===0) return;
+let coin=row.children[0].innerText.toLowerCase();
+row.style.display=coin.includes(input)?"":"none";
+});
+}
+
+</script> 
