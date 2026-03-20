@@ -82,6 +82,37 @@ updateTrend(ltcPrice,lastLTC,"ltcTrend");
 lastLTC=ltcPrice;
 
 }
+  <head>
+
+<title>My Market Data Site</title>
+
+<style>
+body{
+background:#0d1117;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:60%;
+background:#161b22;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #30363d;
+}
+
+th{
+background:#21262d;
+}
+
+</style>
+
+</head> 
 
 getPrices();
 setInterval(getPrices,10000);
