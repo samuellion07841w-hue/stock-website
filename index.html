@@ -2,30 +2,72 @@
 <html>
 <head>
 <title>Crypto Price Tracker</title>
+<style>
+body{
+font-family: Arial;
+text-align:center;
+background:#111;
+color:white;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:300px;
+}
+
+td,th{
+padding:10px;
+border:1px solid #444;
+}
+
+th{
+background:#222;
+}
+</style>
 </head>
 
 <body>
 
 <h1>Live Crypto Prices</h1>
 
-<p>Bitcoin: <span id="btc">Loading...</span></p>
-<p>Ethereum: <span id="eth">Loading...</span></p>
-<p>Dogecoin: <span id="doge">Loading...</span></p>
+<table>
+<tr>
+<th>Coin</th>
+<th>Price (USD)</th>
+</tr>
+
+<tr>
+<td>Bitcoin</td>
+<td id="btc">Loading...</td>
+</tr>
+
+<tr>
+<td>Ethereum</td>
+<td id="eth">Loading...</td>
+</tr>
+
+<tr>
+<td>Dogecoin</td>
+<td id="doge">Loading...</td>
+</tr>
+
+</table>
 
 <script>
 async function getPrices(){
 
 let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
 let btcData = await btc.json();
-document.getElementById("btc").innerHTML = "$" + btcData.data.amount;
+document.getElementById("btc").innerHTML = "$"+btcData.data.amount;
 
 let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
 let ethData = await eth.json();
-document.getElementById("eth").innerHTML = "$" + ethData.data.amount;
+document.getElementById("eth").innerHTML = "$"+ethData.data.amount;
 
 let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
 let dogeData = await doge.json();
-document.getElementById("doge").innerHTML = "$" + dogeData.data.amount;
+document.getElementById("doge").innerHTML = "$"+dogeData.data.amount;
 
 }
 
