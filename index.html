@@ -86,31 +86,4 @@ lastLTC=ltcPrice;
 getPrices();
 setInterval(getPrices,10000);
 
-<script>
-
-let lastBTC=0,lastETH=0,lastDOGE=0,lastLTC=0;
-
-function updateTrend(current,last,id){
-let el=document.getElementById(id);
-
-if(current>last){
-el.innerHTML="⬆️";
-el.style.color="lime";
-}
-else if(current<last){
-el.innerHTML="⬇️";
-el.style.color="red";
-}
-else{
-el.innerHTML="➡️";
-}
-}
-
-async function getPrices(){
-/* your price code here */
-}
-
-getPrices();
-setInterval(getPrices,10000);
-
 </script>
