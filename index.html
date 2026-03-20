@@ -31,3 +31,136 @@
 </tr>
 
 </table>
+<script>
+
+let lastBTC=0,lastETH=0,lastDOGE=0,lastLTC=0;
+
+function updateTrend(current,last,id){
+let el=document.getElementById(id);
+
+if(current>last){
+el.innerHTML="⬆️";
+el.style.color="lime";
+}
+else if(current<last){
+el.innerHTML="⬇️";
+el.style.color="red";
+}
+else{
+el.innerHTML="➡️";
+}
+}
+
+async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+let btcPrice=parseFloat(btcData.data.amount);
+document.getElementById("btc").innerHTML="$"+btcPrice;
+updateTrend(btcPrice,lastBTC,"btcTrend");
+lastBTC=btcPrice;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+let ethPrice=parseFloat(ethData.data.amount);
+document.getElementById("eth").innerHTML="$"+ethPrice;
+updateTrend(ethPrice,lastETH,"ethTrend");
+lastETH=ethPrice;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+let dogePrice=parseFloat(dogeData.data.amount);
+document.getElementById("doge").innerHTML="$"+dogePrice;
+updateTrend(dogePrice,lastDOGE,"dogeTrend");
+lastDOGE=dogePrice;
+
+let ltc = await fetch("https://api.coinbase.com/v2/prices/LTC-USD/spot");
+let ltcData = await ltc.json();
+let ltcPrice=parseFloat(ltcData.data.amount);
+document.getElementById("ltc").innerHTML="$"+ltcPrice;
+updateTrend(ltcPrice,lastLTC,"ltcTrend");
+lastLTC=ltcPrice;
+
+}
+
+getPrices();
+setInterval(getPrices,10000);
+
+</script>
+
+let lastBTC=0,lastETH=0,lastDOGE=0,lastLTC=0;
+
+function updateTrend(current,last,id){
+let el=document.getElementById(id);
+
+if(current>last){
+el.innerHTML="⬆️";
+el.style.color="lime";
+}
+else if(current<last){
+el.innerHTML="⬇️";
+el.style.color="red";
+}
+else{
+el.innerHTML="➡️";
+}
+}
+
+async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+let btcPrice=parseFloat(btcData.data.amount);
+document.getElementById("btc").innerHTML="$"+btcPrice;
+updateTrend(btcPrice,lastBTC,"btcTrend");
+lastBTC=btcPrice;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+let ethPrice=parseFloat(ethData.data.amount);
+document.getElementById("eth").innerHTML="$"+ethPrice;
+updateTrend(ethPrice,lastETH,"ethTrend");
+lastETH=ethPrice;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+let dogePrice=parseFloat(dogeData.data.amount);
+document.getElementById("doge").innerHTML="$"+dogePrice;
+updateTrend(dogePrice,lastDOGE,"dogeTrend");
+lastDOGE=dogePrice;
+
+let ltc = await fetch("https://api.coinbase.com/v2/prices/LTC-USD/spot");
+let ltcData = await ltc.json();
+let ltcPrice=parseFloat(ltcData.data.amount);
+document.getElementById("ltc").innerHTML="$"+ltcPrice;
+updateTrend(ltcPrice,lastLTC,"ltcTrend");
+lastLTC=ltcPrice;
+
+}
+
+getPrices();
+setInterval(getPrices,10000);
+
+</script>
+Step 3: Save
+
+Click Commit changes.
+
+Wait about 30 seconds, then refresh your website:
+
+https://samuellion07841w-hue.github.io/stock-website
+
+Now you should see something like:
+
+Coin	Price	Trend
+🟠 Bitcoin	$70,000	⬆️
+🟣 Ethereum	$3,000	⬇️
+
+💡 If you want, the next upgrade can make your site look 10× more professional by adding:
+
+real coin logos
+top 20 cryptocurrencies automatically
+green/red 24h price change
+a dark crypto dashboard layout
+
+This is how sites like big crypto trackers are built.
