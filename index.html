@@ -1,8 +1,69 @@
-<h2>Crypto Market Chart</h2>
+<!DOCTYPE html>
+<html>
 
-<canvas id="priceChart" width="400" height="200"></canvas>
+<head>
+
+<title>Crypto Market Tracker</title>
+
+<style>
+
+body{
+background:#0d1117;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+h1{
+margin-top:20px;
+}
+
+input{
+padding:10px;
+width:200px;
+margin:20px;
+border-radius:5px;
+border:none;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:60%;
+background:#161b22;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #30363d;
+}
+
+th{
+background:#21262d;
+}
+
+tr:hover{
+background:#1f2933;
+}
+
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<h1>🚀 Crypto Market Tracker</h1>
+<p>Live cryptocurrency prices updating every 10 seconds</p>
+
+<input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
+
+<h2>Market Chart</h2>
+<canvas id="priceChart" width="400" height="200"></canvas>
+
+<br><br>
+
 <table>
 
 <tr>
@@ -36,9 +97,11 @@
 </tr>
 
 </table>
+
 <script>
 
 let lastBTC=0,lastETH=0,lastDOGE=0,lastLTC=0;
+let chart;
 
 function updateTrend(current,last,id){
 let el=document.getElementById(id);
@@ -55,37 +118,6 @@ else{
 el.innerHTML="➡️";
 }
 }
-
-async function getPrices(){
-
-let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
-let btcData = await btc.json();
-let btcPrice=parseFloat(btcData.data.amount);
-document.getElementById("btc").innerHTML="$"+btcPrice;
-updateTrend(btcPrice,lastBTC,"btcTrend");
-lastBTC=btcPrice;
-
-let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
-let ethData = await eth.json();
-let ethPrice=parseFloat(ethData.data.amount);
-document.getElementById("eth").innerHTML="$"+ethPrice;
-updateTrend(ethPrice,lastETH,"ethTrend");
-lastETH=ethPrice;
-
-let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
-let dogeData = await doge.json();
-let dogePrice=parseFloat(dogeData.data.amount);
-document.getElementById("doge").innerHTML="$"+dogePrice;
-updateTrend(dogePrice,lastDOGE,"dogeTrend");
-lastDOGE=dogePrice;
-
-let ltc = await fetch("https://api.coinbase.com/v2/prices/LTC-USD/spot");
-let ltcData = await ltc.json();
-let ltcPrice=parseFloat(ltcData.data.amount);
-document.getElementById("ltc").innerHTML="$"+ltcPrice;
-updateTrend(ltcPrice,lastLTC,"ltcTrend");
-lastLTC=ltcPrice;
-let chart;
 
 function updateChart(btc,eth,doge,ltc){
 
@@ -107,40 +139,63 @@ data:[btc,eth,doge,ltc]
 });
 
 }
+
+async function getPrices(){
+
+let btc=await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData=await btc.json();
+let btcPrice=parseFloat(btcData.data.amount);
+document.getElementById("btc").innerHTML="$"+btcPrice;
+updateTrend(btcPrice,lastBTC,"btcTrend");
+lastBTC=btcPrice;
+
+let eth=await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData=await eth.json();
+let ethPrice=parseFloat(ethData.data.amount);
+document.getElementById("eth").innerHTML="$"+ethPrice;
+updateTrend(ethPrice,lastETH,"ethTrend");
+lastETH=ethPrice;
+
+let doge=await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData=await doge.json();
+let dogePrice=parseFloat(dogeData.data.amount);
+document.getElementById("doge").innerHTML="$"+dogePrice;
+updateTrend(dogePrice,lastDOGE,"dogeTrend");
+lastDOGE=dogePrice;
+
+let ltc=await fetch("https://api.coinbase.com/v2/prices/LTC-USD/spot");
+let ltcData=await ltc.json();
+let ltcPrice=parseFloat(ltcData.data.amount);
+document.getElementById("ltc").innerHTML="$"+ltcPrice;
+updateTrend(ltcPrice,lastLTC,"ltcTrend");
+lastLTC=ltcPrice;
+
+updateChart(btcPrice,ethPrice,dogePrice,ltcPrice);
+
 }
-  <head>
 
-<title>My Market Data Site</title>
+function searchCoin(){
 
-<style>
-body{
-background:#0d1117;
-color:white;
-font-family:Arial;
-text-align:center;
+let input=document.getElementById("search").value.toLowerCase();
+let rows=document.querySelectorAll("table tr");
+
+rows.forEach((row,i)=>{
+
+if(i===0)return;
+
+let coin=row.children[0].innerText.toLowerCase();
+
+row.style.display=coin.includes(input)?"":"none";
+
+});
+
 }
 
-table{
-margin:auto;
-border-collapse:collapse;
-width:60%;
-background:#161b22;
-}
-
-th,td{
-padding:12px;
-border-bottom:1px solid #30363d;
-}
-
-th{
-background:#21262d;
-}
-
-</style>
-
-</head> 
-
-getPrices();updateChart(btcPrice,ethPrice,dogePrice,ltcPrice);
+getPrices();
 setInterval(getPrices,10000);
 
 </script>
+
+</body>
+
+</html>
