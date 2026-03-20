@@ -1,3 +1,4 @@
+<input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 <!DOCTYPE html>
 <html>
 <head>
@@ -108,4 +109,14 @@ setInterval(getPrices,10000);
 src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark" 
 width="600" 
 height="400">
+</script>function searchCoin(){
+let input=document.getElementById("search").value.toLowerCase();
+let rows=document.querySelectorAll("table tr");
+
+rows.forEach((row,i)=>{
+if(i===0) return;
+let coin=row.children[0].innerText.toLowerCase();
+row.style.display=coin.includes(input)?"":"none";
+});
+}
 </iframe>
