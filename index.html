@@ -8,17 +8,28 @@
 
 <h1>Live Crypto Prices</h1>
 
-<p>Bitcoin price:</p>
-<p id="btc">Loading...</p>
+<p>Bitcoin: <span id="btc">Loading...</span></p>
+<p>Ethereum: <span id="eth">Loading...</span></p>
+<p>Dogecoin: <span id="doge">Loading...</span></p>
 
 <script>
-async function getBTC(){
-let response = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
-let data = await response.json();
-document.getElementById("btc").innerHTML = "$" + data.data.amount;
+async function getPrices(){
+
+let btc = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let btcData = await btc.json();
+document.getElementById("btc").innerHTML = "$" + btcData.data.amount;
+
+let eth = await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
+let ethData = await eth.json();
+document.getElementById("eth").innerHTML = "$" + ethData.data.amount;
+
+let doge = await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
+let dogeData = await doge.json();
+document.getElementById("doge").innerHTML = "$" + dogeData.data.amount;
+
 }
 
-getBTC();
+getPrices();
 </script>
 
 </body>
