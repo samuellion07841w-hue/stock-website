@@ -9,15 +9,16 @@
 <h1>Live Crypto Prices</h1>
 
 <p>Bitcoin price:</p>
-<p id="btc"></p>
+<p id="btc">Loading...</p>
 
 <script>
-fetch("https://api.coindesk.com/v1/bpi/currentprice/BTC.json")
-.then(response => response.json())
-.then(data => {
-document.getElementById("btc").innerHTML =
-"$" + data.bpi.USD.rate;
-});
+async function getBTC(){
+let response = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+let data = await response.json();
+document.getElementById("btc").innerHTML = "$" + data.data.amount;
+}
+
+getBTC();
 </script>
 
 </body>
