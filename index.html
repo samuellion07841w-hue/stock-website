@@ -17,8 +17,6 @@ background:#0f172a;
 color:white;
 }
 
-/* sidebar */
-
 .sidebar{
 position:fixed;
 left:0;
@@ -45,14 +43,10 @@ text-decoration:none;
 background:#1e293b;
 }
 
-/* main */
-
 .main{
 margin-left:210px;
 padding:20px;
 }
-
-/* responsive */
 
 @media(max-width:800px){
 
@@ -192,14 +186,18 @@ color:#22c55e;
 text-decoration:none;
 }
 
-/* ads */
+/* portfolio */
 
-.ad{
-background:#111827;
-border:2px dashed #22c55e;
-padding:30px;
-text-align:center;
-margin:20px 0;
+.portfolio{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+}
+
+.portfolio input{
+padding:8px;
+margin:6px;
 }
 
 </style>
@@ -212,7 +210,7 @@ margin:20px 0;
 
 <h2>🚀 Crypto</h2>
 
-<a href="#market">Market</a> <a href="#heatmap">Heatmap</a> <a href="#news">News</a>
+<a href="#market">Market</a> <a href="#portfolio">Portfolio</a> <a href="#news">News</a>
 
 </div>
 
@@ -236,11 +234,7 @@ margin:20px 0;
 
 </div>
 
-<div class="ad">
-Ad Space (Future Ads)
-</div>
-
-<h2 id="heatmap">📊 Crypto Heatmap</h2>
+<h2>📊 Crypto Heatmap</h2>
 
 <div class="heatmap" id="heatmap"></div>
 
@@ -293,8 +287,17 @@ Ad Space (Future Ads)
 
 </div>
 
-<div class="ad">
-Ad Space (Future Ads)
+<h2 id="portfolio">💼 Portfolio Tracker</h2>
+
+<div class="portfolio">
+
+<input id="coinName" placeholder="Coin name">
+<input id="coinAmount" placeholder="Amount">
+
+<button onclick="addPortfolio()">Add</button>
+
+<ul id="portfolioList"></ul>
+
 </div>
 
 <h2 id="news">📰 Crypto News</h2>
@@ -306,6 +309,34 @@ Ad Space (Future Ads)
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
+
+let portfolio=[];
+
+function addPortfolio(){
+
+let coin=document.getElementById("coinName").value;
+
+let amount=document.getElementById("coinAmount").value;
+
+portfolio.push({coin,amount});
+
+renderPortfolio();
+
+}
+
+function renderPortfolio(){
+
+let list=document.getElementById("portfolioList");
+
+list.innerHTML="";
+
+portfolio.forEach(p=>{
+
+list.innerHTML+=`<li>${p.coin} : ${p.amount}</li>`;
+
+});
+
+}
 
 function searchCoin(){
 
@@ -342,15 +373,10 @@ document.getElementById("chart").innerHTML="";
 new TradingView.widget({
 
 width:"100%",
-
 height:400,
-
 symbol:"BINANCE:"+symbol+"USDT",
-
 interval:"60",
-
 theme:"dark",
-
 container_id:"chart"
 
 });
@@ -376,87 +402,3 @@ let gainers=sorted.slice(0,5);
 let losers=sorted.slice(-5);
 
 gainers.forEach(c=>{
-document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
-});
-
-losers.forEach(c=>{
-document.getElementById("losers").innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
-});
-
-data.forEach((coin,i)=>{
-
-table.innerHTML+=`
-
-<tr onclick="showCoin('${coin.name}',${coin.current_price},${coin.market_cap},${coin.price_change_percentage_24h},'${coin.symbol.toUpperCase()}')">
-
-<td>${i+1}</td>
-
-<td>${coin.name}</td>
-
-<td>$${coin.current_price}</td>
-
-<td>${coin.price_change_percentage_24h.toFixed(2)}%</td>
-
-</tr>
-
-`;
-
-let tile=document.createElement("div");
-
-tile.className="tile "+(coin.price_change_percentage_24h>0?"green":"red");
-
-tile.innerHTML=coin.symbol.toUpperCase()+"<br>"+coin.price_change_percentage_24h.toFixed(1)+"%";
-
-heatmap.appendChild(tile);
-
-if(i<10){
-
-ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
-
-}
-
-});
-
-document.getElementById("tickerText").innerText=ticker;
-
-document.getElementById("btcHero").innerText="$"+data[0].current_price;
-
-document.getElementById("ethHero").innerText="$"+data[1].current_price;
-
-}
-
-async function loadNews(){
-
-let res=await fetch("https://min-api.cryptocompare.com/data/v2/news/?lang=EN");
-
-let data=await res.json();
-
-let container=document.getElementById("newsContainer");
-
-data.Data.slice(0,6).forEach(article=>{
-
-container.innerHTML+=`
-
-<div class="news-card">
-
-<a href="${article.url}" target="_blank">${article.title}</a>
-
-<p>${article.source}</p>
-
-</div>
-
-`;
-
-});
-
-}
-
-loadMarket();
-
-loadNews();
-
-</script>
-
-</body>
-
-</html>
