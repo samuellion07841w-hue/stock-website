@@ -35,8 +35,6 @@ text-decoration:none;
 font-weight:bold;
 }
 
-/* ticker */
-
 .ticker{
 background:black;
 overflow:hidden;
@@ -53,8 +51,6 @@ animation:scroll 25s linear infinite;
 0%{transform:translateX(100%)}
 100%{transform:translateX(-100%)}
 }
-
-/* hero */
 
 .hero{
 display:flex;
@@ -146,11 +142,37 @@ text-decoration:none;
 font-weight:bold;
 }
 
-.about{
-max-width:800px;
+/* CALCULATOR */
+
+.calculator{
+background:rgba(255,255,255,0.1);
+padding:25px;
+border-radius:12px;
+max-width:400px;
 margin:auto;
-font-size:18px;
-line-height:1.6;
+}
+
+.calculator input{
+width:90%;
+padding:10px;
+margin:10px;
+border-radius:6px;
+border:none;
+}
+
+.calculator button{
+padding:10px 20px;
+background:#00ffd5;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.result{
+margin-top:15px;
+font-size:20px;
+font-weight:bold;
 }
 
 </style>
@@ -169,6 +191,7 @@ line-height:1.6;
 <a href="#home">Home</a>
 <a href="#market">Market</a>
 <a href="#newsSection">News</a>
+<a href="#calculator">Calculator</a>
 <a href="#about">About</a>
 </div>
 
@@ -242,6 +265,30 @@ line-height:1.6;
 
 </div>
 
+<!-- PROFIT CALCULATOR -->
+
+<div class="section" id="calculator">
+
+<h2>💰 Crypto Profit Calculator</h2>
+
+<div class="calculator">
+
+<input type="number" id="buyPrice" placeholder="Buy Price ($)">
+
+<input type="number" id="sellPrice" placeholder="Sell Price ($)">
+
+<input type="number" id="amount" placeholder="Amount of Coin">
+
+<br>
+
+<button onclick="calculateProfit()">Calculate Profit</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+</div>
+
 <div class="section" id="newsSection">
 
 <h2>📰 Latest Crypto News</h2>
@@ -254,12 +301,10 @@ line-height:1.6;
 
 <h2>About CryptoTracker</h2>
 
-<div class="about">
-CryptoTracker is a live cryptocurrency dashboard that shows real-time prices,
-market trends, and crypto news from around the world. Our goal is to help users
-track the crypto market easily and stay informed about digital assets like
-Bitcoin and Ethereum.
-</div>
+<p>
+CryptoTracker helps users track cryptocurrency prices, market trends,
+and crypto news in real time.
+</p>
 
 </div>
 
@@ -268,6 +313,26 @@ Bitcoin and Ethereum.
 <script>
 
 let chart;
+
+function calculateProfit(){
+
+let buy=parseFloat(document.getElementById("buyPrice").value);
+let sell=parseFloat(document.getElementById("sellPrice").value);
+let amount=parseFloat(document.getElementById("amount").value);
+
+let profit=(sell-buy)*amount;
+
+let result=document.getElementById("result");
+
+if(profit>0){
+result.innerHTML="Profit: $"+profit.toFixed(2);
+result.style.color="lime";
+}else{
+result.innerHTML="Loss: $"+profit.toFixed(2);
+result.style.color="red";
+}
+
+}
 
 function updateChart(data){
 
