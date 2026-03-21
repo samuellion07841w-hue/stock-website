@@ -29,7 +29,7 @@ border:none;
 table{
 margin:auto;
 border-collapse:collapse;
-width:80%;
+width:85%;
 background:#161b22;
 }
 
@@ -46,6 +46,19 @@ tr:hover{
 background:#1f2933;
 }
 
+.section{
+margin:30px;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+margin:5px;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -59,11 +72,24 @@ background:#1f2933;
 
 <input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 
-<h2>Market Chart</h2>
+<div class="section">
 
+<h2>Market Chart</h2>
 <canvas id="priceChart" width="400" height="200"></canvas>
 
-<br><br>
+</div>
+
+<div class="section">
+
+<h2>🔥 Top Gainers</h2>
+<ul id="gainers"></ul>
+
+<h2>📉 Top Losers</h2>
+<ul id="losers"></ul>
+
+</div>
+
+<div class="section">
 
 <table id="cryptoTable">
 
@@ -75,6 +101,8 @@ background:#1f2933;
 </tr>
 
 </table>
+
+</div>
 
 <script>
 
@@ -100,6 +128,29 @@ label:"Price USD",
 data:prices
 }]
 }
+});
+
+}
+
+function showGainersLosers(data){
+
+let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+
+let gainers=sorted.slice(0,5);
+let losers=sorted.slice(-5);
+
+let gainersList=document.getElementById("gainers");
+let losersList=document.getElementById("losers");
+
+gainersList.innerHTML="";
+losersList.innerHTML="";
+
+gainers.forEach(c=>{
+gainersList.innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+});
+
+losers.forEach(c=>{
+losersList.innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
 });
 
 }
@@ -137,6 +188,7 @@ table.innerHTML+=`
 });
 
 updateChart(data);
+showGainersLosers(data);
 
 }
 
