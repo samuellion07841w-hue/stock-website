@@ -29,7 +29,7 @@ border:none;
 table{
 margin:auto;
 border-collapse:collapse;
-width:60%;
+width:80%;
 background:#161b22;
 }
 
@@ -55,73 +55,37 @@ background:#1f2933;
 <body>
 
 <h1>🚀 Crypto Market Tracker</h1>
-<p>Live cryptocurrency prices updating every 10 seconds</p>
+<p>Live cryptocurrency market data</p>
 
 <input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 
 <h2>Market Chart</h2>
+
 <canvas id="priceChart" width="400" height="200"></canvas>
 
 <br><br>
 
-<table>
+<table id="cryptoTable">
 
 <tr>
+<th>Rank</th>
 <th>Coin</th>
 <th>Price (USD)</th>
-<th>Trend</th>
-</tr>
-
-<tr>
-<td>🟠 Bitcoin</td>
-<td id="btc">Loading...</td>
-<td id="btcTrend">-</td>
-</tr>
-
-<tr>
-<td>🟣 Ethereum</td>
-<td id="eth">Loading...</td>
-<td id="ethTrend">-</td>
-</tr>
-
-<tr>
-<td>🟡 Dogecoin</td>
-<td id="doge">Loading...</td>
-<td id="dogeTrend">-</td>
-</tr>
-
-<tr>
-<td>⚪ Litecoin</td>
-<td id="ltc">Loading...</td>
-<td id="ltcTrend">-</td>
+<th>Market Cap</th>
 </tr>
 
 </table>
 
 <script>
 
-let lastBTC=0,lastETH=0,lastDOGE=0,lastLTC=0;
 let chart;
 
-function updateTrend(current,last,id){
-let el=document.getElementById(id);
-
-if(current>last){
-el.innerHTML="⬆️";
-el.style.color="lime";
-}
-else if(current<last){
-el.innerHTML="⬇️";
-el.style.color="red";
-}
-else{
-el.innerHTML="➡️";
-}
-}
-
-function updateChart(btc,eth,doge,ltc){
+function updateChart(data){
 
 let ctx=document.getElementById("priceChart").getContext("2d");
+
+let prices=data.slice(0,4).map(c=>c.current_price);
+let labels=data.slice(0,4).map(c=>c.name);
 
 if(chart){
 chart.destroy();
@@ -130,60 +94,63 @@ chart.destroy();
 chart=new Chart(ctx,{
 type:"bar",
 data:{
-labels:["Bitcoin","Ethereum","Dogecoin","Litecoin"],
+labels:labels,
 datasets:[{
 label:"Price USD",
-data:[btc,eth,doge,ltc]
+data:prices
 }]
 }
 });
 
 }
 
-async function getPrices(){
+async function loadTopCoins(){
 
-let btc=await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
-let btcData=await btc.json();
-let btcPrice=parseFloat(btcData.data.amount);
-document.getElementById("btc").innerHTML="$"+btcPrice;
-updateTrend(btcPrice,lastBTC,"btcTrend");
-lastBTC=btcPrice;
+let response=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1");
 
-let eth=await fetch("https://api.coinbase.com/v2/prices/ETH-USD/spot");
-let ethData=await eth.json();
-let ethPrice=parseFloat(ethData.data.amount);
-document.getElementById("eth").innerHTML="$"+ethPrice;
-updateTrend(ethPrice,lastETH,"ethTrend");
-lastETH=ethPrice;
+let data=await response.json();
 
-let doge=await fetch("https://api.coinbase.com/v2/prices/DOGE-USD/spot");
-let dogeData=await doge.json();
-let dogePrice=parseFloat(dogeData.data.amount);
-document.getElementById("doge").innerHTML="$"+dogePrice;
-updateTrend(dogePrice,lastDOGE,"dogeTrend");
-lastDOGE=dogePrice;
+let table=document.getElementById("cryptoTable");
 
-let ltc=await fetch("https://api.coinbase.com/v2/prices/LTC-USD/spot");
-let ltcData=await ltc.json();
-let ltcPrice=parseFloat(ltcData.data.amount);
-document.getElementById("ltc").innerHTML="$"+ltcPrice;
-updateTrend(ltcPrice,lastLTC,"ltcTrend");
-lastLTC=ltcPrice;
+table.innerHTML=`
+<tr>
+<th>Rank</th>
+<th>Coin</th>
+<th>Price (USD)</th>
+<th>Market Cap</th>
+</tr>
+`;
 
-updateChart(btcPrice,ethPrice,dogePrice,ltcPrice);
+data.forEach((coin,index)=>{
+
+table.innerHTML+=`
+
+<tr>
+<td>${index+1}</td>
+<td><img src="${coin.image}" width="20"> ${coin.name}</td>
+<td>$${coin.current_price}</td>
+<td>$${coin.market_cap}</td>
+</tr>
+
+`;
+
+});
+
+updateChart(data);
 
 }
 
 function searchCoin(){
 
 let input=document.getElementById("search").value.toLowerCase();
-let rows=document.querySelectorAll("table tr");
+
+let rows=document.querySelectorAll("#cryptoTable tr");
 
 rows.forEach((row,i)=>{
 
 if(i===0)return;
 
-let coin=row.children[0].innerText.toLowerCase();
+let coin=row.children[1].innerText.toLowerCase();
 
 row.style.display=coin.includes(input)?"":"none";
 
@@ -191,8 +158,8 @@ row.style.display=coin.includes(input)?"":"none";
 
 }
 
-getPrices();
-setInterval(getPrices,10000);
+loadTopCoins();
+setInterval(loadTopCoins,60000);
 
 </script>
 
