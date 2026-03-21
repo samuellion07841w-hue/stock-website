@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Global Crypto Dashboard</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -28,14 +30,13 @@ text-align:center;
 }
 
 nav button{
-padding:10px 15px;
+padding:10px;
 margin:5px;
 background:#00bcd4;
 border:none;
 color:white;
 cursor:pointer;
 border-radius:5px;
-font-weight:bold;
 }
 
 .section{
@@ -64,6 +65,7 @@ text-align:center;
 display:flex;
 align-items:center;
 gap:10px;
+cursor:pointer;
 }
 
 .coin img{
@@ -89,21 +91,6 @@ border-radius:5px;
 cursor:pointer;
 }
 
-#ad{
-background:#222;
-padding:20px;
-margin:20px;
-text-align:center;
-border-radius:10px;
-}
-
-.news{
-background:#111;
-padding:10px;
-margin:10px 0;
-border-radius:8px;
-}
-
 .heatmap{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
@@ -117,7 +104,23 @@ text-align:center;
 font-weight:bold;
 }
 
+.news{
+background:#111;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
+}
+
+#ad{
+background:#222;
+padding:20px;
+margin:20px;
+text-align:center;
+border-radius:10px;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -138,12 +141,12 @@ font-weight:bold;
 </nav>
 
 <div id="ad">
-Ad space for Google AdSense
+Ad space (for Google AdSense later)
 </div>
 
 <div id="home" class="section active">
+
 <h2>Welcome</h2>
-<p>Track global cryptocurrency markets live.</p>
 
 <select id="currency" onchange="loadMarket()">
 <option value="usd">USD</option>
@@ -173,7 +176,7 @@ Ad space for Google AdSense
 
 <div id="heatmap" class="section">
 
-<h2>Crypto Market Heatmap</h2>
+<h2>Crypto Heatmap</h2>
 
 <div id="heatmapCoins" class="heatmap"></div>
 
@@ -183,8 +186,8 @@ Ad space for Google AdSense
 
 <h2>Your Portfolio</h2>
 
-<input id="coinName" placeholder="Coin name (bitcoin)">
-<input id="coinAmount" placeholder="Amount">
+<input id="coinName" placeholder="coin (bitcoin)">
+<input id="coinAmount" placeholder="amount">
 
 <button onclick="addCoin()">Add</button>
 
@@ -202,7 +205,7 @@ Ad space for Google AdSense
 
 <div id="chart" class="section">
 
-<h2>Bitcoin Chart</h2>
+<h2 id="chartTitle">Bitcoin Chart</h2>
 
 <div id="tradingview_chart"></div>
 
@@ -210,7 +213,7 @@ Ad space for Google AdSense
 
 <div id="news" class="section">
 
-<h2>Crypto News</h2>
+<h2>Live Crypto News</h2>
 
 <div id="newsFeed"></div>
 
@@ -242,7 +245,7 @@ let data=await r.json()
 
 let table=document.getElementById("marketTable")
 
-table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th><th>Market Cap</th><th>Trade</th></tr>"
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h</th><th>Market Cap</th><th>Trade</th></tr>"
 
 data.forEach(c=>{
 
@@ -252,7 +255,7 @@ let trade='<a href="https://www.binance.com/en/trade/'+c.symbol.toUpperCase()+'_
 
 let row="<tr>"+
 
-"<td class='coin'><img src='"+c.image+"'>"+c.name+"</td>"+
+"<td class='coin' onclick=\"openChart('"+c.symbol.toUpperCase()+"')\"><img src='"+c.image+"'>"+c.name+"</td>"+
 
 "<td>"+c.current_price+"</td>"+
 
@@ -306,6 +309,36 @@ c.price_change_percentage_24h.toFixed(2)+"%"+
 
 <script>
 
+function openChart(symbol){
+
+show("chart")
+
+document.getElementById("chartTitle").innerText=symbol+" Chart"
+
+new TradingView.widget({
+
+width:"100%",
+
+height:400,
+
+symbol:"BINANCE:"+symbol+"USDT",
+
+interval:"30",
+
+theme:"dark",
+
+style:"1",
+
+container_id:"tradingview_chart"
+
+})
+
+}
+
+</script>
+
+<script>
+
 async function addCoin(){
 
 let name=document.getElementById("coinName").value
@@ -326,57 +359,54 @@ let table=document.getElementById("portfolioTable")
 
 table.innerHTML+="<tr><td>"+name+"</td><td>"+amount+"</td><td>$"+value.toFixed(2)+"</td></tr>"
 
+localStorage.setItem("portfolio",table.innerHTML)
+
+}
+
+window.onload=function(){
+
+let saved=localStorage.getItem("portfolio")
+
+if(saved){
+
+document.getElementById("portfolioTable").innerHTML=saved
+
+}
+
 }
 
 </script>
 
 <script>
 
-let news=[
+async function loadNews(){
 
-"Bitcoin ETF demand rising",
+let url="https://min-api.cryptocompare.com/data/v2/news/?lang=EN"
 
-"Ethereum network upgrades continue",
+let r=await fetch(url)
 
-"Crypto adoption growing worldwide",
-
-"Institutional investors entering market"
-
-]
+let data=await r.json()
 
 let feed=document.getElementById("newsFeed")
 
-news.forEach(n=>{
+data.Data.slice(0,10).forEach(n=>{
 
-feed.innerHTML+="<div class='news'>"+n+"</div>"
+feed.innerHTML+=
+
+"<div class='news'><b>"+n.title+"</b><br>"+
+
+"<a href='"+n.url+"' target='_blank'>Read more</a></div>"
 
 })
+
+}
+
+loadNews()
 
 </script>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 
-<script>
-
-new TradingView.widget({
-
-width:"100%",
-
-height:400,
-
-symbol:"BINANCE:BTCUSDT",
-
-interval:"30",
-
-theme:"dark",
-
-style:"1",
-
-container_id:"tradingview_chart"
-
-})
-
-</script>
-
 </body>
+
 </html>
