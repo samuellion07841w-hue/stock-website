@@ -35,6 +35,8 @@ text-decoration:none;
 font-weight:bold;
 }
 
+/* ticker */
+
 .ticker{
 background:black;
 overflow:hidden;
@@ -45,12 +47,15 @@ white-space:nowrap;
 display:inline-block;
 padding:10px 40px;
 animation:scroll 25s linear infinite;
+color:white;
 }
 
 @keyframes scroll{
 0%{transform:translateX(100%)}
 100%{transform:translateX(-100%)}
 }
+
+/* hero */
 
 .hero{
 display:flex;
@@ -83,6 +88,8 @@ font-weight:bold;
 color:#00ffae;
 }
 
+/* container */
+
 .container{
 padding:20px;
 text-align:center;
@@ -91,6 +98,8 @@ text-align:center;
 .section{
 margin-top:60px;
 }
+
+/* cards */
 
 .cards{
 display:flex;
@@ -106,43 +115,33 @@ border-radius:10px;
 width:220px;
 }
 
+/* better table */
+
 table{
 margin:auto;
 border-collapse:collapse;
 width:90%;
-background:rgba(0,0,0,0.3);
+background:white;
+color:black;
+border-radius:10px;
+overflow:hidden;
+}
+
+th{
+background:#00ffd5;
+color:black;
 }
 
 th,td{
 padding:12px;
-border-bottom:1px solid rgba(255,255,255,0.1);
+border-bottom:1px solid #ddd;
 }
 
-th{
-background:#ff0066;
+tr:hover{
+background:#f2f2f2;
 }
 
-.news-grid{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-justify-content:center;
-}
-
-.news-card{
-background:rgba(255,255,255,0.1);
-padding:15px;
-border-radius:10px;
-width:250px;
-}
-
-.news-card a{
-color:#00ffd5;
-text-decoration:none;
-font-weight:bold;
-}
-
-/* CALCULATOR */
+/* calculator */
 
 .calculator{
 background:rgba(255,255,255,0.1);
@@ -169,9 +168,25 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.result{
-margin-top:15px;
-font-size:20px;
+/* news */
+
+.news-grid{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+justify-content:center;
+}
+
+.news-card{
+background:rgba(255,255,255,0.1);
+padding:15px;
+border-radius:10px;
+width:250px;
+}
+
+.news-card a{
+color:#00ffd5;
+text-decoration:none;
 font-weight:bold;
 }
 
@@ -181,7 +196,7 @@ font-weight:bold;
 
 </head>
 
-<body id="home">
+<body>
 
 <nav>
 
@@ -226,6 +241,7 @@ font-weight:bold;
 <div class="section">
 
 <h2>Market Chart</h2>
+
 <canvas id="priceChart"></canvas>
 
 </div>
@@ -265,74 +281,11 @@ font-weight:bold;
 
 </div>
 
-<!-- PROFIT CALCULATOR -->
-
-<div class="section" id="calculator">
-
-<h2>💰 Crypto Profit Calculator</h2>
-
-<div class="calculator">
-
-<input type="number" id="buyPrice" placeholder="Buy Price ($)">
-
-<input type="number" id="sellPrice" placeholder="Sell Price ($)">
-
-<input type="number" id="amount" placeholder="Amount of Coin">
-
-<br>
-
-<button onclick="calculateProfit()">Calculate Profit</button>
-
-<div class="result" id="result"></div>
-
-</div>
-
-</div>
-
-<div class="section" id="newsSection">
-
-<h2>📰 Latest Crypto News</h2>
-
-<div class="news-grid" id="news"></div>
-
-</div>
-
-<div class="section" id="about">
-
-<h2>About CryptoTracker</h2>
-
-<p>
-CryptoTracker helps users track cryptocurrency prices, market trends,
-and crypto news in real time.
-</p>
-
-</div>
-
 </div>
 
 <script>
 
 let chart;
-
-function calculateProfit(){
-
-let buy=parseFloat(document.getElementById("buyPrice").value);
-let sell=parseFloat(document.getElementById("sellPrice").value);
-let amount=parseFloat(document.getElementById("amount").value);
-
-let profit=(sell-buy)*amount;
-
-let result=document.getElementById("result");
-
-if(profit>0){
-result.innerHTML="Profit: $"+profit.toFixed(2);
-result.style.color="lime";
-}else{
-result.innerHTML="Loss: $"+profit.toFixed(2);
-result.style.color="red";
-}
-
-}
 
 function updateChart(data){
 
@@ -352,32 +305,30 @@ labels:labels,
 datasets:[{
 label:"Price USD",
 data:prices,
-backgroundColor:["#ffcc00","#ff0066","#00ffee","#00ff88","#ffaa00"]
+backgroundColor:["#00ffd5","#ff0066","#ffaa00","#00ff88","#3399ff"]
 }]
+},
+options:{
+plugins:{
+legend:{
+labels:{
+color:"white"
 }
-});
-
 }
-
-function showGainersLosers(data){
-
-let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
-
-let gainers=sorted.slice(0,5);
-let losers=sorted.slice(-5);
-
-let gainersList=document.getElementById("gainers");
-let losersList=document.getElementById("losers");
-
-gainersList.innerHTML="";
-losersList.innerHTML="";
-
-gainers.forEach(c=>{
-gainersList.innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
-});
-
-losers.forEach(c=>{
-losersList.innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+},
+scales:{
+x:{
+ticks:{
+color:"white"
+}
+},
+y:{
+ticks:{
+color:"white"
+}
+}
+}
+}
 });
 
 }
@@ -424,36 +375,10 @@ document.getElementById("btcHero").innerText="$"+data[0].current_price;
 document.getElementById("ethHero").innerText="$"+data[1].current_price;
 
 updateChart(data);
-showGainersLosers(data);
-
-}
-
-async function loadNews(){
-
-let url="https://min-api.cryptocompare.com/data/v2/news/?lang=EN";
-
-let res=await fetch(url);
-let data=await res.json();
-
-let container=document.getElementById("news");
-
-container.innerHTML="";
-
-data.Data.slice(0,6).forEach(article=>{
-
-container.innerHTML+=`
-<div class="news-card">
-<a href="${article.url}" target="_blank">${article.title}</a>
-<p>${article.source}</p>
-</div>
-`;
-
-});
 
 }
 
 loadTopCoins();
-loadNews();
 
 setInterval(loadTopCoins,60000);
 
