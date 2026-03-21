@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html>
 
+<html>
 <head>
 
 <title>Global Crypto Dashboard</title>
@@ -12,7 +12,7 @@
 body{
 font-family:Arial;
 margin:0;
-background:linear-gradient(135deg,#141e30,#243b55);
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 color:white;
 }
 
@@ -21,22 +21,23 @@ background:black;
 padding:20px;
 text-align:center;
 font-size:30px;
+font-weight:bold;
 }
 
 nav{
 background:#111;
-padding:10px;
 text-align:center;
+padding:10px;
 }
 
 nav button{
-padding:10px;
+padding:10px 15px;
 margin:5px;
 background:#00bcd4;
 border:none;
 color:white;
+border-radius:6px;
 cursor:pointer;
-border-radius:5px;
 }
 
 .section{
@@ -72,21 +73,14 @@ cursor:pointer;
 width:25px;
 }
 
-.green{
-color:green;
-font-weight:bold;
-}
-
-.red{
-color:red;
-font-weight:bold;
-}
+.green{color:green;font-weight:bold;}
+.red{color:red;font-weight:bold;}
 
 .tradebtn{
 background:#ff9800;
 color:white;
 border:none;
-padding:6px 12px;
+padding:6px 10px;
 border-radius:5px;
 cursor:pointer;
 }
@@ -119,6 +113,21 @@ text-align:center;
 border-radius:10px;
 }
 
+.loginbox{
+background:white;
+color:black;
+max-width:350px;
+margin:auto;
+padding:20px;
+border-radius:10px;
+}
+
+.loginbox input{
+width:100%;
+padding:10px;
+margin:5px 0;
+}
+
 </style>
 
 </head>
@@ -131,17 +140,12 @@ border-radius:10px;
 
 <nav>
 
-<button onclick="show('home')">Home</button>
-<button onclick="show('market')">Market</button>
-<button onclick="show('heatmap')">Heatmap</button>
-<button onclick="show('portfolio')">Portfolio</button>
-<button onclick="show('chart')">Chart</button>
-<button onclick="show('news')">News</button>
+<button onclick="show('home')">Home</button> <button onclick="show('market')">Market</button> <button onclick="show('heatmap')">Heatmap</button> <button onclick="show('portfolio')">Portfolio</button> <button onclick="show('chart')">Chart</button> <button onclick="show('news')">News</button> <button onclick="show('login')">Login</button>
 
 </nav>
 
 <div id="ad">
-Ad space (for Google AdSense later)
+Ad space (connect later to Google AdSense)
 </div>
 
 <div id="home" class="section active">
@@ -161,25 +165,20 @@ Ad space (for Google AdSense later)
 <h2>Top 100 Cryptocurrencies</h2>
 
 <table id="marketTable">
-
 <tr>
 <th>Coin</th>
 <th>Price</th>
-<th>24h Change</th>
+<th>24h</th>
 <th>Market Cap</th>
 <th>Trade</th>
 </tr>
-
 </table>
 
 </div>
 
 <div id="heatmap" class="section">
-
 <h2>Crypto Heatmap</h2>
-
 <div id="heatmapCoins" class="heatmap"></div>
-
 </div>
 
 <div id="portfolio" class="section">
@@ -192,13 +191,11 @@ Ad space (for Google AdSense later)
 <button onclick="addCoin()">Add</button>
 
 <table id="portfolioTable">
-
 <tr>
 <th>Coin</th>
 <th>Amount</th>
 <th>Value</th>
 </tr>
-
 </table>
 
 </div>
@@ -219,14 +216,26 @@ Ad space (for Google AdSense later)
 
 </div>
 
+<div id="login" class="section">
+
+<div class="loginbox">
+
+<h3>Account Login</h3>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Sign Up</button> <button onclick="login()">Login</button> <button onclick="googleLogin()">Login with Google</button>
+
+</div>
+
+</div>
+
 <script>
 
 function show(id){
-
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-
 document.getElementById(id).classList.add("active")
-
 }
 
 </script>
@@ -251,7 +260,7 @@ data.forEach(c=>{
 
 let color=c.price_change_percentage_24h>=0?"green":"red"
 
-let trade='<a href="https://www.binance.com/en/trade/'+c.symbol.toUpperCase()+'_USDT" target="_blank"><button class="tradebtn">Trade</button></a>'
+let trade='<a href="https://www.binance.com" target="_blank"><button class="tradebtn">Trade</button></a>'
 
 let row="<tr>"+
 
@@ -318,17 +327,11 @@ document.getElementById("chartTitle").innerText=symbol+" Chart"
 new TradingView.widget({
 
 width:"100%",
-
 height:400,
-
 symbol:"BINANCE:"+symbol+"USDT",
-
 interval:"30",
-
 theme:"dark",
-
 style:"1",
-
 container_id:"tradingview_chart"
 
 })
@@ -337,45 +340,7 @@ container_id:"tradingview_chart"
 
 </script>
 
-<script>
-
-async function addCoin(){
-
-let name=document.getElementById("coinName").value
-
-let amount=document.getElementById("coinAmount").value
-
-let url="https://api.coingecko.com/api/v3/simple/price?ids="+name+"&vs_currencies=usd"
-
-let r=await fetch(url)
-
-let data=await r.json()
-
-let price=data[name].usd
-
-let value=price*amount
-
-let table=document.getElementById("portfolioTable")
-
-table.innerHTML+="<tr><td>"+name+"</td><td>"+amount+"</td><td>$"+value.toFixed(2)+"</td></tr>"
-
-localStorage.setItem("portfolio",table.innerHTML)
-
-}
-
-window.onload=function(){
-
-let saved=localStorage.getItem("portfolio")
-
-if(saved){
-
-document.getElementById("portfolioTable").innerHTML=saved
-
-}
-
-}
-
-</script>
+<script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
 
@@ -405,8 +370,41 @@ loadNews()
 
 </script>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+
+const firebaseConfig={
+apiKey:"AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
+authDomain:"crypto-tracker-5789c.firebaseapp.com",
+projectId:"crypto-tracker-5789c",
+appId:"1:1002444628632:web:99b5792b6853f8717126ed"
+}
+
+firebase.initializeApp(firebaseConfig)
+
+function signup(){
+firebase.auth().createUserWithEmailAndPassword(
+document.getElementById("email").value,
+document.getElementById("password").value
+)
+}
+
+function login(){
+firebase.auth().signInWithEmailAndPassword(
+document.getElementById("email").value,
+document.getElementById("password").value
+)
+}
+
+function googleLogin(){
+let provider=new firebase.auth.GoogleAuthProvider()
+firebase.auth().signInWithPopup(provider)
+}
+
+</script>
 
 </body>
-
 </html>
