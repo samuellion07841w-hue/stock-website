@@ -4,7 +4,6 @@
 <head>
 
 <title>Global Crypto Dashboard</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -21,13 +20,12 @@ background:black;
 padding:20px;
 text-align:center;
 font-size:30px;
-font-weight:bold;
 }
 
 nav{
 background:#111;
-text-align:center;
 padding:10px;
+text-align:center;
 }
 
 nav button{
@@ -76,15 +74,6 @@ width:25px;
 .green{color:green;font-weight:bold;}
 .red{color:red;font-weight:bold;}
 
-.tradebtn{
-background:#ff9800;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:5px;
-cursor:pointer;
-}
-
 .heatmap{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
@@ -113,21 +102,6 @@ text-align:center;
 border-radius:10px;
 }
 
-.loginbox{
-background:white;
-color:black;
-max-width:350px;
-margin:auto;
-padding:20px;
-border-radius:10px;
-}
-
-.loginbox input{
-width:100%;
-padding:10px;
-margin:5px 0;
-}
-
 </style>
 
 </head>
@@ -140,24 +114,16 @@ margin:5px 0;
 
 <nav>
 
-<button onclick="show('home')">Home</button> <button onclick="show('market')">Market</button> <button onclick="show('heatmap')">Heatmap</button> <button onclick="show('portfolio')">Portfolio</button> <button onclick="show('chart')">Chart</button> <button onclick="show('news')">News</button> <button onclick="show('login')">Login</button>
+<button onclick="show('home')">Home</button> <button onclick="show('market')">Market</button> <button onclick="show('heatmap')">Heatmap</button> <button onclick="show('portfolio')">Portfolio</button> <button onclick="show('chart')">Chart</button> <button onclick="show('news')">News</button>
 
 </nav>
 
 <div id="ad">
-Ad space (connect later to Google AdSense)
+Ad space (for ads later)
 </div>
 
 <div id="home" class="section active">
-
 <h2>Welcome</h2>
-
-<select id="currency" onchange="loadMarket()">
-<option value="usd">USD</option>
-<option value="eur">EUR</option>
-<option value="ngn">NGN</option>
-</select>
-
 </div>
 
 <div id="market" class="section">
@@ -170,7 +136,6 @@ Ad space (connect later to Google AdSense)
 <th>Price</th>
 <th>24h</th>
 <th>Market Cap</th>
-<th>Trade</th>
 </tr>
 </table>
 
@@ -200,9 +165,9 @@ Ad space (connect later to Google AdSense)
 
 </div>
 
-<div id="chart" class="section">
+<div id="chart" class="section active">
 
-<h2 id="chartTitle">Bitcoin Chart</h2>
+<h2>Bitcoin Live Chart</h2>
 
 <div id="tradingview_chart"></div>
 
@@ -210,24 +175,9 @@ Ad space (connect later to Google AdSense)
 
 <div id="news" class="section">
 
-<h2>Live Crypto News</h2>
+<h2>Latest Crypto News</h2>
 
 <div id="newsFeed"></div>
-
-</div>
-
-<div id="login" class="section">
-
-<div class="loginbox">
-
-<h3>Account Login</h3>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="signup()">Sign Up</button> <button onclick="login()">Login</button> <button onclick="googleLogin()">Login with Google</button>
-
-</div>
 
 </div>
 
@@ -244,9 +194,7 @@ document.getElementById(id).classList.add("active")
 
 async function loadMarket(){
 
-let currency=document.getElementById("currency").value
-
-let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency="+currency+"&per_page=100&page=1"
+let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=50&page=1"
 
 let r=await fetch(url)
 
@@ -254,25 +202,21 @@ let data=await r.json()
 
 let table=document.getElementById("marketTable")
 
-table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h</th><th>Market Cap</th><th>Trade</th></tr>"
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h</th><th>Market Cap</th></tr>"
 
 data.forEach(c=>{
 
 let color=c.price_change_percentage_24h>=0?"green":"red"
 
-let trade='<a href="https://www.binance.com" target="_blank"><button class="tradebtn">Trade</button></a>'
-
 let row="<tr>"+
 
-"<td class='coin' onclick=\"openChart('"+c.symbol.toUpperCase()+"')\"><img src='"+c.image+"'>"+c.name+"</td>"+
+"<td class='coin'><img src='"+c.image+"'>"+c.name+"</td>"+
 
-"<td>"+c.current_price+"</td>"+
+"<td>$"+c.current_price+"</td>"+
 
 "<td class='"+color+"'>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
 
-"<td>"+c.market_cap.toLocaleString()+"</td>"+
-
-"<td>"+trade+"</td>"+
+"<td>$"+c.market_cap.toLocaleString()+"</td>"+
 
 "</tr>"
 
@@ -296,7 +240,7 @@ let heat=document.getElementById("heatmapCoins")
 
 heat.innerHTML=""
 
-data.slice(0,50).forEach(c=>{
+data.slice(0,40).forEach(c=>{
 
 let color=c.price_change_percentage_24h>=0?"#0f5132":"#842029"
 
@@ -316,31 +260,23 @@ c.price_change_percentage_24h.toFixed(2)+"%"+
 
 </script>
 
+<script src="https://s3.tradingview.com/tv.js"></script>
+
 <script>
 
-function openChart(symbol){
-
-show("chart")
-
-document.getElementById("chartTitle").innerText=symbol+" Chart"
-
 new TradingView.widget({
-
 width:"100%",
-height:400,
-symbol:"BINANCE:"+symbol+"USDT",
+height:450,
+symbol:"BINANCE:BTCUSDT",
 interval:"30",
+timezone:"Etc/UTC",
 theme:"dark",
 style:"1",
+locale:"en",
 container_id:"tradingview_chart"
-
 })
 
-}
-
 </script>
-
-<script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
 
@@ -354,13 +290,11 @@ let data=await r.json()
 
 let feed=document.getElementById("newsFeed")
 
-data.Data.slice(0,10).forEach(n=>{
+data.Data.slice(0,8).forEach(n=>{
 
 feed.innerHTML+=
-
 "<div class='news'><b>"+n.title+"</b><br>"+
-
-"<a href='"+n.url+"' target='_blank'>Read more</a></div>"
+"<a href='"+n.url+"' target='_blank'>Read full story</a></div>"
 
 })
 
@@ -370,38 +304,28 @@ loadNews()
 
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
 <script>
 
-const firebaseConfig={
-apiKey:"AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
-authDomain:"crypto-tracker-5789c.firebaseapp.com",
-projectId:"crypto-tracker-5789c",
-appId:"1:1002444628632:web:99b5792b6853f8717126ed"
-}
+async function addCoin(){
 
-firebase.initializeApp(firebaseConfig)
+let name=document.getElementById("coinName").value
 
-function signup(){
-firebase.auth().createUserWithEmailAndPassword(
-document.getElementById("email").value,
-document.getElementById("password").value
-)
-}
+let amount=document.getElementById("coinAmount").value
 
-function login(){
-firebase.auth().signInWithEmailAndPassword(
-document.getElementById("email").value,
-document.getElementById("password").value
-)
-}
+let url="https://api.coingecko.com/api/v3/simple/price?ids="+name+"&vs_currencies=usd"
 
-function googleLogin(){
-let provider=new firebase.auth.GoogleAuthProvider()
-firebase.auth().signInWithPopup(provider)
+let r=await fetch(url)
+
+let data=await r.json()
+
+let price=data[name].usd
+
+let value=price*amount
+
+let table=document.getElementById("portfolioTable")
+
+table.innerHTML+="<tr><td>"+name+"</td><td>"+amount+"</td><td>$"+value.toFixed(2)+"</td></tr>"
+
 }
 
 </script>
