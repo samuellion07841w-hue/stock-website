@@ -11,11 +11,31 @@ body{
 background:#0d1117;
 color:white;
 font-family:Arial;
-text-align:center;
+margin:0;
 }
 
-h1{
-margin-top:20px;
+nav{
+background:#161b22;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+nav h1{
+margin:0;
+font-size:22px;
+}
+
+nav a{
+color:white;
+margin-left:15px;
+text-decoration:none;
+}
+
+.container{
+padding:20px;
+text-align:center;
 }
 
 input{
@@ -29,7 +49,7 @@ border:none;
 table{
 margin:auto;
 border-collapse:collapse;
-width:85%;
+width:90%;
 background:#161b22;
 }
 
@@ -47,16 +67,12 @@ background:#1f2933;
 }
 
 .section{
-margin:30px;
+margin-top:40px;
 }
 
 ul{
 list-style:none;
 padding:0;
-}
-
-li{
-margin:5px;
 }
 
 </style>
@@ -67,8 +83,21 @@ margin:5px;
 
 <body>
 
-<h1>🚀 Crypto Market Tracker</h1>
-<p>Live cryptocurrency market data</p>
+<nav>
+<h1>🚀 CryptoTracker</h1>
+
+<div>
+<a href="#">Home</a>
+<a href="#">Market</a>
+<a href="#">News</a>
+<a href="#">About</a>
+</div>
+
+</nav>
+
+<div class="container">
+
+<h2>Live Cryptocurrency Market</h2>
 
 <input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 
@@ -104,6 +133,8 @@ margin:5px;
 
 </div>
 
+</div>
+
 <script>
 
 let chart;
@@ -112,8 +143,8 @@ function updateChart(data){
 
 let ctx=document.getElementById("priceChart").getContext("2d");
 
-let prices=data.slice(0,4).map(c=>c.current_price);
-let labels=data.slice(0,4).map(c=>c.name);
+let prices=data.slice(0,5).map(c=>c.current_price);
+let labels=data.slice(0,5).map(c=>c.name);
 
 if(chart){
 chart.destroy();
