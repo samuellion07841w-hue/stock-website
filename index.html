@@ -35,8 +35,6 @@ text-decoration:none;
 font-weight:bold;
 }
 
-/* ticker */
-
 .ticker{
 background:black;
 overflow:hidden;
@@ -54,8 +52,6 @@ color:white;
 0%{transform:translateX(100%)}
 100%{transform:translateX(-100%)}
 }
-
-/* hero */
 
 .hero{
 display:flex;
@@ -88,8 +84,6 @@ font-weight:bold;
 color:#00ffae;
 }
 
-/* container */
-
 .container{
 padding:20px;
 text-align:center;
@@ -99,23 +93,7 @@ text-align:center;
 margin-top:60px;
 }
 
-/* cards */
-
-.cards{
-display:flex;
-justify-content:center;
-gap:40px;
-flex-wrap:wrap;
-}
-
-.card{
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:10px;
-width:220px;
-}
-
-/* better table */
+/* table */
 
 table{
 margin:auto;
@@ -141,58 +119,7 @@ tr:hover{
 background:#f2f2f2;
 }
 
-/* calculator */
-
-.calculator{
-background:rgba(255,255,255,0.1);
-padding:25px;
-border-radius:12px;
-max-width:400px;
-margin:auto;
-}
-
-.calculator input{
-width:90%;
-padding:10px;
-margin:10px;
-border-radius:6px;
-border:none;
-}
-
-.calculator button{
-padding:10px 20px;
-background:#00ffd5;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
-}
-
-/* news */
-
-.news-grid{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-justify-content:center;
-}
-
-.news-card{
-background:rgba(255,255,255,0.1);
-padding:15px;
-border-radius:10px;
-width:250px;
-}
-
-.news-card a{
-color:#00ffd5;
-text-decoration:none;
-font-weight:bold;
-}
-
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -205,8 +132,6 @@ font-weight:bold;
 <div>
 <a href="#home">Home</a>
 <a href="#market">Market</a>
-<a href="#newsSection">News</a>
-<a href="#calculator">Calculator</a>
 <a href="#about">About</a>
 </div>
 
@@ -240,25 +165,36 @@ font-weight:bold;
 
 <div class="section">
 
-<h2>Market Chart</h2>
+<h2>📈 Professional Crypto Trading Chart</h2>
 
-<canvas id="priceChart"></canvas>
+<!-- TradingView Chart -->
 
-</div>
+<div class="tradingview-widget-container">
+<div id="tradingview_chart"></div>
 
-<div class="section">
+<script src="https://s3.tradingview.com/tv.js"></script>
 
-<div class="cards">
+<script>
 
-<div class="card">
-<h3>🔥 Top Gainers</h3>
-<ul id="gainers"></ul>
-</div>
+new TradingView.widget(
+{
+"width": "100%",
+"height": 500,
+"symbol": "BINANCE:BTCUSDT",
+"interval": "60",
+"timezone": "Etc/UTC",
+"theme": "dark",
+"style": "1",
+"locale": "en",
+"toolbar_bg": "#f1f3f6",
+"enable_publishing": false,
+"hide_top_toolbar": false,
+"allow_symbol_change": true,
+"container_id": "tradingview_chart"
+}
+);
 
-<div class="card">
-<h3>📉 Top Losers</h3>
-<ul id="losers"></ul>
-</div>
+</script>
 
 </div>
 
@@ -284,54 +220,6 @@ font-weight:bold;
 </div>
 
 <script>
-
-let chart;
-
-function updateChart(data){
-
-let ctx=document.getElementById("priceChart").getContext("2d");
-
-let prices=data.slice(0,5).map(c=>c.current_price);
-let labels=data.slice(0,5).map(c=>c.name);
-
-if(chart){
-chart.destroy();
-}
-
-chart=new Chart(ctx,{
-type:"bar",
-data:{
-labels:labels,
-datasets:[{
-label:"Price USD",
-data:prices,
-backgroundColor:["#00ffd5","#ff0066","#ffaa00","#00ff88","#3399ff"]
-}]
-},
-options:{
-plugins:{
-legend:{
-labels:{
-color:"white"
-}
-}
-},
-scales:{
-x:{
-ticks:{
-color:"white"
-}
-},
-y:{
-ticks:{
-color:"white"
-}
-}
-}
-}
-});
-
-}
 
 async function loadTopCoins(){
 
@@ -373,8 +261,6 @@ document.getElementById("tickerText").innerText=ticker;
 
 document.getElementById("btcHero").innerText="$"+data[0].current_price;
 document.getElementById("ethHero").innerText="$"+data[1].current_price;
-
-updateChart(data);
 
 }
 
