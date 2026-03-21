@@ -9,7 +9,7 @@
 body{
 font-family:Arial;
 margin:0;
-background:linear-gradient(135deg,#141e30,#243b55);
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 color:white;
 }
 
@@ -18,7 +18,6 @@ background:black;
 padding:20px;
 text-align:center;
 font-size:30px;
-font-weight:bold;
 }
 
 nav{
@@ -60,12 +59,29 @@ border:1px solid #ddd;
 text-align:center;
 }
 
+.green{
+color:green;
+font-weight:bold;
+}
+
+.red{
+color:red;
+font-weight:bold;
+}
+
 #ad{
 background:#222;
 padding:20px;
 margin:20px;
 text-align:center;
 border-radius:10px;
+}
+
+.news{
+background:#111;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
 }
 
 .login{
@@ -105,8 +121,9 @@ cursor:pointer;
 <nav>
 <button onclick="show('home')">Home</button>
 <button onclick="show('market')">Market</button>
-<button onclick="show('gainers')">Top Movers</button>
+<button onclick="show('trending')">Trending</button>
 <button onclick="show('chart')">Chart</button>
+<button onclick="show('news')">News</button>
 <button onclick="show('about')">About</button>
 <button onclick="show('privacy')">Privacy</button>
 <button onclick="show('contact')">Contact</button>
@@ -118,36 +135,33 @@ Advertisement space (connect later to Google AdSense)
 </div>
 
 <div id="home" class="section active">
+
 <h2>Welcome</h2>
-<p>Track cryptocurrency prices, charts, and market trends worldwide.</p>
+<p>Track cryptocurrency prices, charts, and global market trends.</p>
+
 </div>
 
 <div id="market" class="section">
 
-<h2>Top 50 Cryptocurrencies</h2>
+<h2>Top Cryptocurrencies</h2>
 
 <table id="marketTable">
+
 <tr>
 <th>Coin</th>
 <th>Price</th>
-<th>Market Cap</th>
 <th>24h Change</th>
 </tr>
+
 </table>
 
 </div>
 
-<div id="gainers" class="section">
+<div id="trending" class="section">
 
-<h2>Top Gainers</h2>
+<h2>Trending Coins</h2>
 
-<table id="gainersTable">
-<tr>
-<th>Coin</th>
-<th>Price</th>
-<th>24h Change</th>
-</tr>
-</table>
+<div id="trendingCoins"></div>
 
 </div>
 
@@ -159,43 +173,34 @@ Advertisement space (connect later to Google AdSense)
 
 </div>
 
+<div id="news" class="section">
+
+<h2>Crypto News</h2>
+
+<div id="newsFeed"></div>
+
+</div>
+
 <div id="about" class="section">
-
-<h2>About Us</h2>
-
-<p>
-This website provides live cryptocurrency market data,
-price charts, and market insights to help users track
-digital assets globally.
-</p>
-
+<h2>About</h2>
+<p>This platform tracks global cryptocurrency markets and trends.</p>
 </div>
 
 <div id="privacy" class="section">
-
 <h2>Privacy Policy</h2>
-
-<p>
-We respect your privacy. This website does not sell
-personal data. Information collected may include
-basic analytics used to improve the service.
-</p>
-
+<p>Your privacy is respected. We do not sell personal data.</p>
 </div>
 
 <div id="contact" class="section">
-
 <h2>Contact</h2>
-
 <p>Email: support@cryptodashboard.com</p>
-
 </div>
 
 <div id="login" class="section">
 
 <div class="login">
 
-<h3>Account Login</h3>
+<h3>Account</h3>
 
 <input id="email" placeholder="Email">
 
@@ -214,11 +219,8 @@ basic analytics used to improve the service.
 <script>
 
 function show(id){
-
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-
 document.getElementById(id).classList.add("active");
-
 }
 
 </script>
@@ -227,23 +229,23 @@ document.getElementById(id).classList.add("active");
 
 async function loadMarket(){
 
-let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1";
+let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=20";
 
 let r=await fetch(url);
-
 let data=await r.json();
 
 let table=document.getElementById("marketTable");
 
-table.innerHTML="<tr><th>Coin</th><th>Price</th><th>Market Cap</th><th>24h Change</th></tr>";
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th></tr>";
 
 data.forEach(c=>{
+
+let color=c.price_change_percentage_24h>=0?"green":"red";
 
 let row="<tr>"+
 "<td>"+c.name+"</td>"+
 "<td>$"+c.current_price+"</td>"+
-"<td>$"+c.market_cap.toLocaleString()+"</td>"+
-"<td>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
+"<td class='"+color+"'>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
 "</tr>";
 
 table.innerHTML+=row;
@@ -258,35 +260,43 @@ loadMarket();
 
 <script>
 
-async function loadMovers(){
+async function loadTrending(){
 
-let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=20&page=1";
+let url="https://api.coingecko.com/api/v3/search/trending";
 
 let r=await fetch(url);
-
 let data=await r.json();
 
-data.sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+let div=document.getElementById("trendingCoins");
 
-let table=document.getElementById("gainersTable");
+div.innerHTML="";
 
-table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th></tr>";
+data.coins.forEach(c=>{
 
-data.slice(0,10).forEach(c=>{
-
-let row="<tr>"+
-"<td>"+c.name+"</td>"+
-"<td>$"+c.current_price+"</td>"+
-"<td>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
-"</tr>";
-
-table.innerHTML+=row;
+div.innerHTML+="<div class='news'>🔥 "+c.item.name+"</div>";
 
 });
 
 }
 
-loadMovers();
+loadTrending();
+
+</script>
+
+<script>
+
+let news=[
+"Bitcoin market volatility increases",
+"Ethereum ecosystem growth continues",
+"Major institutions explore crypto investments",
+"Global regulators discuss digital assets"
+];
+
+let feed=document.getElementById("newsFeed");
+
+news.forEach(n=>{
+feed.innerHTML+="<div class='news'>"+n+"</div>";
+});
 
 </script>
 
@@ -295,7 +305,6 @@ loadMovers();
 <script>
 
 new TradingView.widget({
-
 width:"100%",
 height:400,
 symbol:"BINANCE:BTCUSDT",
@@ -305,7 +314,6 @@ theme:"dark",
 style:"1",
 locale:"en",
 container_id:"tradingview_chart"
-
 });
 
 </script>
@@ -316,7 +324,6 @@ container_id:"tradingview_chart"
 <script>
 
 const firebaseConfig = {
-
 apiKey: "AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
 authDomain: "crypto-tracker-5789c.firebaseapp.com",
 projectId: "crypto-tracker-5789c",
@@ -324,7 +331,6 @@ storageBucket: "crypto-tracker-5789c.firebasestorage.app",
 messagingSenderId: "1002444628632",
 appId: "1:1002444628632:web:99b5792b6853f8717126ed",
 measurementId: "G-S42SFCQPFD"
-
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -335,7 +341,6 @@ let email=document.getElementById("email").value;
 let pass=document.getElementById("password").value;
 
 firebase.auth().createUserWithEmailAndPassword(email,pass)
-
 .then(()=>alert("Account created"))
 .catch(e=>alert(e.message));
 
@@ -347,7 +352,6 @@ let email=document.getElementById("email").value;
 let pass=document.getElementById("password").value;
 
 firebase.auth().signInWithEmailAndPassword(email,pass)
-
 .then(()=>alert("Logged in"))
 .catch(e=>alert(e.message));
 
@@ -358,7 +362,6 @@ function googleLogin(){
 let provider=new firebase.auth.GoogleAuthProvider();
 
 firebase.auth().signInWithPopup(provider)
-
 .then(()=>alert("Google login success"))
 .catch(e=>alert(e.message));
 
