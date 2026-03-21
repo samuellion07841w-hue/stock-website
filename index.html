@@ -4,7 +4,7 @@
 
 <head>
 
-<title>CryptoTracker Dashboard</title>
+<title>CryptoTracker Pro</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -21,7 +21,7 @@ color:white;
 position:fixed;
 left:0;
 top:0;
-width:210px;
+width:220px;
 height:100%;
 background:#020617;
 padding-top:20px;
@@ -44,51 +44,9 @@ background:#1e293b;
 }
 
 .main{
-margin-left:210px;
+margin-left:220px;
 padding:20px;
 }
-
-@media(max-width:800px){
-
-.sidebar{
-position:relative;
-width:100%;
-height:auto;
-display:flex;
-justify-content:center;
-}
-
-.main{
-margin-left:0;
-}
-
-.hero{
-flex-direction:column;
-}
-
-}
-
-/* ticker */
-
-.ticker{
-background:black;
-overflow:hidden;
-white-space:nowrap;
-margin-bottom:20px;
-}
-
-.ticker span{
-display:inline-block;
-padding:10px 40px;
-animation:scroll 25s linear infinite;
-}
-
-@keyframes scroll{
-0%{transform:translateX(100%)}
-100%{transform:translateX(-100%)}
-}
-
-/* hero */
 
 .hero{
 display:flex;
@@ -100,30 +58,10 @@ margin-bottom:20px;
 background:#1e293b;
 padding:20px;
 border-radius:10px;
-width:180px;
+width:200px;
 text-align:center;
+font-size:18px;
 }
-
-/* heatmap */
-
-.heatmap{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-gap:12px;
-margin-bottom:40px;
-}
-
-.tile{
-padding:15px;
-border-radius:8px;
-text-align:center;
-font-weight:bold;
-}
-
-.green{background:#16a34a}
-.red{background:#dc2626}
-
-/* table */
 
 table{
 width:100%;
@@ -134,14 +72,34 @@ color:black;
 
 th{
 background:#22c55e;
+color:white;
 }
 
 th,td{
-padding:10px;
+padding:12px;
 border-bottom:1px solid #ddd;
 }
 
-/* coin viewer */
+.coin{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.coin img{
+width:25px;
+height:25px;
+}
+
+.green{
+color:green;
+font-weight:bold;
+}
+
+.red{
+color:red;
+font-weight:bold;
+}
 
 .viewer{
 background:#1e293b;
@@ -149,24 +107,6 @@ padding:20px;
 border-radius:10px;
 margin-top:20px;
 }
-
-/* panels */
-
-.panels{
-display:flex;
-gap:40px;
-margin-bottom:30px;
-flex-wrap:wrap;
-}
-
-.panel{
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-width:250px;
-}
-
-/* news */
 
 .news{
 display:flex;
@@ -186,20 +126,6 @@ color:#22c55e;
 text-decoration:none;
 }
 
-/* portfolio */
-
-.portfolio{
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-margin-top:20px;
-}
-
-.portfolio input{
-padding:8px;
-margin:6px;
-}
-
 </style>
 
 </head>
@@ -210,15 +136,11 @@ margin:6px;
 
 <h2>🚀 Crypto</h2>
 
-<a href="#market">Market</a> <a href="#portfolio">Portfolio</a> <a href="#news">News</a>
+<a href="#market">Market</a> <a href="#news">News</a>
 
 </div>
 
 <div class="main">
-
-<div class="ticker">
-<span id="tickerText">Loading...</span>
-</div>
 
 <div class="hero">
 
@@ -234,69 +156,24 @@ margin:6px;
 
 </div>
 
-<h2>📊 Crypto Heatmap</h2>
-
-<div class="heatmap" id="heatmap"></div>
-
-<div class="panels">
-
-<div class="panel">
-
-<h3>🔥 Top Gainers</h3>
-
-<ul id="gainers"></ul>
-
-</div>
-
-<div class="panel">
-
-<h3>📉 Top Losers</h3>
-
-<ul id="losers"></ul>
-
-</div>
-
-</div>
-
-<h2 id="market">Top 100 Cryptocurrencies</h2>
-
-<input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
+<h2 id="market">Top Cryptocurrencies</h2>
 
 <table id="cryptoTable">
 
 <tr>
-<th>Rank</th>
+<th>#</th>
 <th>Coin</th>
 <th>Price</th>
-<th>24h %</th>
+<th>24h</th>
 </tr>
 
 </table>
 
-<div class="viewer" id="coinViewer">
+<div class="viewer">
 
-<h2 id="coinTitle">Coin Details</h2>
-
-<p>Price: <span id="vPrice"></span></p>
-
-<p>Market Cap: <span id="vMarket"></span></p>
-
-<p>24h Change: <span id="vChange"></span></p>
+<h2 id="coinTitle">Bitcoin Chart</h2>
 
 <div id="chart"></div>
-
-</div>
-
-<h2 id="portfolio">💼 Portfolio Tracker</h2>
-
-<div class="portfolio">
-
-<input id="coinName" placeholder="Coin name">
-<input id="coinAmount" placeholder="Amount">
-
-<button onclick="addPortfolio()">Add</button>
-
-<ul id="portfolioList"></ul>
 
 </div>
 
@@ -310,78 +187,38 @@ margin:6px;
 
 <script>
 
-let portfolio=[];
+/* chart */
 
-function addPortfolio(){
-
-let coin=document.getElementById("coinName").value;
-
-let amount=document.getElementById("coinAmount").value;
-
-portfolio.push({coin,amount});
-
-renderPortfolio();
-
-}
-
-function renderPortfolio(){
-
-let list=document.getElementById("portfolioList");
-
-list.innerHTML="";
-
-portfolio.forEach(p=>{
-
-list.innerHTML+=`<li>${p.coin} : ${p.amount}</li>`;
-
-});
-
-}
-
-function searchCoin(){
-
-let input=document.getElementById("search").value.toLowerCase();
-
-let rows=document.querySelectorAll("#cryptoTable tr");
-
-rows.forEach((row,i)=>{
-
-if(i===0) return;
-
-let coin=row.children[1].innerText.toLowerCase();
-
-row.style.display=coin.includes(input)?"":"none";
-
-});
-
-}
-
-function showCoin(name,price,market,change,symbol){
-
-document.getElementById("coinViewer").scrollIntoView();
-
-document.getElementById("coinTitle").innerText=name;
-
-document.getElementById("vPrice").innerText="$"+price;
-
-document.getElementById("vMarket").innerText="$"+market;
-
-document.getElementById("vChange").innerText=change.toFixed(2)+"%";
+function loadChart(symbol){
 
 document.getElementById("chart").innerHTML="";
 
 new TradingView.widget({
 
 width:"100%",
-height:400,
-symbol:"BINANCE:"+symbol+"USDT",
-interval:"60",
+height:450,
+symbol:symbol,
+interval:"30",
 theme:"dark",
+style:"1",
+locale:"en",
 container_id:"chart"
 
 });
 
 }
+
+/* coin click */
+
+function showCoin(name,symbol){
+
+document.getElementById("coinTitle").innerText=name+" Chart";
+
+loadChart(symbol);
+
+}
+
+/* market data */
 
 async function loadMarket(){
 
@@ -391,14 +228,79 @@ let data=await res.json();
 
 let table=document.getElementById("cryptoTable");
 
-let heatmap=document.getElementById("heatmap");
+data.forEach((coin,i)=>{
 
-let ticker="";
+let symbol="BINANCE:"+coin.symbol.toUpperCase()+"USDT";
 
-let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+let change=coin.price_change_percentage_24h;
 
-let gainers=sorted.slice(0,5);
+let color=change>0?"green":"red";
 
-let losers=sorted.slice(-5);
+table.innerHTML+=`
 
-gainers.forEach(c=>{
+<tr onclick="showCoin('${coin.name}','${symbol}')">
+
+<td>${i+1}</td>
+
+<td class="coin">
+<img src="${coin.image}">
+${coin.name}
+</td>
+
+<td>$${coin.current_price}</td>
+
+<td class="${color}">
+${change.toFixed(2)}%
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("btcHero").innerText="$"+data[0].current_price;
+
+document.getElementById("ethHero").innerText="$"+data[1].current_price;
+
+}
+
+/* news */
+
+async function loadNews(){
+
+let res=await fetch("https://min-api.cryptocompare.com/data/v2/news/?lang=EN");
+
+let data=await res.json();
+
+let container=document.getElementById("newsContainer");
+
+data.Data.slice(0,6).forEach(article=>{
+
+container.innerHTML+=`
+
+<div class="news-card">
+
+<a href="${article.url}" target="_blank">${article.title}</a>
+
+<p>${article.source}</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* start */
+
+loadMarket();
+loadNews();
+loadChart("BINANCE:BTCUSDT");
+
+</script>
+
+</body>
+
+</html>
