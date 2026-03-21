@@ -86,8 +86,6 @@ font-weight:bold;
 color:#00ffae;
 }
 
-/* content */
-
 .container{
 padding:20px;
 text-align:center;
@@ -139,6 +137,29 @@ tr:hover{
 background:rgba(255,255,255,0.1);
 }
 
+/* NEWS */
+
+.news-grid{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+justify-content:center;
+margin-top:20px;
+}
+
+.news-card{
+background:rgba(255,255,255,0.1);
+padding:15px;
+border-radius:10px;
+width:250px;
+}
+
+.news-card a{
+color:#00ffd5;
+text-decoration:none;
+font-weight:bold;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -163,8 +184,6 @@ background:rgba(255,255,255,0.1);
 <div class="ticker">
 <span id="tickerText">Loading crypto prices...</span>
 </div>
-
-<!-- HERO SECTION -->
 
 <div class="hero">
 
@@ -224,11 +243,21 @@ background:rgba(255,255,255,0.1);
 <tr>
 <th>Rank</th>
 <th>Coin</th>
-<th>Price (USD)</th>
+<th>Price</th>
 <th>Market Cap</th>
 </tr>
 
 </table>
+
+</div>
+
+<!-- NEWS SECTION -->
+
+<div class="section">
+
+<h2>📰 Latest Crypto News</h2>
+
+<div class="news-grid" id="news"></div>
 
 </div>
 
@@ -298,7 +327,7 @@ table.innerHTML=`
 <tr>
 <th>Rank</th>
 <th>Coin</th>
-<th>Price (USD)</th>
+<th>Price</th>
 <th>Market Cap</th>
 </tr>
 `;
@@ -334,6 +363,32 @@ showGainersLosers(data);
 
 }
 
+async function loadNews(){
+
+let url="https://min-api.cryptocompare.com/data/v2/news/?lang=EN";
+
+let res=await fetch(url);
+let data=await res.json();
+
+let container=document.getElementById("news");
+
+container.innerHTML="";
+
+data.Data.slice(0,6).forEach(article=>{
+
+container.innerHTML+=`
+
+<div class="news-card">
+<a href="${article.url}" target="_blank">${article.title}</a>
+<p>${article.source}</p>
+</div>
+
+`;
+
+});
+
+}
+
 function searchCoin(){
 
 let input=document.getElementById("search").value.toLowerCase();
@@ -353,6 +408,8 @@ row.style.display=coin.includes(input)?"":"none";
 }
 
 loadTopCoins();
+loadNews();
+
 setInterval(loadTopCoins,60000);
 
 </script>
