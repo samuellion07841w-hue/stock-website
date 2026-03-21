@@ -2,11 +2,7 @@
 
 <html>
 <head>
-<meta name="description" content="Live cryptocurrency prices, charts, portfolio tracker and crypto market data including Bitcoin, Ethereum, Dogecoin and more.">
 
-<meta name="keywords" content="crypto prices, bitcoin price, ethereum price, crypto tracker, cryptocurrency market, bitcoin chart">
-
-<meta name="author" content="CryptoTracker">
 <title>CryptoTracker Pro</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +16,7 @@ background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
 color:white;
 }
 
-/* LOGIN SCREEN */
+/* LOGIN */
 
 .login{
 position:fixed;
@@ -31,17 +27,16 @@ height:100%;
 display:flex;
 align-items:center;
 justify-content:center;
-flex-direction:column;
 }
 
 .login-card{
 
 background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
+backdrop-filter:blur(20px);
 padding:40px;
 border-radius:15px;
 text-align:center;
-box-shadow:0 0 30px rgba(0,0,0,0.6);
+box-shadow:0 0 30px rgba(0,0,0,0.7);
 width:320px;
 
 }
@@ -49,12 +44,11 @@ width:320px;
 .logo{
 font-size:28px;
 font-weight:bold;
-margin-bottom:20px;
 color:#22c55e;
+margin-bottom:20px;
 }
 
 .login-card input{
-
 width:100%;
 padding:12px;
 margin:10px 0;
@@ -62,30 +56,26 @@ border:none;
 border-radius:8px;
 background:#020617;
 color:white;
-
 }
 
 .login-card button{
-
 width:100%;
 padding:12px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-background:linear-gradient(90deg,#22c55e,#4ade80);
-font-weight:bold;
+background:#22c55e;
 cursor:pointer;
-
+font-weight:bold;
 }
 
-.login-card button:hover{
-transform:scale(1.05);
+.google-btn{
+background:#4285F4;
 }
 
 /* SIDEBAR */
 
 .sidebar{
-
 position:fixed;
 left:0;
 top:0;
@@ -93,7 +83,6 @@ width:220px;
 height:100%;
 background:#020617;
 padding-top:20px;
-
 }
 
 .sidebar h2{
@@ -102,12 +91,10 @@ color:#22c55e;
 }
 
 .sidebar a{
-
 display:block;
 padding:14px 20px;
 color:white;
 text-decoration:none;
-
 }
 
 .sidebar a:hover{
@@ -117,45 +104,35 @@ background:#1e293b;
 /* MAIN */
 
 .main{
-
 margin-left:220px;
 padding:25px;
-
 }
 
 /* TABLE */
 
 table{
-
 width:100%;
 border-collapse:collapse;
 background:white;
 color:black;
 border-radius:10px;
 overflow:hidden;
-
 }
 
 th{
-
 background:#22c55e;
 color:white;
-
 }
 
 th,td{
-
 padding:12px;
 border-bottom:1px solid #eee;
-
 }
 
 .coin{
-
 display:flex;
 align-items:center;
 gap:10px;
-
 }
 
 .coin img{
@@ -163,50 +140,30 @@ width:25px;
 }
 
 .star{
-
 cursor:pointer;
-font-size:18px;
-
 }
 
-/* CHART */
-
-.chartBox{
-
-margin-top:30px;
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-
-}
-
-/* PORTFOLIO */
+/* CARDS */
 
 .card{
-
 margin-top:30px;
 background:#1e293b;
 padding:20px;
 border-radius:10px;
-
 }
 
 .card input{
-
 padding:10px;
 margin:5px;
 border-radius:6px;
 border:none;
-
 }
 
 .card button{
-
 padding:10px 15px;
 background:#22c55e;
 border:none;
 cursor:pointer;
-
 }
 
 </style>
@@ -223,17 +180,19 @@ cursor:pointer;
 
 <div class="logo">🚀 CryptoTracker</div>
 
-<input id="username" placeholder="Username">
+<input id="email" placeholder="Email">
 
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+<button onclick="emailLogin()">Login with Email</button>
+
+<button class="google-btn" onclick="googleLogin()">Login with Google</button>
 
 </div>
 
 </div>
 
-<!-- DASHBOARD -->
+<!-- SITE -->
 
 <div id="site" style="display:none">
 
@@ -265,9 +224,9 @@ cursor:pointer;
 
 </table>
 
-<div class="chartBox">
+<div class="card">
 
-<h3>Bitcoin Chart</h3>
+<h3>📈 Bitcoin Chart</h3>
 
 <div id="chart"></div>
 
@@ -299,33 +258,65 @@ cursor:pointer;
 
 </div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
 
-/* LOGIN */
+const firebaseConfig = {
+apiKey: "AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
+authDomain: "crypto-tracker-5789c.firebaseapp.com",
+projectId: "crypto-tracker-5789c",
+storageBucket: "crypto-tracker-5789c.firebasestorage.app",
+messagingSenderId: "1002444628632",
+appId: "1:1002444628632:web:99b5792b6853f8717126ed",
+measurementId: "G-S42SFCQPFD"
+};
 
-function login(){
+firebase.initializeApp(firebaseConfig);
 
-let user=document.getElementById("username").value;
+function emailLogin(){
 
-localStorage.setItem("user",user);
+let email=document.getElementById("email").value;
+let pass=document.getElementById("password").value;
+
+firebase.auth().signInWithEmailAndPassword(email,pass)
+.then(()=>{
+showSite();
+})
+.catch((e)=>alert(e.message));
+
+}
+
+function googleLogin(){
+
+const provider=new firebase.auth.GoogleAuthProvider();
+
+firebase.auth().signInWithPopup(provider)
+.then(()=>{
+showSite();
+})
+.catch((e)=>alert(e.message));
+
+}
+
+function showSite(){
 
 document.getElementById("loginScreen").style.display="none";
-
 document.getElementById("site").style.display="block";
 
 }
 
-if(localStorage.getItem("user")){
+</script>
 
-document.getElementById("loginScreen").style.display="none";
+<!-- TRADINGVIEW -->
 
-document.getElementById("site").style.display="block";
+<script src="https://s3.tradingview.com/tv.js"></script>
 
-}
-
-/* CHART */
+<script>
 
 new TradingView.widget({
 
@@ -337,9 +328,13 @@ container_id:"chart"
 
 });
 
+</script>
+
+<script>
+
 /* WATCHLIST */
 
-let watch=JSON.parse(localStorage.getItem("watch")||"[]");
+let watch=[];
 
 function toggleWatch(name){
 
@@ -348,8 +343,6 @@ watch=watch.filter(c=>c!==name);
 }else{
 watch.push(name);
 }
-
-localStorage.setItem("watch",JSON.stringify(watch));
 
 renderWatch();
 
@@ -367,21 +360,16 @@ list.innerHTML+=`<li>${c}</li>`;
 
 }
 
-renderWatch();
-
 /* PORTFOLIO */
 
-let portfolio=JSON.parse(localStorage.getItem("portfolio")||"[]");
+let portfolio=[];
 
 function addPortfolio(){
 
 let coin=document.getElementById("pCoin").value;
-
 let amount=document.getElementById("pAmount").value;
 
 portfolio.push({coin,amount});
-
-localStorage.setItem("portfolio",JSON.stringify(portfolio));
 
 renderPortfolio();
 
@@ -394,16 +382,12 @@ let list=document.getElementById("portfolioList");
 list.innerHTML="";
 
 portfolio.forEach(p=>{
-
 list.innerHTML+=`<li>${p.coin} : ${p.amount}</li>`;
-
 });
 
 }
 
-renderPortfolio();
-
-/* MARKET DATA */
+/* MARKET */
 
 async function loadMarket(){
 
@@ -418,5 +402,39 @@ table.innerHTML=`<tr><th>⭐</th><th>#</th><th>Coin</th><th>Price</th><th>24h</t
 data.forEach((coin,i)=>{
 
 let change=coin.price_change_percentage_24h;
+let color=change>0?"green":"red";
 
-let color=change>0?"green":"red
+table.innerHTML+=`
+
+<tr>
+
+<td class="star" onclick="toggleWatch('${coin.name}')">⭐</td>
+
+<td>${i+1}</td>
+
+<td class="coin">
+<img src="${coin.image}">
+${coin.name}
+</td>
+
+<td>$${coin.current_price}</td>
+
+<td style="color:${color}">
+${change.toFixed(2)}%
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+loadMarket();
+
+</script>
+
+</body>
+
+</html>
