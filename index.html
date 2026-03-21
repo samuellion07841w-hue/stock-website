@@ -3,42 +3,84 @@
 
 <head>
 
-<title>CryptoTracker</title>
+<title>CryptoTracker Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+background:#0f172a;
 color:white;
-scroll-behavior:smooth;
 }
 
-nav{
-background:#111;
-padding:15px 25px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:200px;
+height:100%;
+background:#020617;
+padding-top:20px;
 }
 
-nav h1{
-margin:0;
-color:#00ffd5;
+.sidebar h2{
+text-align:center;
+color:#22c55e;
 }
 
-nav a{
+.sidebar a{
+display:block;
 color:white;
-margin-left:20px;
+padding:12px 20px;
 text-decoration:none;
-font-weight:bold;
 }
+
+.sidebar a:hover{
+background:#1e293b;
+}
+
+/* MAIN */
+
+.main{
+margin-left:200px;
+padding:20px;
+}
+
+/* HERO */
+
+.hero{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+margin-bottom:30px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+text-align:center;
+width:200px;
+}
+
+.card span{
+font-size:22px;
+color:#22c55e;
+}
+
+/* TICKER */
 
 .ticker{
 background:black;
 overflow:hidden;
 white-space:nowrap;
+margin-bottom:20px;
 }
 
 .ticker span{
@@ -52,66 +94,11 @@ animation:scroll 25s linear infinite;
 100%{transform:translateX(-100%)}
 }
 
-.hero{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:60px;
-padding:50px;
-flex-wrap:wrap;
-}
-
-.hero-logo{
-font-size:60px;
-font-weight:bold;
-background:linear-gradient(90deg,#ffcc00,#ff0066,#00ffee);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-.hero-card{
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:12px;
-width:180px;
-text-align:center;
-}
-
-.hero-card span{
-font-size:22px;
-font-weight:bold;
-color:#00ffae;
-}
-
-.container{
-padding:20px;
-text-align:center;
-}
-
-.section{
-margin-top:60px;
-}
-
-.cards{
-display:flex;
-justify-content:center;
-gap:40px;
-flex-wrap:wrap;
-}
-
-.card{
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:10px;
-width:220px;
-}
-
-/* table */
+/* TABLE */
 
 table{
-margin:auto;
+width:100%;
 border-collapse:collapse;
-width:90%;
 background:white;
 color:black;
 border-radius:10px;
@@ -119,85 +106,80 @@ overflow:hidden;
 }
 
 th{
-background:#00ffd5;
+background:#22c55e;
 color:black;
 }
 
 th,td{
-padding:12px;
+padding:10px;
 border-bottom:1px solid #ddd;
 }
 
-/* calculator */
+/* NEWS */
 
-.calculator{
-background:rgba(255,255,255,0.1);
-padding:25px;
-border-radius:12px;
-max-width:400px;
-margin:auto;
-}
-
-.calculator input{
-width:90%;
-padding:10px;
-margin:10px;
-border-radius:6px;
-border:none;
-}
-
-.calculator button{
-padding:10px 20px;
-background:#00ffd5;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
-}
-
-/* news */
-
-.news-grid{
+.news{
 display:flex;
 flex-wrap:wrap;
 gap:20px;
-justify-content:center;
 }
 
 .news-card{
-background:rgba(255,255,255,0.1);
+background:#1e293b;
 padding:15px;
 border-radius:10px;
 width:250px;
 }
 
 .news-card a{
-color:#00ffd5;
+color:#22c55e;
 text-decoration:none;
+}
+
+/* CALCULATOR */
+
+.calculator{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+max-width:400px;
+}
+
+.calculator input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:6px;
+}
+
+.calculator button{
+padding:10px;
+background:#22c55e;
+border:none;
+border-radius:6px;
 font-weight:bold;
+cursor:pointer;
 }
 
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
-<body id="home">
+<body>
 
-<nav>
+<div class="sidebar">
 
-<h1>CryptoTracker</h1>
+<h2>🚀 Crypto</h2>
 
-<div>
-<a href="#home">Home</a>
+<a href="#dashboard">Dashboard</a>
+<a href="#chart">Chart</a>
 <a href="#market">Market</a>
 <a href="#calculator">Calculator</a>
-<a href="#newsSection">News</a>
-<a href="#about">About</a>
+<a href="#news">News</a>
+
 </div>
 
-</nav>
+<div class="main">
 
 <div class="ticker">
 <span id="tickerText">Loading prices...</span>
@@ -205,17 +187,13 @@ font-weight:bold;
 
 <div class="hero">
 
-<div class="hero-card">
+<div class="card">
 🟠 Bitcoin
 <br>
 <span id="btcHero">Loading...</span>
 </div>
 
-<div class="hero-logo">
-🚀 CryptoTracker
-</div>
-
-<div class="hero-card">
+<div class="card">
 🟣 Ethereum
 <br>
 <span id="ethHero">Loading...</span>
@@ -223,59 +201,28 @@ font-weight:bold;
 
 </div>
 
-<div class="container">
+<h2 id="chart">📈 Trading Chart</h2>
 
-<div class="section">
-
-<h2>📈 Professional Crypto Trading Chart</h2>
-
-<div class="tradingview-widget-container">
 <div id="tradingview_chart"></div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
+
 new TradingView.widget({
-"width": "100%",
-"height": 500,
-"symbol": "BINANCE:BTCUSDT",
-"interval": "60",
-"timezone": "Etc/UTC",
-"theme": "dark",
-"style": "1",
-"locale": "en",
-"toolbar_bg": "#f1f3f6",
-"enable_publishing": false,
-"allow_symbol_change": true,
-"container_id": "tradingview_chart"
+width:"100%",
+height:500,
+symbol:"BINANCE:BTCUSDT",
+interval:"60",
+theme:"dark",
+container_id:"tradingview_chart"
 });
+
 </script>
 
-</div>
+<h2 id="market">🪙 Crypto Market</h2>
 
-</div>
-
-<div class="section">
-
-<div class="cards">
-
-<div class="card">
-<h3>🔥 Top Gainers</h3>
-<ul id="gainers"></ul>
-</div>
-
-<div class="card">
-<h3>📉 Top Losers</h3>
-<ul id="losers"></ul>
-</div>
-
-</div>
-
-</div>
-
-<div class="section" id="market">
-
-<h2>Top Cryptocurrency Market</h2>
+<input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 
 <table id="cryptoTable">
 
@@ -288,102 +235,88 @@ new TradingView.widget({
 
 </table>
 
-</div>
-
-<div class="section" id="calculator">
-
-<h2>💰 Crypto Profit Calculator</h2>
+<h2 id="calculator">💰 Profit Calculator</h2>
 
 <div class="calculator">
 
-<input type="number" id="buyPrice" placeholder="Buy Price ($)">
-<input type="number" id="sellPrice" placeholder="Sell Price ($)">
+<input type="number" id="buy" placeholder="Buy price">
+
+<input type="number" id="sell" placeholder="Sell price">
+
 <input type="number" id="amount" placeholder="Amount">
 
-<br>
-
-<button onclick="calculateProfit()">Calculate</button>
+<button onclick="calc()">Calculate</button>
 
 <div id="result"></div>
 
 </div>
 
-</div>
+<h2 id="news">📰 Crypto News</h2>
 
-<div class="section" id="newsSection">
-
-<h2>📰 Latest Crypto News</h2>
-
-<div class="news-grid" id="news"></div>
-
-</div>
-
-<div class="section" id="about">
-
-<h2>About CryptoTracker</h2>
-
-<p>
-CryptoTracker helps users track cryptocurrency prices,
-market trends and crypto news in real time.
-</p>
-
-</div>
+<div class="news" id="newsContainer"></div>
 
 </div>
 
 <script>
 
-function calculateProfit(){
+function calc(){
 
-let buy=parseFloat(document.getElementById("buyPrice").value);
-let sell=parseFloat(document.getElementById("sellPrice").value);
+let buy=parseFloat(document.getElementById("buy").value);
+let sell=parseFloat(document.getElementById("sell").value);
 let amount=parseFloat(document.getElementById("amount").value);
 
 let profit=(sell-buy)*amount;
 
-let result=document.getElementById("result");
+let res=document.getElementById("result");
 
 if(profit>0){
-result.innerHTML="Profit: $"+profit.toFixed(2);
-result.style.color="lime";
+res.innerHTML="Profit: $"+profit.toFixed(2);
+res.style.color="lime";
 }else{
-result.innerHTML="Loss: $"+profit.toFixed(2);
-result.style.color="red";
+res.innerHTML="Loss: $"+profit.toFixed(2);
+res.style.color="red";
 }
 
 }
 
-async function loadTopCoins(){
+function searchCoin(){
 
-let response=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1");
+let input=document.getElementById("search").value.toLowerCase();
+let rows=document.querySelectorAll("#cryptoTable tr");
 
-let data=await response.json();
+rows.forEach((row,i)=>{
+if(i===0) return;
+
+let coin=row.children[1].innerText.toLowerCase();
+
+row.style.display=coin.includes(input)?"":"none";
+
+});
+
+}
+
+async function loadMarket(){
+
+let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1");
+
+let data=await res.json();
 
 let table=document.getElementById("cryptoTable");
 
-table.innerHTML=`
-<tr>
-<th>Rank</th>
-<th>Coin</th>
-<th>Price</th>
-<th>Market Cap</th>
-</tr>
-`;
-
 let ticker="";
 
-data.forEach((coin,index)=>{
+data.forEach((coin,i)=>{
 
 table.innerHTML+=`
 <tr>
-<td>${index+1}</td>
-<td><img src="${coin.image}" width="20"> ${coin.name}</td>
+<td>${i+1}</td>
+<td>${coin.name}</td>
 <td>$${coin.current_price}</td>
 <td>$${coin.market_cap}</td>
 </tr>
 `;
 
-if(index<10){
+if(i<10){
 ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
 }
 
@@ -399,11 +332,10 @@ document.getElementById("ethHero").innerText="$"+data[1].current_price;
 async function loadNews(){
 
 let res=await fetch("https://min-api.cryptocompare.com/data/v2/news/?lang=EN");
+
 let data=await res.json();
 
-let container=document.getElementById("news");
-
-container.innerHTML="";
+let container=document.getElementById("newsContainer");
 
 data.Data.slice(0,6).forEach(article=>{
 
@@ -418,10 +350,8 @@ container.innerHTML+=`
 
 }
 
-loadTopCoins();
+loadMarket();
 loadNews();
-
-setInterval(loadTopCoins,60000);
 
 </script>
 
