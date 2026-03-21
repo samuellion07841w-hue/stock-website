@@ -33,7 +33,7 @@ margin-left:15px;
 text-decoration:none;
 }
 
-/* TICKER */
+/* ticker */
 
 .ticker{
 background:black;
@@ -55,8 +55,12 @@ animation:scroll 25s linear infinite;
 /* HERO */
 
 .hero{
-text-align:center;
-padding:40px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:60px;
+padding:50px;
+flex-wrap:wrap;
 }
 
 .hero-logo{
@@ -66,6 +70,23 @@ background:linear-gradient(90deg,#ffcc00,#ff0066,#00ffee);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
+
+.hero-card{
+background:rgba(255,255,255,0.1);
+padding:20px;
+border-radius:12px;
+width:180px;
+text-align:center;
+font-size:18px;
+}
+
+.hero-card span{
+font-size:22px;
+font-weight:bold;
+color:#00ffae;
+}
+
+/* content */
 
 .container{
 padding:20px;
@@ -139,19 +160,29 @@ background:rgba(255,255,255,0.1);
 
 </nav>
 
-<!-- SCROLLING PRICE TICKER -->
-
 <div class="ticker">
 <span id="tickerText">Loading crypto prices...</span>
 </div>
 
+<!-- HERO SECTION -->
+
 <div class="hero">
+
+<div class="hero-card">
+🟠 Bitcoin
+<br>
+<span id="btcHero">Loading...</span>
+</div>
 
 <div class="hero-logo">
 🚀 CryptoTracker
 </div>
 
-<p>Live Cryptocurrency Market Dashboard</p>
+<div class="hero-card">
+🟣 Ethereum
+<br>
+<span id="ethHero">Loading...</span>
+</div>
 
 </div>
 
@@ -294,6 +325,9 @@ ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
 });
 
 document.getElementById("tickerText").innerText=ticker;
+
+document.getElementById("btcHero").innerText="$"+data[0].current_price;
+document.getElementById("ethHero").innerText="$"+data[1].current_price;
 
 updateChart(data);
 showGainersLosers(data);
