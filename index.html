@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Crypto Market Dashboard</title>
-
+<title>Global Crypto Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -10,7 +9,7 @@
 body{
 font-family:Arial;
 margin:0;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+background:linear-gradient(135deg,#141e30,#243b55);
 color:white;
 }
 
@@ -18,7 +17,7 @@ header{
 background:black;
 padding:20px;
 text-align:center;
-font-size:28px;
+font-size:30px;
 font-weight:bold;
 }
 
@@ -29,19 +28,19 @@ text-align:center;
 }
 
 nav button{
-margin:5px;
 padding:10px 20px;
-border:none;
+margin:5px;
 background:#00bcd4;
+border:none;
 color:white;
-font-weight:bold;
 cursor:pointer;
 border-radius:5px;
+font-weight:bold;
 }
 
 .section{
-padding:20px;
 display:none;
+padding:20px;
 }
 
 .active{
@@ -50,9 +49,9 @@ display:block;
 
 table{
 width:100%;
+border-collapse:collapse;
 background:white;
 color:black;
-border-collapse:collapse;
 }
 
 th,td{
@@ -61,38 +60,40 @@ border:1px solid #ddd;
 text-align:center;
 }
 
-.login-box{
-max-width:300px;
-margin:auto;
+#ad{
+background:#222;
+padding:20px;
+margin:20px;
+text-align:center;
+border-radius:10px;
+}
+
+.login{
 background:white;
 color:black;
+max-width:300px;
+margin:auto;
 padding:20px;
 border-radius:10px;
 }
 
-.login-box input{
+.login input{
 width:100%;
 padding:10px;
 margin:5px 0;
 }
 
-.login-box button{
+.login button{
 width:100%;
 padding:10px;
+margin-top:5px;
 background:#4CAF50;
 color:white;
 border:none;
 }
 
-#ad{
-background:#222;
-padding:20px;
-text-align:center;
-margin:20px;
-border-radius:10px;
-}
-
 </style>
+
 </head>
 
 <body>
@@ -105,88 +106,74 @@ border-radius:10px;
 <button onclick="show('home')">Home</button>
 <button onclick="show('market')">Market</button>
 <button onclick="show('chart')">Chart</button>
-<button onclick="show('news')">News</button>
+<button onclick="show('gainers')">Top Movers</button>
 <button onclick="show('login')">Login</button>
 </nav>
 
 <div id="ad">
-Advertisement Space (connect later to Google AdSense)
+Ad Space (connect later to Google AdSense)
 </div>
 
 <div id="home" class="section active">
+
 <h2>Welcome</h2>
-<p>Track cryptocurrency markets live.</p>
+<p>Track live cryptocurrency markets worldwide.</p>
+
 </div>
 
 <div id="market" class="section">
+
 <h2>Top Cryptocurrencies</h2>
 
-<table>
+<table id="marketTable">
+
+<tr>
+<th>Coin</th>
+<th>Price</th>
+<th>Market Cap</th>
+<th>24h Change</th>
+</tr>
+
+</table>
+
+</div>
+
+<div id="gainers" class="section">
+
+<h2>Top Gainers & Losers</h2>
+
+<table id="gainersTable">
+
 <tr>
 <th>Coin</th>
 <th>Price</th>
 <th>24h Change</th>
 </tr>
 
-<tr>
-<td>Bitcoin</td>
-<td id="btc">Loading...</td>
-<td id="btc24">-</td>
-</tr>
-
-<tr>
-<td>Ethereum</td>
-<td id="eth">Loading...</td>
-<td id="eth24">-</td>
-</tr>
-
-<tr>
-<td>Dogecoin</td>
-<td id="doge">Loading...</td>
-<td id="doge24">-</td>
-</tr>
-
-<tr>
-<td>Litecoin</td>
-<td id="ltc">Loading...</td>
-<td id="ltc24">-</td>
-</tr>
-
 </table>
+
 </div>
 
 <div id="chart" class="section">
 
 <h2>Bitcoin Trading Chart</h2>
 
-<div class="tradingview-widget-container">
 <div id="tradingview_chart"></div>
-</div>
-
-</div>
-
-<div id="news" class="section">
-<h2>Crypto News</h2>
-
-<ul>
-<li>Bitcoin market volatility increases</li>
-<li>Ethereum upgrade discussions continue</li>
-<li>Dogecoin trading volume rises</li>
-
-</ul>
 
 </div>
 
 <div id="login" class="section">
 
-<div class="login-box">
+<div class="login">
 
-<h3>Login</h3>
+<h3>Account</h3>
 
 <input id="email" placeholder="Email">
+
 <input id="password" type="password" placeholder="Password">
 
 <button onclick="signup()">Sign Up</button>
+
 <button onclick="login()">Login</button>
 
 <button onclick="googleLogin()">Login with Google</button>
@@ -209,31 +196,68 @@ document.getElementById(id).classList.add("active");
 
 <script>
 
-async function loadPrices(){
+async function loadMarket(){
 
-let url="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,dogecoin,litecoin&vs_currencies=usd&include_24hr_change=true";
+let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1";
 
 let r=await fetch(url);
 
 let data=await r.json();
 
-document.getElementById("btc").innerText="$"+data.bitcoin.usd;
-document.getElementById("btc24").innerText=data.bitcoin.usd_24h_change.toFixed(2)+"%";
+let table=document.getElementById("marketTable");
 
-document.getElementById("eth").innerText="$"+data.ethereum.usd;
-document.getElementById("eth24").innerText=data.ethereum.usd_24h_change.toFixed(2)+"%";
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>Market Cap</th><th>24h Change</th></tr>";
 
-document.getElementById("doge").innerText="$"+data.dogecoin.usd;
-document.getElementById("doge24").innerText=data.dogecoin.usd_24h_change.toFixed(2)+"%";
+data.forEach(c=>{
 
-document.getElementById("ltc").innerText="$"+data.litecoin.usd;
-document.getElementById("ltc24").innerText=data.litecoin.usd_24h_change.toFixed(2)+"%";
+let row="<tr>"+
+"<td>"+c.name+"</td>"+
+"<td>$"+c.current_price+"</td>"+
+"<td>$"+c.market_cap.toLocaleString()+"</td>"+
+"<td>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
+"</tr>";
+
+table.innerHTML+=row;
+
+});
 
 }
 
-loadPrices();
+loadMarket();
 
-setInterval(loadPrices,30000);
+</script>
+
+<script>
+
+async function loadMovers(){
+
+let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1";
+
+let r=await fetch(url);
+
+let data=await r.json();
+
+let table=document.getElementById("gainersTable");
+
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th></tr>";
+
+data.sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+
+data.slice(0,10).forEach(c=>{
+
+let row="<tr>"+
+"<td>"+c.name+"</td>"+
+"<td>$"+c.current_price+"</td>"+
+"<td>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
+"</tr>";
+
+table.innerHTML+=row;
+
+});
+
+}
+
+loadMovers();
 
 </script>
 
@@ -242,15 +266,25 @@ setInterval(loadPrices,30000);
 <script>
 
 new TradingView.widget({
+
 width:"100%",
+
 height:400,
+
 symbol:"BINANCE:BTCUSDT",
+
 interval:"30",
+
 timezone:"Etc/UTC",
+
 theme:"dark",
+
 style:"1",
+
 locale:"en",
+
 container_id:"tradingview_chart"
+
 });
 
 </script>
@@ -261,13 +295,21 @@ container_id:"tradingview_chart"
 <script>
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
+
 authDomain: "crypto-tracker-5789c.firebaseapp.com",
+
 projectId: "crypto-tracker-5789c",
+
 storageBucket: "crypto-tracker-5789c.firebasestorage.app",
+
 messagingSenderId: "1002444628632",
+
 appId: "1:1002444628632:web:99b5792b6853f8717126ed",
+
 measurementId: "G-S42SFCQPFD"
+
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -275,10 +317,13 @@ firebase.initializeApp(firebaseConfig);
 function signup(){
 
 let email=document.getElementById("email").value;
+
 let pass=document.getElementById("password").value;
 
 firebase.auth().createUserWithEmailAndPassword(email,pass)
+
 .then(()=>alert("Account created"))
+
 .catch(e=>alert(e.message));
 
 }
@@ -286,10 +331,13 @@ firebase.auth().createUserWithEmailAndPassword(email,pass)
 function login(){
 
 let email=document.getElementById("email").value;
+
 let pass=document.getElementById("password").value;
 
 firebase.auth().signInWithEmailAndPassword(email,pass)
+
 .then(()=>alert("Logged in"))
+
 .catch(e=>alert(e.message));
 
 }
@@ -299,7 +347,9 @@ function googleLogin(){
 let provider=new firebase.auth.GoogleAuthProvider();
 
 firebase.auth().signInWithPopup(provider)
+
 .then(()=>alert("Google login success"))
+
 .catch(e=>alert(e.message));
 
 }
