@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 
 <html>
-
 <head>
-
 <title>CryptoTracker Pro</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-
 body{
 margin:0;
 font-family:Arial;
@@ -45,24 +41,9 @@ text-decoration:none;
 background:#1e293b;
 }
 
-/* main */
-
 .main{
 margin-left:220px;
 padding:20px;
-}
-
-/* search */
-
-.search{
-margin-bottom:15px;
-}
-
-.search input{
-width:300px;
-padding:10px;
-border-radius:5px;
-border:none;
 }
 
 /* ticker */
@@ -85,21 +66,20 @@ animation:scroll 25s linear infinite;
 100%{transform:translateX(-100%)}
 }
 
-/* hero */
+/* stats */
 
-.hero{
+.stats{
 display:flex;
-gap:30px;
-margin-bottom:20px;
+gap:20px;
 flex-wrap:wrap;
+margin-bottom:20px;
 }
 
-.card{
+.stat{
 background:#1e293b;
-padding:20px;
+padding:15px;
 border-radius:10px;
-width:200px;
-text-align:center;
+width:220px;
 }
 
 /* panels */
@@ -164,15 +144,36 @@ gap:10px;
 
 .coin img{
 width:25px;
-height:25px;
+}
+
+.star{
+cursor:pointer;
+font-size:18px;
 }
 
 .pos{color:green;font-weight:bold}
 .neg{color:red;font-weight:bold}
 
-/* viewer */
+/* charts */
 
-.viewer{
+.charts{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-top:20px;
+}
+
+.chartBox{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+flex:1;
+min-width:300px;
+}
+
+/* watchlist */
+
+.watchlist{
 background:#1e293b;
 padding:20px;
 border-radius:10px;
@@ -184,7 +185,7 @@ margin-top:20px;
 .ad{
 background:#111827;
 border:2px dashed #22c55e;
-padding:30px;
+padding:25px;
 text-align:center;
 margin:20px 0;
 }
@@ -212,7 +213,6 @@ text-decoration:none;
 /* mobile */
 
 @media(max-width:800px){
-
 .sidebar{
 position:relative;
 width:100%;
@@ -220,13 +220,10 @@ height:auto;
 display:flex;
 justify-content:center;
 }
-
 .main{
 margin-left:0;
 }
-
 }
-
 </style>
 
 </head>
@@ -234,11 +231,10 @@ margin-left:0;
 <body>
 
 <div class="sidebar">
-
 <h2>🚀 Crypto</h2>
-
-<a href="#market">Market</a> <a href="#news">News</a>
-
+<a href="#market">Market</a>
+<a href="#watchlist">Watchlist</a>
+<a href="#news">News</a>
 </div>
 
 <div class="main">
@@ -247,24 +243,17 @@ margin-left:0;
 <span id="tickerText">Loading...</span>
 </div>
 
-<div class="hero">
+<h2>🌍 Global Market Stats</h2>
 
-<div class="card">
-🟠 Bitcoin<br>
-<span id="btcHero">Loading...</span>
-</div>
-
-<div class="card">
-🟣 Ethereum<br>
-<span id="ethHero">Loading...</span>
-</div>
-
+<div class="stats">
+<div class="stat">Market Cap<br><span id="marketCap">...</span></div>
+<div class="stat">24h Volume<br><span id="volume">...</span></div>
+<div class="stat">BTC Dominance<br><span id="btcDom">...</span></div>
 </div>
 
 <div class="ad">Ad Space</div>
 
 <div class="panels">
-
 <div class="panel">
 <h3>🔥 Top Gainers</h3>
 <ul id="gainers"></ul>
@@ -274,42 +263,46 @@ margin-left:0;
 <h3>📉 Top Losers</h3>
 <ul id="losers"></ul>
 </div>
-
 </div>
 
 <h2>📊 Crypto Heatmap</h2>
-
 <div class="heatmap" id="heatmap"></div>
 
 <h2 id="market">Top Cryptocurrencies</h2>
 
-<div class="search">
-<input type="text" id="searchInput" placeholder="Search coin...">
-</div>
-
 <table id="cryptoTable">
-
 <tr>
+<th>⭐</th>
 <th>#</th>
 <th>Coin</th>
 <th>Price</th>
 <th>24h</th>
 </tr>
-
 </table>
 
-<div class="viewer">
+<div class="charts">
 
-<h2 id="coinTitle">Bitcoin Chart</h2>
+<div class="chartBox">
+<h3>Bitcoin Chart</h3>
+<div id="chart1"></div>
+</div>
 
-<div id="chart"></div>
+<div class="chartBox">
+<h3>Ethereum Chart</h3>
+<div id="chart2"></div>
+</div>
 
+</div>
+
+<h2 id="watchlist">⭐ Watchlist</h2>
+
+<div class="watchlist">
+<ul id="watchlistItems"></ul>
 </div>
 
 <div class="ad">Ad Space</div>
 
 <h2 id="news">📰 Crypto News</h2>
-
 <div class="news" id="newsContainer"></div>
 
 </div>
@@ -318,28 +311,54 @@ margin-left:0;
 
 <script>
 
-function loadChart(symbol){
+let watchlist=[];
 
-document.getElementById("chart").innerHTML="";
+function toggleWatch(name){
 
-new TradingView.widget({
-width:"100%",
-height:450,
-symbol:symbol,
-interval:"30",
-theme:"dark",
-container_id:"chart"
+if(watchlist.includes(name)){
+watchlist=watchlist.filter(c=>c!==name);
+}else{
+watchlist.push(name);
+}
+
+renderWatchlist();
+
+}
+
+function renderWatchlist(){
+
+let list=document.getElementById("watchlistItems");
+list.innerHTML="";
+
+watchlist.forEach(c=>{
+list.innerHTML+=`<li>${c}</li>`;
 });
 
 }
 
-function showCoin(name,symbol){
+/* charts */
 
-document.getElementById("coinTitle").innerText=name+" Chart";
+function loadCharts(){
 
-loadChart(symbol);
+new TradingView.widget({
+width:"100%",
+height:350,
+symbol:"BINANCE:BTCUSDT",
+theme:"dark",
+container_id:"chart1"
+});
+
+new TradingView.widget({
+width:"100%",
+height:350,
+symbol:"BINANCE:ETHUSDT",
+theme:"dark",
+container_id:"chart2"
+});
 
 }
+
+/* market */
 
 async function loadMarket(){
 
@@ -353,37 +372,37 @@ let heatmap=document.getElementById("heatmap");
 
 let ticker="";
 
-table.innerHTML=`<tr><th>#</th><th>Coin</th><th>Price</th><th>24h</th></tr>`;
+table.innerHTML=`<tr><th>⭐</th><th>#</th><th>Coin</th><th>Price</th><th>24h</th></tr>`;
 
 heatmap.innerHTML="";
 
-let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+/* gainers losers */
 
-let gainers=sorted.slice(0,5);
-let losers=sorted.slice(-5);
+let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
 
 document.getElementById("gainers").innerHTML="";
 document.getElementById("losers").innerHTML="";
 
-gainers.forEach(c=>{
+sorted.slice(0,5).forEach(c=>{
 document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
 });
 
-losers.forEach(c=>{
+sorted.slice(-5).forEach(c=>{
 document.getElementById("losers").innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
 });
 
+/* table */
+
 data.forEach((coin,i)=>{
 
-let symbol="BINANCE:"+coin.symbol.toUpperCase()+"USDT";
-
 let change=coin.price_change_percentage_24h;
-
 let color=change>0?"pos":"neg";
 
 table.innerHTML+=`
 
-<tr onclick="showCoin('${coin.name}','${symbol}')">
+<tr>
+
+<td class="star" onclick="toggleWatch('${coin.name}')">⭐</td>
 
 <td>${i+1}</td>
 
@@ -418,31 +437,23 @@ ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
 
 document.getElementById("tickerText").innerText=ticker;
 
-document.getElementById("btcHero").innerText="$"+data[0].current_price;
-
-document.getElementById("ethHero").innerText="$"+data[1].current_price;
-
 }
 
-/* search */
+/* global stats */
 
-document.getElementById("searchInput").addEventListener("keyup",function(){
+async function loadGlobal(){
 
-let filter=this.value.toLowerCase();
+let res=await fetch("https://api.coingecko.com/api/v3/global");
 
-let rows=document.querySelectorAll("#cryptoTable tr");
+let data=await res.json();
 
-rows.forEach((row,i)=>{
+document.getElementById("marketCap").innerText="$"+Math.round(data.data.total_market_cap.usd).toLocaleString();
 
-if(i===0)return;
+document.getElementById("volume").innerText="$"+Math.round(data.data.total_volume.usd).toLocaleString();
 
-let coin=row.children[1].innerText.toLowerCase();
+document.getElementById("btcDom").innerText=data.data.market_cap_percentage.btc.toFixed(2)+"%";
 
-row.style.display=coin.includes(filter)?"":"none";
-
-});
-
-});
+}
 
 /* news */
 
@@ -472,15 +483,16 @@ container.innerHTML+=`
 
 }
 
-/* refresh prices every minute */
+/* auto refresh */
 
 setInterval(loadMarket,60000);
 
 /* start */
 
+loadCharts();
 loadMarket();
+loadGlobal();
 loadNews();
-loadChart("BINANCE:BTCUSDT");
 
 </script>
 
