@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Coin Details</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+padding:30px;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+max-width:600px;
+margin:auto;
+text-align:center;
+}
+
+h1{
+color:#22c55e;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1 id="coinName">Loading...</h1>
+
+<p>Price: <span id="price"></span></p>
+
+<p>Market Cap: <span id="market"></span></p>
+
+<p>24h Change: <span id="change"></span></p>
+
+<div id="chart"></div>
+
+</div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+
+const urlParams=new URLSearchParams(window.location.search);
+
+const coin=urlParams.get("coin");
+
+async function loadCoin(){
+
+let res=await fetch("https://api.coingecko.com/api/v3/coins/"+coin);
+
+let data=await res.json();
+
+document.getElementById("coinName").innerText=data.name;
+
+document.getElementById("price").innerText="$"+data.market_data.current_price.usd;
+
+document.getElementById("market").innerText="$"+data.market_data.market_cap.usd;
+
+document.getElementById("change").innerText=data.market_data.price_change_percentage_24h+"%";
+
+}
+
+loadCoin();
+
+</script>
+
+</body>
+
+</html>
