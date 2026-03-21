@@ -17,6 +17,8 @@ background:#0f172a;
 color:white;
 }
 
+/* sidebar */
+
 .sidebar{
 position:fixed;
 left:0;
@@ -43,10 +45,34 @@ text-decoration:none;
 background:#1e293b;
 }
 
+/* main */
+
 .main{
 margin-left:220px;
 padding:20px;
 }
+
+/* ticker */
+
+.ticker{
+background:black;
+overflow:hidden;
+white-space:nowrap;
+margin-bottom:20px;
+}
+
+.ticker span{
+display:inline-block;
+padding:10px 40px;
+animation:scroll 25s linear infinite;
+}
+
+@keyframes scroll{
+0%{transform:translateX(100%)}
+100%{transform:translateX(-100%)}
+}
+
+/* hero cards */
 
 .hero{
 display:flex;
@@ -60,8 +86,43 @@ padding:20px;
 border-radius:10px;
 width:200px;
 text-align:center;
-font-size:18px;
 }
+
+/* panels */
+
+.panels{
+display:flex;
+gap:40px;
+margin-bottom:20px;
+}
+
+.panel{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+width:250px;
+}
+
+/* heatmap */
+
+.heatmap{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:10px;
+margin-bottom:30px;
+}
+
+.tile{
+padding:15px;
+border-radius:8px;
+text-align:center;
+font-weight:bold;
+}
+
+.green{background:#16a34a}
+.red{background:#dc2626}
+
+/* table */
 
 table{
 width:100%;
@@ -91,15 +152,10 @@ width:25px;
 height:25px;
 }
 
-.green{
-color:green;
-font-weight:bold;
-}
+.pos{color:green;font-weight:bold}
+.neg{color:red;font-weight:bold}
 
-.red{
-color:red;
-font-weight:bold;
-}
+/* viewer */
 
 .viewer{
 background:#1e293b;
@@ -107,6 +163,8 @@ padding:20px;
 border-radius:10px;
 margin-top:20px;
 }
+
+/* news */
 
 .news{
 display:flex;
@@ -142,6 +200,10 @@ text-decoration:none;
 
 <div class="main">
 
+<div class="ticker">
+<span id="tickerText">Loading...</span>
+</div>
+
 <div class="hero">
 
 <div class="card">
@@ -155,6 +217,24 @@ text-decoration:none;
 </div>
 
 </div>
+
+<div class="panels">
+
+<div class="panel">
+<h3>🔥 Top Gainers</h3>
+<ul id="gainers"></ul>
+</div>
+
+<div class="panel">
+<h3>📉 Top Losers</h3>
+<ul id="losers"></ul>
+</div>
+
+</div>
+
+<h2>📊 Crypto Heatmap</h2>
+
+<div class="heatmap" id="heatmap"></div>
 
 <h2 id="market">Top Cryptocurrencies</h2>
 
@@ -194,21 +274,15 @@ function loadChart(symbol){
 document.getElementById("chart").innerHTML="";
 
 new TradingView.widget({
-
 width:"100%",
 height:450,
 symbol:symbol,
 interval:"30",
 theme:"dark",
-style:"1",
-locale:"en",
 container_id:"chart"
-
 });
 
 }
-
-/* coin click */
 
 function showCoin(name,symbol){
 
@@ -218,7 +292,7 @@ loadChart(symbol);
 
 }
 
-/* market data */
+/* market */
 
 async function loadMarket(){
 
@@ -228,13 +302,34 @@ let data=await res.json();
 
 let table=document.getElementById("cryptoTable");
 
+let heatmap=document.getElementById("heatmap");
+
+let ticker="";
+
+/* gainers losers */
+
+let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+
+let gainers=sorted.slice(0,5);
+let losers=sorted.slice(-5);
+
+gainers.forEach(c=>{
+document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+});
+
+losers.forEach(c=>{
+document.getElementById("losers").innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+});
+
+/* table + heatmap */
+
 data.forEach((coin,i)=>{
 
 let symbol="BINANCE:"+coin.symbol.toUpperCase()+"USDT";
 
 let change=coin.price_change_percentage_24h;
 
-let color=change>0?"green":"red";
+let color=change>0?"pos":"neg";
 
 table.innerHTML+=`
 
@@ -257,7 +352,25 @@ ${change.toFixed(2)}%
 
 `;
 
+let tile=document.createElement("div");
+
+tile.className="tile "+(change>0?"green":"red");
+
+tile.innerHTML=coin.symbol.toUpperCase()+"<br>"+change.toFixed(1)+"%";
+
+heatmap.appendChild(tile);
+
+if(i<10){
+ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
+}
+
 });
+
+/* ticker */
+
+document.getElementById("tickerText").innerText=ticker;
+
+/* hero prices */
 
 document.getElementById("btcHero").innerText="$"+data[0].current_price;
 
