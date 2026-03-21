@@ -52,6 +52,19 @@ margin-left:220px;
 padding:20px;
 }
 
+/* search */
+
+.search{
+margin-bottom:15px;
+}
+
+.search input{
+width:300px;
+padding:10px;
+border-radius:5px;
+border:none;
+}
+
 /* ticker */
 
 .ticker{
@@ -72,12 +85,13 @@ animation:scroll 25s linear infinite;
 100%{transform:translateX(-100%)}
 }
 
-/* hero cards */
+/* hero */
 
 .hero{
 display:flex;
 gap:30px;
 margin-bottom:20px;
+flex-wrap:wrap;
 }
 
 .card{
@@ -94,6 +108,7 @@ text-align:center;
 display:flex;
 gap:40px;
 margin-bottom:20px;
+flex-wrap:wrap;
 }
 
 .panel{
@@ -164,6 +179,16 @@ border-radius:10px;
 margin-top:20px;
 }
 
+/* ads */
+
+.ad{
+background:#111827;
+border:2px dashed #22c55e;
+padding:30px;
+text-align:center;
+margin:20px 0;
+}
+
 /* news */
 
 .news{
@@ -182,6 +207,24 @@ width:260px;
 .news-card a{
 color:#22c55e;
 text-decoration:none;
+}
+
+/* mobile */
+
+@media(max-width:800px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+display:flex;
+justify-content:center;
+}
+
+.main{
+margin-left:0;
+}
+
 }
 
 </style>
@@ -218,6 +261,8 @@ text-decoration:none;
 
 </div>
 
+<div class="ad">Ad Space</div>
+
 <div class="panels">
 
 <div class="panel">
@@ -238,6 +283,10 @@ text-decoration:none;
 
 <h2 id="market">Top Cryptocurrencies</h2>
 
+<div class="search">
+<input type="text" id="searchInput" placeholder="Search coin...">
+</div>
+
 <table id="cryptoTable">
 
 <tr>
@@ -257,6 +306,8 @@ text-decoration:none;
 
 </div>
 
+<div class="ad">Ad Space</div>
+
 <h2 id="news">📰 Crypto News</h2>
 
 <div class="news" id="newsContainer"></div>
@@ -266,8 +317,6 @@ text-decoration:none;
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-
-/* chart */
 
 function loadChart(symbol){
 
@@ -292,11 +341,9 @@ loadChart(symbol);
 
 }
 
-/* market */
-
 async function loadMarket(){
 
-let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1");
+let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1");
 
 let data=await res.json();
 
@@ -306,12 +353,17 @@ let heatmap=document.getElementById("heatmap");
 
 let ticker="";
 
-/* gainers losers */
+table.innerHTML=`<tr><th>#</th><th>Coin</th><th>Price</th><th>24h</th></tr>`;
+
+heatmap.innerHTML="";
 
 let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
 
 let gainers=sorted.slice(0,5);
 let losers=sorted.slice(-5);
+
+document.getElementById("gainers").innerHTML="";
+document.getElementById("losers").innerHTML="";
 
 gainers.forEach(c=>{
 document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
@@ -320,8 +372,6 @@ document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_p
 losers.forEach(c=>{
 document.getElementById("losers").innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
 });
-
-/* table + heatmap */
 
 data.forEach((coin,i)=>{
 
@@ -360,23 +410,39 @@ tile.innerHTML=coin.symbol.toUpperCase()+"<br>"+change.toFixed(1)+"%";
 
 heatmap.appendChild(tile);
 
-if(i<10){
+if(i<12){
 ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
 }
 
 });
 
-/* ticker */
-
 document.getElementById("tickerText").innerText=ticker;
-
-/* hero prices */
 
 document.getElementById("btcHero").innerText="$"+data[0].current_price;
 
 document.getElementById("ethHero").innerText="$"+data[1].current_price;
 
 }
+
+/* search */
+
+document.getElementById("searchInput").addEventListener("keyup",function(){
+
+let filter=this.value.toLowerCase();
+
+let rows=document.querySelectorAll("#cryptoTable tr");
+
+rows.forEach((row,i)=>{
+
+if(i===0)return;
+
+let coin=row.children[1].innerText.toLowerCase();
+
+row.style.display=coin.includes(filter)?"":"none";
+
+});
+
+});
 
 /* news */
 
@@ -405,6 +471,10 @@ container.innerHTML+=`
 });
 
 }
+
+/* refresh prices every minute */
+
+setInterval(loadMarket,60000);
 
 /* start */
 
