@@ -45,7 +45,6 @@ white-space:nowrap;
 display:inline-block;
 padding:10px 40px;
 animation:scroll 25s linear infinite;
-color:white;
 }
 
 @keyframes scroll{
@@ -93,6 +92,20 @@ text-align:center;
 margin-top:60px;
 }
 
+.cards{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.card{
+background:rgba(255,255,255,0.1);
+padding:20px;
+border-radius:10px;
+width:220px;
+}
+
 /* table */
 
 table{
@@ -115,15 +128,62 @@ padding:12px;
 border-bottom:1px solid #ddd;
 }
 
-tr:hover{
-background:#f2f2f2;
+/* calculator */
+
+.calculator{
+background:rgba(255,255,255,0.1);
+padding:25px;
+border-radius:12px;
+max-width:400px;
+margin:auto;
+}
+
+.calculator input{
+width:90%;
+padding:10px;
+margin:10px;
+border-radius:6px;
+border:none;
+}
+
+.calculator button{
+padding:10px 20px;
+background:#00ffd5;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* news */
+
+.news-grid{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+justify-content:center;
+}
+
+.news-card{
+background:rgba(255,255,255,0.1);
+padding:15px;
+border-radius:10px;
+width:250px;
+}
+
+.news-card a{
+color:#00ffd5;
+text-decoration:none;
+font-weight:bold;
 }
 
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
-<body>
+<body id="home">
 
 <nav>
 
@@ -132,6 +192,8 @@ background:#f2f2f2;
 <div>
 <a href="#home">Home</a>
 <a href="#market">Market</a>
+<a href="#calculator">Calculator</a>
+<a href="#newsSection">News</a>
 <a href="#about">About</a>
 </div>
 
@@ -167,17 +229,13 @@ background:#f2f2f2;
 
 <h2>📈 Professional Crypto Trading Chart</h2>
 
-<!-- TradingView Chart -->
-
 <div class="tradingview-widget-container">
 <div id="tradingview_chart"></div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-
-new TradingView.widget(
-{
+new TradingView.widget({
 "width": "100%",
 "height": 500,
 "symbol": "BINANCE:BTCUSDT",
@@ -188,13 +246,28 @@ new TradingView.widget(
 "locale": "en",
 "toolbar_bg": "#f1f3f6",
 "enable_publishing": false,
-"hide_top_toolbar": false,
 "allow_symbol_change": true,
 "container_id": "tradingview_chart"
-}
-);
-
+});
 </script>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="cards">
+
+<div class="card">
+<h3>🔥 Top Gainers</h3>
+<ul id="gainers"></ul>
+</div>
+
+<div class="card">
+<h3>📉 Top Losers</h3>
+<ul id="losers"></ul>
+</div>
 
 </div>
 
@@ -217,9 +290,68 @@ new TradingView.widget(
 
 </div>
 
+<div class="section" id="calculator">
+
+<h2>💰 Crypto Profit Calculator</h2>
+
+<div class="calculator">
+
+<input type="number" id="buyPrice" placeholder="Buy Price ($)">
+<input type="number" id="sellPrice" placeholder="Sell Price ($)">
+<input type="number" id="amount" placeholder="Amount">
+
+<br>
+
+<button onclick="calculateProfit()">Calculate</button>
+
+<div id="result"></div>
+
+</div>
+
+</div>
+
+<div class="section" id="newsSection">
+
+<h2>📰 Latest Crypto News</h2>
+
+<div class="news-grid" id="news"></div>
+
+</div>
+
+<div class="section" id="about">
+
+<h2>About CryptoTracker</h2>
+
+<p>
+CryptoTracker helps users track cryptocurrency prices,
+market trends and crypto news in real time.
+</p>
+
+</div>
+
 </div>
 
 <script>
+
+function calculateProfit(){
+
+let buy=parseFloat(document.getElementById("buyPrice").value);
+let sell=parseFloat(document.getElementById("sellPrice").value);
+let amount=parseFloat(document.getElementById("amount").value);
+
+let profit=(sell-buy)*amount;
+
+let result=document.getElementById("result");
+
+if(profit>0){
+result.innerHTML="Profit: $"+profit.toFixed(2);
+result.style.color="lime";
+}else{
+result.innerHTML="Loss: $"+profit.toFixed(2);
+result.style.color="red";
+}
+
+}
 
 async function loadTopCoins(){
 
@@ -264,7 +396,30 @@ document.getElementById("ethHero").innerText="$"+data[1].current_price;
 
 }
 
+async function loadNews(){
+
+let res=await fetch("https://min-api.cryptocompare.com/data/v2/news/?lang=EN");
+let data=await res.json();
+
+let container=document.getElementById("news");
+
+container.innerHTML="";
+
+data.Data.slice(0,6).forEach(article=>{
+
+container.innerHTML+=`
+<div class="news-card">
+<a href="${article.url}" target="_blank">${article.title}</a>
+<p>${article.source}</p>
+</div>
+`;
+
+});
+
+}
+
 loadTopCoins();
+loadNews();
 
 setInterval(loadTopCoins,60000);
 
