@@ -13,13 +13,9 @@ margin:0;
 font-family:Arial;
 background:#0f172a;
 color:white;
-transition:0.3s;
 }
 
-.light{
-background:white;
-color:black;
-}
+/* sidebar */
 
 .sidebar{
 position:fixed;
@@ -47,39 +43,14 @@ text-decoration:none;
 background:#1e293b;
 }
 
+/* main */
+
 .main{
 margin-left:210px;
 padding:20px;
 }
 
-button{
-padding:8px 14px;
-border:none;
-background:#22c55e;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.hero{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
-margin-bottom:20px;
-}
-
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-width:180px;
-text-align:center;
-}
-
-.card span{
-font-size:22px;
-color:#22c55e;
-}
+/* ticker */
 
 .ticker{
 background:black;
@@ -99,13 +70,48 @@ animation:scroll 25s linear infinite;
 100%{transform:translateX(-100%)}
 }
 
+/* hero */
+
+.hero{
+display:flex;
+gap:30px;
+margin-bottom:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+width:180px;
+text-align:center;
+}
+
+/* heatmap */
+
+.heatmap{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:12px;
+margin-bottom:40px;
+}
+
+.tile{
+padding:15px;
+border-radius:8px;
+text-align:center;
+font-weight:bold;
+}
+
+.green{background:#16a34a}
+.red{background:#dc2626}
+
+/* table */
+
 table{
 width:100%;
 border-collapse:collapse;
 background:white;
 color:black;
-border-radius:10px;
-overflow:hidden;
 }
 
 th{
@@ -117,10 +123,32 @@ padding:10px;
 border-bottom:1px solid #ddd;
 }
 
-.converter input{
-padding:10px;
-margin:6px;
+/* coin viewer */
+
+.viewer{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
 }
+
+/* panels */
+
+.panels{
+display:flex;
+gap:40px;
+margin-bottom:30px;
+flex-wrap:wrap;
+}
+
+.panel{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+width:250px;
+}
+
+/* news */
 
 .news{
 display:flex;
@@ -150,18 +178,14 @@ text-decoration:none;
 
 <h2>🚀 Crypto</h2>
 
-<a href="#dashboard">Dashboard</a> <a href="#market">Market</a> <a href="#converter">Converter</a> <a href="#news">News</a>
-
-<br>
-
-<button onclick="toggleTheme()">Switch Theme</button>
+<a href="#market">Market</a> <a href="#heatmap">Heatmap</a> <a href="#news">News</a>
 
 </div>
 
 <div class="main">
 
 <div class="ticker">
-<span id="tickerText">Loading prices...</span>
+<span id="tickerText">Loading...</span>
 </div>
 
 <div class="hero">
@@ -178,7 +202,31 @@ text-decoration:none;
 
 </div>
 
-<h2 id="market">Top Cryptocurrency Market</h2>
+<h2 id="heatmap">📊 Crypto Heatmap</h2>
+
+<div class="heatmap" id="heatmap"></div>
+
+<div class="panels">
+
+<div class="panel">
+
+<h3>🔥 Top Gainers</h3>
+
+<ul id="gainers"></ul>
+
+</div>
+
+<div class="panel">
+
+<h3>📉 Top Losers</h3>
+
+<ul id="losers"></ul>
+
+</div>
+
+</div>
+
+<h2 id="market">Top 100 Cryptocurrencies</h2>
 
 <input type="text" id="search" placeholder="Search coin..." onkeyup="searchCoin()">
 
@@ -188,20 +236,22 @@ text-decoration:none;
 <th>Rank</th>
 <th>Coin</th>
 <th>Price</th>
-<th>Market Cap</th>
+<th>24h %</th>
 </tr>
 
 </table>
 
-<h2 id="converter">🌍 Crypto Converter</h2>
+<div class="viewer" id="coinViewer">
 
-<div class="converter">
+<h2>Coin Details</h2>
 
-<input type="number" id="usd" placeholder="USD">
+<p>Select a coin to see details</p>
 
-<button onclick="convert()">Convert to BTC</button>
+<p>Price: <span id="vPrice"></span></p>
 
-<div id="convertResult"></div>
+<p>Market Cap: <span id="vMarket"></span></p>
+
+<p>24h Change: <span id="vChange"></span></p>
 
 </div>
 
@@ -212,10 +262,6 @@ text-decoration:none;
 </div>
 
 <script>
-
-function toggleTheme(){
-document.body.classList.toggle("light");
-}
 
 function searchCoin(){
 
@@ -235,22 +281,6 @@ row.style.display=coin.includes(input)?"":"none";
 
 }
 
-async function convert(){
-
-let usd=document.getElementById("usd").value;
-
-let res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
-
-let data=await res.json();
-
-let btc=usd/data.bitcoin.usd;
-
-document.getElementById("convertResult").innerHTML=
-
-usd+" USD = "+btc.toFixed(6)+" BTC";
-
-}
-
 async function loadMarket(){
 
 let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1");
@@ -259,23 +289,54 @@ let data=await res.json();
 
 let table=document.getElementById("cryptoTable");
 
+let heatmap=document.getElementById("heatmap");
+
 let ticker="";
+
+let sorted=[...data].sort((a,b)=>b.price_change_percentage_24h-a.price_change_percentage_24h);
+
+let gainers=sorted.slice(0,5);
+
+let losers=sorted.slice(-5);
+
+gainers.forEach(c=>{
+document.getElementById("gainers").innerHTML+=`<li>${c.name} +${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+});
+
+losers.forEach(c=>{
+document.getElementById("losers").innerHTML+=`<li>${c.name} ${c.price_change_percentage_24h.toFixed(2)}%</li>`;
+});
 
 data.forEach((coin,i)=>{
 
 table.innerHTML+=`
 
-<tr>
+<tr onclick="showCoin('${coin.name}',${coin.current_price},${coin.market_cap},${coin.price_change_percentage_24h})">
+
 <td>${i+1}</td>
+
 <td>${coin.name}</td>
+
 <td>$${coin.current_price}</td>
-<td>$${coin.market_cap}</td>
+
+<td>${coin.price_change_percentage_24h.toFixed(2)}%</td>
+
 </tr>
 
 `;
 
+let tile=document.createElement("div");
+
+tile.className="tile "+(coin.price_change_percentage_24h>0?"green":"red");
+
+tile.innerHTML=coin.symbol.toUpperCase()+"<br>"+coin.price_change_percentage_24h.toFixed(1)+"%";
+
+heatmap.appendChild(tile);
+
 if(i<10){
+
 ticker+=`${coin.symbol.toUpperCase()} $${coin.current_price} • `;
+
 }
 
 });
@@ -285,6 +346,18 @@ document.getElementById("tickerText").innerText=ticker;
 document.getElementById("btcHero").innerText="$"+data[0].current_price;
 
 document.getElementById("ethHero").innerText="$"+data[1].current_price;
+
+}
+
+function showCoin(name,price,market,change){
+
+document.getElementById("coinViewer").scrollIntoView();
+
+document.getElementById("vPrice").innerText="$"+price;
+
+document.getElementById("vMarket").innerText="$"+market;
+
+document.getElementById("vChange").innerText=change.toFixed(2)+"%";
 
 }
 
