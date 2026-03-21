@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://samuellion07841w-hue.github.io/stock-website/sitemap.xml
