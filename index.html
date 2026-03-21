@@ -12,11 +12,11 @@
 body{
 margin:0;
 font-family:Arial;
-background:#0f172a;
+background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
 color:white;
 }
 
-/* login */
+/* LOGIN SCREEN */
 
 .login{
 position:fixed;
@@ -24,29 +24,64 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:#020617;
 display:flex;
 align-items:center;
 justify-content:center;
 flex-direction:column;
 }
 
-.login input{
-padding:10px;
-margin:10px;
-width:220px;
+.login-card{
+
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+padding:40px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,0,0,0.6);
+width:320px;
+
 }
 
-.login button{
-padding:10px 20px;
-background:#22c55e;
+.logo{
+font-size:28px;
+font-weight:bold;
+margin-bottom:20px;
+color:#22c55e;
+}
+
+.login-card input{
+
+width:100%;
+padding:12px;
+margin:10px 0;
 border:none;
-cursor:pointer;
+border-radius:8px;
+background:#020617;
+color:white;
+
 }
 
-/* sidebar */
+.login-card button{
+
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+font-weight:bold;
+cursor:pointer;
+
+}
+
+.login-card button:hover{
+transform:scale(1.05);
+}
+
+/* SIDEBAR */
 
 .sidebar{
+
 position:fixed;
 left:0;
 top:0;
@@ -54,6 +89,7 @@ width:220px;
 height:100%;
 background:#020617;
 padding-top:20px;
+
 }
 
 .sidebar h2{
@@ -62,44 +98,60 @@ color:#22c55e;
 }
 
 .sidebar a{
+
 display:block;
+padding:14px 20px;
 color:white;
-padding:12px 20px;
 text-decoration:none;
+
 }
 
 .sidebar a:hover{
 background:#1e293b;
 }
 
+/* MAIN */
+
 .main{
+
 margin-left:220px;
-padding:20px;
+padding:25px;
+
 }
 
-/* table */
+/* TABLE */
 
 table{
+
 width:100%;
 border-collapse:collapse;
 background:white;
 color:black;
+border-radius:10px;
+overflow:hidden;
+
 }
 
 th{
+
 background:#22c55e;
 color:white;
+
 }
 
 th,td{
+
 padding:12px;
-border-bottom:1px solid #ddd;
+border-bottom:1px solid #eee;
+
 }
 
 .coin{
+
 display:flex;
 align-items:center;
 gap:10px;
+
 }
 
 .coin img{
@@ -107,26 +159,50 @@ width:25px;
 }
 
 .star{
+
 cursor:pointer;
 font-size:18px;
+
 }
 
-/* charts */
+/* CHART */
 
 .chartBox{
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-margin-top:20px;
-}
 
-/* portfolio */
-
-.portfolio{
+margin-top:30px;
 background:#1e293b;
 padding:20px;
 border-radius:10px;
-margin-top:20px;
+
+}
+
+/* PORTFOLIO */
+
+.card{
+
+margin-top:30px;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+
+}
+
+.card input{
+
+padding:10px;
+margin:5px;
+border-radius:6px;
+border:none;
+
+}
+
+.card button{
+
+padding:10px 15px;
+background:#22c55e;
+border:none;
+cursor:pointer;
+
 }
 
 </style>
@@ -139,7 +215,9 @@ margin-top:20px;
 
 <div class="login" id="loginScreen">
 
-<h2>CryptoTracker Login</h2>
+<div class="login-card">
+
+<div class="logo">🚀 CryptoTracker</div>
 
 <input id="username" placeholder="Username">
 
@@ -149,7 +227,9 @@ margin-top:20px;
 
 </div>
 
-<!-- SITE -->
+</div>
+
+<!-- DASHBOARD -->
 
 <div id="site" style="display:none">
 
@@ -157,11 +237,11 @@ margin-top:20px;
 
 <h2>🚀 Crypto</h2>
 
-<a href="#market">Market</a>
+<a href="#">Market</a>
 
-<a href="#portfolio">Portfolio</a>
+<a href="#">Portfolio</a>
 
-<a href="#watchlist">Watchlist</a>
+<a href="#">Watchlist</a>
 
 </div>
 
@@ -189,7 +269,7 @@ margin-top:20px;
 
 </div>
 
-<div class="portfolio" id="portfolio">
+<div class="card">
 
 <h3>💼 Portfolio</h3>
 
@@ -203,7 +283,7 @@ margin-top:20px;
 
 </div>
 
-<div class="portfolio" id="watchlist">
+<div class="card">
 
 <h3>⭐ Watchlist</h3>
 
@@ -219,7 +299,7 @@ margin-top:20px;
 
 <script>
 
-/* login */
+/* LOGIN */
 
 function login(){
 
@@ -241,7 +321,7 @@ document.getElementById("site").style.display="block";
 
 }
 
-/* charts */
+/* CHART */
 
 new TradingView.widget({
 
@@ -253,7 +333,7 @@ container_id:"chart"
 
 });
 
-/* watchlist */
+/* WATCHLIST */
 
 let watch=JSON.parse(localStorage.getItem("watch")||"[]");
 
@@ -285,7 +365,7 @@ list.innerHTML+=`<li>${c}</li>`;
 
 renderWatch();
 
-/* portfolio */
+/* PORTFOLIO */
 
 let portfolio=JSON.parse(localStorage.getItem("portfolio")||"[]");
 
@@ -319,11 +399,11 @@ list.innerHTML+=`<li>${p.coin} : ${p.amount}</li>`;
 
 renderPortfolio();
 
-/* market */
+/* MARKET DATA */
 
 async function loadMarket(){
 
-let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1");
+let res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1");
 
 let data=await res.json();
 
@@ -335,39 +415,4 @@ data.forEach((coin,i)=>{
 
 let change=coin.price_change_percentage_24h;
 
-let color=change>0?"green":"red";
-
-table.innerHTML+=`
-
-<tr>
-
-<td class="star" onclick="toggleWatch('${coin.name}')">⭐</td>
-
-<td>${i+1}</td>
-
-<td class="coin">
-<img src="${coin.image}">
-${coin.name}
-</td>
-
-<td>$${coin.current_price}</td>
-
-<td style="color:${color}">
-${change.toFixed(2)}%
-</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-loadMarket();
-
-</script>
-
-</body>
-
-</html>
+let color=change>0?"green":"red
