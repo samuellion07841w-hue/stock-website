@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>Global Crypto Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -67,7 +68,6 @@ gap:10px;
 
 .coin img{
 width:25px;
-height:25px;
 }
 
 .green{
@@ -104,29 +104,17 @@ margin:10px 0;
 border-radius:8px;
 }
 
-.login{
-background:white;
-color:black;
-max-width:320px;
-margin:auto;
-padding:20px;
+.heatmap{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:10px;
+}
+
+.heatcoin{
+padding:15px;
 border-radius:10px;
-}
-
-.login input{
-width:100%;
-padding:10px;
-margin:5px 0;
-}
-
-.login button{
-width:100%;
-padding:10px;
-margin-top:5px;
-background:#4CAF50;
-color:white;
-border:none;
-cursor:pointer;
+text-align:center;
+font-weight:bold;
 }
 
 </style>
@@ -139,24 +127,30 @@ cursor:pointer;
 </header>
 
 <nav>
+
 <button onclick="show('home')">Home</button>
 <button onclick="show('market')">Market</button>
-<button onclick="show('trending')">Trending</button>
+<button onclick="show('heatmap')">Heatmap</button>
+<button onclick="show('portfolio')">Portfolio</button>
 <button onclick="show('chart')">Chart</button>
 <button onclick="show('news')">News</button>
-<button onclick="show('about')">About</button>
-<button onclick="show('privacy')">Privacy</button>
-<button onclick="show('contact')">Contact</button>
-<button onclick="show('login')">Login</button>
+
 </nav>
 
 <div id="ad">
-Advertisement space (for Google AdSense later)
+Ad space for Google AdSense
 </div>
 
 <div id="home" class="section active">
 <h2>Welcome</h2>
 <p>Track global cryptocurrency markets live.</p>
+
+<select id="currency" onchange="loadMarket()">
+<option value="usd">USD</option>
+<option value="eur">EUR</option>
+<option value="ngn">NGN</option>
+</select>
+
 </div>
 
 <div id="market" class="section">
@@ -177,58 +171,59 @@ Advertisement space (for Google AdSense later)
 
 </div>
 
-<div id="trending" class="section">
-<h2>Trending Coins</h2>
-<div id="trendingCoins"></div>
+<div id="heatmap" class="section">
+
+<h2>Crypto Market Heatmap</h2>
+
+<div id="heatmapCoins" class="heatmap"></div>
+
+</div>
+
+<div id="portfolio" class="section">
+
+<h2>Your Portfolio</h2>
+
+<input id="coinName" placeholder="Coin name (bitcoin)">
+<input id="coinAmount" placeholder="Amount">
+
+<button onclick="addCoin()">Add</button>
+
+<table id="portfolioTable">
+
+<tr>
+<th>Coin</th>
+<th>Amount</th>
+<th>Value</th>
+</tr>
+
+</table>
+
 </div>
 
 <div id="chart" class="section">
-<h2>Bitcoin Trading Chart</h2>
+
+<h2>Bitcoin Chart</h2>
+
 <div id="tradingview_chart"></div>
+
 </div>
 
 <div id="news" class="section">
+
 <h2>Crypto News</h2>
+
 <div id="newsFeed"></div>
-</div>
-
-<div id="about" class="section">
-<h2>About</h2>
-<p>This platform tracks global cryptocurrency markets and trends.</p>
-</div>
-
-<div id="privacy" class="section">
-<h2>Privacy Policy</h2>
-<p>Your privacy is respected.</p>
-</div>
-
-<div id="contact" class="section">
-<h2>Contact</h2>
-<p>Email: support@cryptodashboard.com</p>
-</div>
-
-<div id="login" class="section">
-
-<div class="login">
-
-<h3>Account</h3>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="signup()">Sign Up</button>
-<button onclick="login()">Login</button>
-<button onclick="googleLogin()">Login with Google</button>
-
-</div>
 
 </div>
 
 <script>
 
 function show(id){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+
+document.getElementById(id).classList.add("active")
+
 }
 
 </script>
@@ -237,76 +232,125 @@ document.getElementById(id).classList.add("active");
 
 async function loadMarket(){
 
-let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=100&page=1";
+let currency=document.getElementById("currency").value
 
-let r=await fetch(url);
-let data=await r.json();
+let url="https://api.coingecko.com/api/v3/coins/markets?vs_currency="+currency+"&per_page=100&page=1"
 
-let table=document.getElementById("marketTable");
+let r=await fetch(url)
 
-table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th><th>Market Cap</th><th>Trade</th></tr>";
+let data=await r.json()
+
+let table=document.getElementById("marketTable")
+
+table.innerHTML="<tr><th>Coin</th><th>Price</th><th>24h Change</th><th>Market Cap</th><th>Trade</th></tr>"
 
 data.forEach(c=>{
 
-let color=c.price_change_percentage_24h>=0?"green":"red";
+let color=c.price_change_percentage_24h>=0?"green":"red"
 
-let trade='<a href="https://www.binance.com/en/trade/'+c.symbol.toUpperCase()+'_USDT" target="_blank"><button class="tradebtn">Trade</button></a>';
+let trade='<a href="https://www.binance.com/en/trade/'+c.symbol.toUpperCase()+'_USDT" target="_blank"><button class="tradebtn">Trade</button></a>'
 
 let row="<tr>"+
+
 "<td class='coin'><img src='"+c.image+"'>"+c.name+"</td>"+
-"<td>$"+c.current_price+"</td>"+
+
+"<td>"+c.current_price+"</td>"+
+
 "<td class='"+color+"'>"+c.price_change_percentage_24h.toFixed(2)+"%</td>"+
-"<td>$"+c.market_cap.toLocaleString()+"</td>"+
+
+"<td>"+c.market_cap.toLocaleString()+"</td>"+
+
 "<td>"+trade+"</td>"+
-"</tr>";
 
-table.innerHTML+=row;
+"</tr>"
 
-});
+table.innerHTML+=row
+
+})
+
+loadHeatmap(data)
 
 }
 
-loadMarket();
+loadMarket()
 
 </script>
 
 <script>
 
-async function loadTrending(){
+function loadHeatmap(data){
 
-let url="https://api.coingecko.com/api/v3/search/trending";
+let heat=document.getElementById("heatmapCoins")
 
-let r=await fetch(url);
-let data=await r.json();
+heat.innerHTML=""
 
-let div=document.getElementById("trendingCoins");
+data.slice(0,50).forEach(c=>{
 
-div.innerHTML="";
+let color=c.price_change_percentage_24h>=0?"#0f5132":"#842029"
 
-data.coins.forEach(c=>{
-div.innerHTML+="<div class='news'>🔥 "+c.item.name+"</div>";
-});
+heat.innerHTML+=
+
+"<div class='heatcoin' style='background:"+color+"'>"+
+
+c.symbol.toUpperCase()+"<br>"+
+
+c.price_change_percentage_24h.toFixed(2)+"%"+
+
+"</div>"
+
+})
 
 }
 
-loadTrending();
+</script>
+
+<script>
+
+async function addCoin(){
+
+let name=document.getElementById("coinName").value
+
+let amount=document.getElementById("coinAmount").value
+
+let url="https://api.coingecko.com/api/v3/simple/price?ids="+name+"&vs_currencies=usd"
+
+let r=await fetch(url)
+
+let data=await r.json()
+
+let price=data[name].usd
+
+let value=price*amount
+
+let table=document.getElementById("portfolioTable")
+
+table.innerHTML+="<tr><td>"+name+"</td><td>"+amount+"</td><td>$"+value.toFixed(2)+"</td></tr>"
+
+}
 
 </script>
 
 <script>
 
 let news=[
-"Bitcoin market volatility increases",
-"Ethereum ecosystem growth continues",
-"Institutional investors explore crypto",
-"Global crypto adoption rises"
-];
 
-let feed=document.getElementById("newsFeed");
+"Bitcoin ETF demand rising",
+
+"Ethereum network upgrades continue",
+
+"Crypto adoption growing worldwide",
+
+"Institutional investors entering market"
+
+]
+
+let feed=document.getElementById("newsFeed")
 
 news.forEach(n=>{
-feed.innerHTML+="<div class='news'>"+n+"</div>";
-});
+
+feed.innerHTML+="<div class='news'>"+n+"</div>"
+
+})
 
 </script>
 
@@ -315,67 +359,22 @@ feed.innerHTML+="<div class='news'>"+n+"</div>";
 <script>
 
 new TradingView.widget({
+
 width:"100%",
+
 height:400,
+
 symbol:"BINANCE:BTCUSDT",
+
 interval:"30",
-timezone:"Etc/UTC",
+
 theme:"dark",
+
 style:"1",
-locale:"en",
+
 container_id:"tradingview_chart"
-});
 
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-<script>
-
-const firebaseConfig={
-apiKey:"AIzaSyAy6X9Pvi1vKSwXqpSl1O-ifQZMKe98BU8",
-authDomain:"crypto-tracker-5789c.firebaseapp.com",
-projectId:"crypto-tracker-5789c",
-storageBucket:"crypto-tracker-5789c.firebasestorage.app",
-messagingSenderId:"1002444628632",
-appId:"1:1002444628632:web:99b5792b6853f8717126ed",
-measurementId:"G-S42SFCQPFD"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-function signup(){
-
-let email=document.getElementById("email").value;
-let pass=document.getElementById("password").value;
-
-firebase.auth().createUserWithEmailAndPassword(email,pass)
-.then(()=>alert("Account created"))
-.catch(e=>alert(e.message));
-
-}
-
-function login(){
-
-let email=document.getElementById("email").value;
-let pass=document.getElementById("password").value;
-
-firebase.auth().signInWithEmailAndPassword(email,pass)
-.then(()=>alert("Logged in"))
-.catch(e=>alert(e.message));
-
-}
-
-function googleLogin(){
-
-let provider=new firebase.auth.GoogleAuthProvider();
-
-firebase.auth().signInWithPopup(provider)
-.then(()=>alert("Google login success"))
-.catch(e=>alert(e.message));
-
-}
+})
 
 </script>
 
