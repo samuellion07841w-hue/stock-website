@@ -3,99 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones of Legends | Global Crypto Dashboard</title>
-    <meta name="description" content="Real-time crypto prices, heatmap, and portfolio tracking. Powered by Thrones of Legends.">
+    <title>Global Crypto Hub | Live Prices & Market Data</title>
+    <meta name="description" content="Get real-time crypto prices, live market heatmap, and expert news updates. The best dashboard for active traders.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #32a88f;
-            --dark: #0e1928;
-            --light: #f4f7f6;
-            --accent: #ab8642;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--dark); color: white; margin: 0; }
-        nav { background: #162436; padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); }
-        .logo { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
-        .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 0.9rem; }
-        
-        .container { max-width: 1200px; margin: auto; padding: 20px; }
-        
-        /* Ad Section */
-        .ad-banner { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px dashed var(--primary); }
-        
-        /* Table Styling */
-        .crypto-table-container { overflow-x: auto; background: #1b2a3d; border-radius: 10px; padding: 15px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 12px; border-bottom: 1px solid #2d3e52; }
-        .buy-btn { background: var(--primary); color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
-        .buy-btn:hover { background: var(--accent); }
-
-        /* Branding Footer */
-        footer { text-align: center; padding: 40px; color: #667c99; font-size: 0.8rem; }
-        .tol-brand { color: var(--primary); font-weight: bold; text-decoration: none; }
+        /* Professional Dark Theme to keep users on the page longer */
+        :root { --primary: #32a88f; --bg: #0e1928; --card: #162436; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; }
+        .ad-section { padding: 25px; text-align: center; background: rgba(50, 168, 143, 0.05); border-bottom: 1px solid #1e2e42; }
+        .container { max-width: 1100px; margin: auto; padding: 20px; }
+        .market-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card); border-radius: 8px; overflow: hidden; }
+        .market-table th, .market-table td { padding: 15px; text-align: left; border-bottom: 1px solid #1e2e42; }
+        .trade-btn { background: var(--primary); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 13px; transition: 0.3s; }
+        .trade-btn:hover { background: #9fc962; transform: translateY(-2px); }
+        .footer-credit { text-align: center; padding: 40px; font-size: 12px; color: #5a6d85; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">🚀 Thrones Crypto</div>
-        <div class="nav-links">
-            <a href="#market">Market</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#about">About</a>
+    <div class="ad-section">
+        <p style="font-size: 10px; color: #4a5d75; margin-bottom: 8px;">SPONSORED CONTENT</p>
+        <div id="frame" style="width: 300px; margin: auto; height: auto">
+            <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
+                    style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
         </div>
-    </nav>
-
-    <div class="container">
-        
-        <div class="ad-banner">
-            <p style="font-size: 0.7rem; color: #555; margin-bottom: 10px;">ADVERTISEMENT</p>
-            <div id="frame" style="width: 300px; margin: auto; height: auto">
-                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
-                        style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
-            </div>
-        </div>
-
-        <section id="market">
-            <h2>Top 100 Cryptocurrencies</h2>
-            <div class="crypto-table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Coin</th>
-                            <th>Price</th>
-                            <th>24h Change</th>
-                            <th>Market Cap</th>
-                            <th>Trade</th>
-                        </tr>
-                    </thead>
-                    <tbody id="crypto-table-body">
-                        <tr>
-                            <td>Bitcoin (BTC)</td>
-                            <td>$68,000</td>
-                            <td style="color: #00ff00">+2.5%</td>
-                            <td>$1.3T</td>
-                            <td><a href="https://www.binance.com/en/activity/referral" class="buy-btn">BUY</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <hr style="border: 0; border-top: 1px solid #2d3e52; margin: 50px 0;">
-
-        <section id="about">
-            <h2>About Thrones Crypto</h2>
-            <p>Welcome to <strong>Thrones of Legends Stock Dashboard</strong>. We provide professional-grade, real-time data for traders who value speed and accuracy. Our goal is to empower the next generation of investors with the tools they need to succeed in the blockchain space.</p>
-        </section>
-
     </div>
 
-    <footer>
-        <p>&copy; 2026 Developed by <a href="#" class="tol-brand">Thrones of Legends</a></p>
-        <p>Data provided by CoinGecko API</p>
-    </footer>
+    <div class="container">
+        <h1>Global Market Dashboard</h1>
+        
+        <table class="market-table">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Direct Trade</th>
+                </tr>
+            </thead>
+            <tbody id="crypto-table-body">
+                <tr>
+                    <td><strong>Bitcoin (BTC)</strong></td>
+                    <td>$68,432</td>
+                    <td style="color: #32a88f;">+1.2%</td>
+                    <td><a href="https://www.binance.com/en/activity/referral" class="trade-btn">BUY BTC</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Ethereum (ETH)</strong></td>
+                    <td>$3,850</td>
+                    <td style="color: #ff4d4d;">-0.5%</td>
+                    <td><a href="https://www.binance.com/en/activity/referral" class="trade-btn">BUY ETH</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="ad-section" style="margin-top: 40px; border: 1px solid #1e2e42; border-radius: 8px;">
+             <p style="color: #5a6d85;">Analysis Tool Loading...</p>
+        </div>
+    </div>
+
+    <div class="footer-credit">
+        <p>&copy; 2026 Crypto Dashboard Project. High-performance data via CoinGecko.</p>
+    </div>
 
     <script src="script.js"></script>
 </body>
