@@ -3,69 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Crypto Hub | Live Prices & Market Data</title>
-    <meta name="description" content="Get real-time crypto prices, live market heatmap, and expert news updates. The best dashboard for active traders.">
+    <title>Crypto Dash | Funding Thrones of Legends</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Professional Dark Theme to keep users on the page longer */
-        :root { --primary: #32a88f; --bg: #0e1928; --card: #162436; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; }
-        .ad-section { padding: 25px; text-align: center; background: rgba(50, 168, 143, 0.05); border-bottom: 1px solid #1e2e42; }
-        .container { max-width: 1100px; margin: auto; padding: 20px; }
-        .market-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card); border-radius: 8px; overflow: hidden; }
-        .market-table th, .market-table td { padding: 15px; text-align: left; border-bottom: 1px solid #1e2e42; }
-        .trade-btn { background: var(--primary); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 13px; transition: 0.3s; }
-        .trade-btn:hover { background: #9fc962; transform: translateY(-2px); }
-        .footer-credit { text-align: center; padding: 40px; font-size: 12px; color: #5a6d85; }
-    </style>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-
-    <div class="ad-section">
-        <p style="font-size: 10px; color: #4a5d75; margin-bottom: 8px;">SPONSORED CONTENT</p>
-        <div id="frame" style="width: 300px; margin: auto; height: auto">
-            <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
-                    style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
+    <nav>
+        <div class="logo">🚀 Global Crypto Dash</div>
+        <div class="nav-links">
+            <a href="#market">Market</a>
+            <a href="#chart-section">Live Chart</a>
+            <a href="https://samuellion07841w-hue.github.io/stock-website/#about">About</a>
         </div>
-    </div>
+    </nav>
 
     <div class="container">
-        <h1>Global Market Dashboard</h1>
-        
-        <table class="market-table">
-            <thead>
-                <tr>
-                    <th>Asset</th>
-                    <th>Price</th>
-                    <th>24h Change</th>
-                    <th>Direct Trade</th>
-                </tr>
-            </thead>
-            <tbody id="crypto-table-body">
-                <tr>
-                    <td><strong>Bitcoin (BTC)</strong></td>
-                    <td>$68,432</td>
-                    <td style="color: #32a88f;">+1.2%</td>
-                    <td><a href="https://www.binance.com/en/activity/referral" class="trade-btn">BUY BTC</a></td>
-                </tr>
-                <tr>
-                    <td><strong>Ethereum (ETH)</strong></td>
-                    <td>$3,850</td>
-                    <td style="color: #ff4d4d;">-0.5%</td>
-                    <td><a href="https://www.binance.com/en/activity/referral" class="trade-btn">BUY ETH</a></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="ad-section" style="margin-top: 40px; border: 1px solid #1e2e42; border-radius: 8px;">
-             <p style="color: #5a6d85;">Analysis Tool Loading...</p>
+        <div class="ad-container">
+            <p class="ad-label">SPONSORED</p>
+            <div id="frame">
+                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
+                style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
+            </div>
         </div>
+
+        <section id="chart-section">
+            <h2>Bitcoin Live Performance</h2>
+            <div id="tv-chart"></div>
+        </section>
+
+        <section id="market">
+            <h2>Market Overview</h2>
+            <div class="table-scroll">
+                <table id="crypto-table">
+                    <thead>
+                        <tr>
+                            <th>Coin</th>
+                            <th>Price (USD)</th>
+                            <th>24h Change</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="market-data">
+                        </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 
-    <div class="footer-credit">
-        <p>&copy; 2026 Crypto Dashboard Project. High-performance data via CoinGecko.</p>
-    </div>
+    <footer>
+        <p>Support my game project: <a href="#" style="color:var(--primary)">Thrones of Legends</a></p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
