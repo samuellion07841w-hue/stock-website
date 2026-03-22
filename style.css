@@ -3,26 +3,35 @@
     --dark: #0e1928;
     --card: #162436;
     --text: #ffffff;
+    --accent: #ab8642;
 }
 
-body { font-family: 'Inter', sans-serif; background: var(--dark); color: var(--text); margin: 0; }
-nav { background: var(--card); padding: 15px 5%; display: flex; justify-content: space-between; border-bottom: 2px solid var(--primary); }
-.logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-.nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 0.9rem; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--dark); color: var(--text); margin: 0; line-height: 1.6; }
 
-.container { max-width: 1000px; margin: auto; padding: 20px; }
-.ad-container { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 30px; text-align: center; }
-.ad-label { font-size: 10px; color: #555; margin-bottom: 5px; letter-spacing: 1px; }
+nav { background: var(--card); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 0.85rem; font-weight: 600; }
 
-#tv-chart { width: 100%; height: 400px; background: var(--card); border-radius: 12px; margin-bottom: 30px; }
+.container { max-width: 1100px; margin: auto; padding: 20px; }
 
-.table-scroll { overflow-x: auto; background: var(--card); border-radius: 12px; }
-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-th, td { padding: 15px; text-align: left; border-bottom: 1px solid #24354a; }
-th { color: var(--primary); text-transform: uppercase; font-size: 12px; }
+/* Ad Section */
+.ad-container { background: rgba(255,255,255,0.02); padding: 25px; border-radius: 12px; margin-bottom: 30px; text-align: center; border: 1px solid #1e2e42; }
+.ad-label { font-size: 10px; color: #5a6d85; margin-bottom: 10px; letter-spacing: 2px; }
 
-.buy-btn { background: var(--primary); color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.8rem; }
-.positive { color: #00ff88; }
-.negative { color: #ff4d4d; }
+/* Chart */
+#tv-chart { width: 100%; height: 400px; background: var(--card); border-radius: 12px; margin-bottom: 40px; border: 1px solid #1e2e42; }
 
-footer { text-align: center; padding: 50px; opacity: 0.6; font-size: 0.8rem; }
+/* Table */
+.table-scroll { overflow-x: auto; background: var(--card); border-radius: 12px; border: 1px solid #1e2e42; }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+th, td { padding: 18px; text-align: left; border-bottom: 1px solid #1e2e42; }
+th { color: var(--primary); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+
+.buy-btn { background: var(--primary); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.75rem; transition: 0.2s; }
+.buy-btn:hover { background: var(--accent); }
+
+/* Roadmap */
+.roadmap-box { background: var(--card); padding: 30px; border-radius: 12px; margin-top: 40px; border-left: 5px solid var(--primary); }
+.status-list p { margin: 10px 0; font-size: 0.9rem; }
+
+footer { text-align: center; padding: 60px 20px; color: #4a5d75; font-size: 0.8rem; }
