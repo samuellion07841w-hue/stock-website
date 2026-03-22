@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Crypto Dash | Funding Thrones of Legends</title>
-    <meta name="description" content="Live crypto prices, professional charts, and market insights.">
+    <title>Global Crypto Hub | Live Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
 
     <nav>
-        <div class="logo">🚀 CRYPTO DASH</div>
+        <div class="logo">🚀 CRYPTO HUB</div>
         <div class="nav-links">
             <a href="#market">Market</a>
             <a href="#chart-section">Live Chart</a>
-            <a href="#roadmap">Roadmap</a>
+            <a href="#news-section">Crypto News</a>
         </div>
     </nav>
 
     <div class="container">
         <div class="ad-container">
-            <p class="ad-label">SPONSORED ADVERTISEMENT</p>
+            <p class="ad-label">SPONSORED</p>
             <div id="frame">
                 <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
                 style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
@@ -29,12 +28,12 @@
         </div>
 
         <section id="chart-section">
-            <h2>Bitcoin Performance (Live)</h2>
+            <h2>Bitcoin Real-Time Performance</h2>
             <div id="tv-chart"></div>
         </section>
 
         <section id="market">
-            <h2>Top Assets</h2>
+            <h2>Top Crypto Assets</h2>
             <div class="table-scroll">
                 <table>
                     <thead>
@@ -51,20 +50,27 @@
             </div>
         </section>
 
-        <section id="roadmap" class="roadmap-box">
-            <h2 style="color: var(--primary);">Platform Roadmap</h2>
-            <p>100% of revenue from this dashboard sponsors <strong>Thrones of Legends</strong> development.</p>
-            <div class="status-list">
-                <p>✅ <strong>Live:</strong> Real-time Price Tracking & Ad Revenue</p>
-                <p>✅ <strong>Live:</strong> Technical Analysis Charts</p>
-                <p>⏳ <strong>Next:</strong> Whale Transaction Alerts (Big Money Moves)</p>
-                <p>⏳ <strong>Next:</strong> Custom Portfolio Tracker</p>
+        <section id="news-section">
+            <h2>Breaking Crypto News</h2>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {
+                "feedMode": "all_symbols",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "displayMode": "regular",
+                "width": "100%",
+                "height": 550,
+                "locale": "en"
+                }
+                </script>
             </div>
         </section>
     </div>
 
     <footer>
-        <p>&copy; 2026 Crypto Dash | Empowering the <strong>Thrones of Legends</strong> Project</p>
+        <p>&copy; 2026 Crypto Hub | Funding "Thrones of Legends" Project</p>
     </footer>
 
     <script src="script.js"></script>
