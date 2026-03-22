@@ -1,89 +1,102 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrones of Legends | Global Crypto Dashboard</title>
+    <meta name="description" content="Real-time crypto prices, heatmap, and portfolio tracking. Powered by Thrones of Legends.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #32a88f;
+            --dark: #0e1928;
+            --light: #f4f7f6;
+            --accent: #ab8642;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--dark); color: white; margin: 0; }
+        nav { background: #162436; padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); }
+        .logo { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
+        .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 0.9rem; }
+        
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        
+        /* Ad Section */
+        .ad-banner { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px dashed var(--primary); }
+        
+        /* Table Styling */
+        .crypto-table-container { overflow-x: auto; background: #1b2a3d; border-radius: 10px; padding: 15px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #2d3e52; }
+        .buy-btn { background: var(--primary); color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
+        .buy-btn:hover { background: var(--accent); }
 
-<title>Global Crypto Dashboard</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="style.css">
-
+        /* Branding Footer */
+        footer { text-align: center; padding: 40px; color: #667c99; font-size: 0.8rem; }
+        .tol-brand { color: var(--primary); font-weight: bold; text-decoration: none; }
+    </style>
 </head>
-
 <body>
 
-<header>
-🚀 Global Crypto Dashboard
-</header>
+    <nav>
+        <div class="logo">🚀 Thrones Crypto</div>
+        <div class="nav-links">
+            <a href="#market">Market</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
 
-<nav>
+    <div class="container">
+        
+        <div class="ad-banner">
+            <p style="font-size: 0.7rem; color: #555; margin-bottom: 10px;">ADVERTISEMENT</p>
+            <div id="frame" style="width: 300px; margin: auto; height: auto">
+                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
+                        style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
+            </div>
+        </div>
 
-<button onclick="show('market')">Market</button> <button onclick="show('heatmap')">Heatmap</button> <button onclick="show('chart')">Chart</button> <button onclick="show('news')">News</button>
+        <section id="market">
+            <h2>Top 100 Cryptocurrencies</h2>
+            <div class="crypto-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Coin</th>
+                            <th>Price</th>
+                            <th>24h Change</th>
+                            <th>Market Cap</th>
+                            <th>Trade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crypto-table-body">
+                        <tr>
+                            <td>Bitcoin (BTC)</td>
+                            <td>$68,000</td>
+                            <td style="color: #00ff00">+2.5%</td>
+                            <td>$1.3T</td>
+                            <td><a href="https://www.binance.com/en/activity/referral" class="buy-btn">BUY</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-</nav>
+        <hr style="border: 0; border-top: 1px solid #2d3e52; margin: 50px 0;">
 
-<div id="market" class="section active">
+        <section id="about">
+            <h2>About Thrones Crypto</h2>
+            <p>Welcome to <strong>Thrones of Legends Stock Dashboard</strong>. We provide professional-grade, real-time data for traders who value speed and accuracy. Our goal is to empower the next generation of investors with the tools they need to succeed in the blockchain space.</p>
+        </section>
 
-<h2>Top Cryptocurrencies</h2>
+    </div>
 
-<input id="search" placeholder="Search coin..." onkeyup="searchCoins()" style="padding:10px;width:100%;margin-bottom:10px;border-radius:6px;border:none;">
+    <footer>
+        <p>&copy; 2026 Developed by <a href="#" class="tol-brand">Thrones of Legends</a></p>
+        <p>Data provided by CoinGecko API</p>
+    </footer>
 
-<table id="marketTable">
-
-<tr>
-<th>Coin</th>
-<th>Price</th>
-<th>24h</th>
-</tr>
-
-</table>
-
-</div>
-
-<h2>Top Cryptocurrencies</h2>
-
-<table id="marketTable">
-
-<tr>
-<th>Coin</th>
-<th>Price</th>
-<th>24h</th>
-</tr>
-
-</table>
-
-</div>
-
-<div id="heatmap" class="section">
-
-<h2>Market Heatmap</h2>
-
-<div id="heatmapCoins" class="heatmap"></div>
-
-</div>
-
-<div id="chart" class="section">
-
-<h2>Bitcoin Chart</h2>
-
-<div id="tradingview_chart"></div>
-
-</div>
-
-<div id="news" class="section">
-
-<h2>Crypto News</h2>
-
-<div id="newsFeed"></div>
-
-</div>
-
-<script src="https://s3.tradingview.com/tv.js"></script>
-
-<script src="app.js"></script>
-
+    <script src="script.js"></script>
 </body>
-
 </html>
