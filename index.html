@@ -3,91 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Crypto Sponsorship Portal</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Thrones Trade | Sponsored Trading Console</title>
     <style>
-        :root { --bg: #060708; --card: #121417; --primary: #00ff88; --text: #ffffff; --red: #ff4d4d; --border: #2a2e33; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        :root { --bg: #0b0e11; --panel: #161b22; --green: #2ebd85; --red: #f6465d; --text: #eaecef; --border: #2b3139; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', Arial, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Left Side: Real-Time Market List */
+        .market-sidebar { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .market-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 14px; }
         
-        /* Top News Bar */
-        .ticker-wrap { height: 35px; background: #000; border-bottom: 1px solid var(--border); overflow: hidden; }
+        /* Middle: The Chart */
+        .main-content { flex: 1; position: relative; background: #000; }
+
+        /* Right Side: Trading & Money */
+        .trade-sidebar { width: 300px; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; padding: 15px; }
         
-        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 1px solid var(--border); }
-        .logo { font-weight: bold; color: var(--primary); letter-spacing: 1px; }
+        .header-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+        .top-btn { flex: 1; padding: 8px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .dep-btn { background: var(--green); color: white; }
+        .log-btn { background: #2b3139; color: white; }
 
-        .main-view { display: flex; flex: 1; overflow: hidden; }
-        
-        /* Left: Markets */
-        .market-list { width: 200px; background: var(--card); border-right: 1px solid var(--border); padding: 15px; display: none; }
-        @media (min-width: 1000px) { .market-list { display: block; } }
+        .trade-box { background: #0b0e11; border-radius: 8px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .label { font-size: 11px; color: #848e9c; margin-bottom: 5px; }
+        .input-val { font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; }
 
-        /* Center: The Professional Chart */
-        .chart-area { flex: 1; background: #000; position: relative; }
+        .execute-btn { height: 70px; border-radius: 8px; border: none; cursor: pointer; color: white; font-weight: 900; font-size: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; margin-bottom: 10px; transition: 0.2s; }
+        .call { background: var(--green); box-shadow: 0 4px 15px rgba(46, 189, 133, 0.2); }
+        .put { background: var(--red); box-shadow: 0 4px 15px rgba(246, 70, 93, 0.2); }
+        .execute-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
+        .execute-btn span { font-size: 10px; font-weight: normal; opacity: 0.8; }
 
-        /* Right: The "Money" Panel */
-        .trade-panel { width: 320px; background: var(--card); border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-
-        .btn { padding: 20px; border-radius: 4px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; color: white; text-transform: uppercase; }
-        .buy-btn { background: #00c853; box-shadow: 0 0 15px rgba(0, 200, 83, 0.2); }
-        .sell-btn { background: #ff3d00; box-shadow: 0 0 15px rgba(255, 61, 0, 0.2); }
-        .btn:hover { filter: brightness(1.2); }
-
-        .ad-container { margin-top: auto; border: 1px solid var(--border); background: var(--bg); border-radius: 4px; padding: 5px; text-align: center; min-height: 250px; }
-        .status-tag { font-size: 10px; color: var(--primary); background: rgba(0,255,136,0.1); padding: 2px 8px; border-radius: 10px; }
+        .ad-space { margin-top: auto; border: 1px dashed #474d57; border-radius: 4px; min-height: 250px; display: flex; align-items: center; justify-content: center; background: #000; }
     </style>
 </head>
 <body>
 
-    <div class="ticker-wrap">
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        { "symbols": [{"proName":"BINANCE:BTCUSDT","title":"BTC"},{"proName":"BINANCE:ETHUSDT","title":"ETH"},{"s":"BINANCE:SOLUSDT"},{"s":"BINANCE:BNBUSDT"}], "theme": "dark", "displayMode": "adaptive", "locale": "en" }
+    <div class="market-sidebar">
+        <div class="market-header">THRONES MARKETS</div>
+        <div style="padding: 10px;">
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            { "colorTheme": "dark", "width": "100%", "height": "400", "symbolsGroups": [ { "name": "Crypto", "symbols": [ {"name": "BINANCE:BTCUSDT"}, {"name": "BINANCE:ETHUSDT"} ] } ] }
+            </script>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="tradingview_widget" style="height:100%;"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+        <script type="text/javascript">
+            new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "theme": "dark", "container_id": "tradingview_widget" });
         </script>
     </div>
 
-    <header>
-        <div class="logo">THRONES TRADE <span style="color:white; font-size: 10px; margin-left:10px;">V2.1</span></div>
-        <div class="status-tag">● LIVE SERVERS</div>
-    </header>
-
-    <div class="main-view">
-        <div class="market-list">
-            <p style="font-size: 12px; color: #888;">FAVORITES</p>
-            <div style="font-size: 14px; display: flex; flex-direction: column; gap: 15px;">
-                <div>BTC/USD <span style="color:#00c853; float:right;">+2.4%</span></div>
-                <div>ETH/USD <span style="color:#00c853; float:right;">+1.8%</span></div>
-                <div>SOL/USD <span style="color:#ff3d00; float:right;">-0.5%</span></div>
-            </div>
+    <div class="trade-sidebar">
+        <div class="header-actions">
+            <button class="top-btn dep-btn">DEPOSIT</button>
+            <button class="top-btn log-btn">LOGIN</button>
         </div>
 
-        <div class="chart-area">
-            <div id="tv-chart" style="height:100%;"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-            <script type="text/javascript">
-                new TradingView.widget({
-                  "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "timezone": "Etc/UTC",
-                  "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#f1f3f6",
-                  "enable_publishing": false, "hide_side_toolbar": false, "allow_symbol_change": true,
-                  "container_id": "tv-chart"
-                });
-            </script>
+        <div class="trade-box">
+            <div class="label">Investment Amount</div>
+            <div class="input-val"><span>$</span><span>1,000.00</span></div>
         </div>
 
-        <div class="trade-panel">
-            <h4 style="margin:0">QUICK EXECUTION</h4>
-            
-            <a href="#" class="btn buy-btn">CALL (UP)</a>
-            <a href="#" class="btn sell-btn">PUT (DOWN)</a>
+        <a href="YOUR_LINK" class="execute-btn call">HIGHER <span>Profit: 92%</span></a>
+        <a href="YOUR_LINK" class="execute-btn put">LOWER <span>Profit: 92%</span></a>
 
-            <p style="font-size: 11px; color: #666; text-align: center;">Liquidity provided by Global Exchanges</p>
+        <div class="ad-space">
+            <p style="color:#474d57; font-size:10px;">ADS LOADING...</p>
+        </div>
 
-            <div class="ad-container">
-                <p style="font-size: 9px; color: #444; margin: 5px 0;">SPONSORED DATA</p>
-                <iframe data-aa='YOUR_ID' src='//ad.a-ads.com/YOUR_ID?size=240x400' style='width:240px; height:400px; border:0px; padding:0; overflow:hidden; background-color:transparent;'></iframe>
-            </div>
-            
-            <div style="font-size: 10px; color: #444; text-align: center;">
-                Sponsoring Development of<br><b>THRONES OF LEGENDS</b>
-            </div>
+        <div style="text-align: center; font-size: 10px; color: #474d57; margin-top: 10px;">
+            Sponsoring "Thrones of Legends"<br>Deadline: April 14, 2026
         </div>
     </div>
 
