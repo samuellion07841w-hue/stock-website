@@ -1,177 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Pro Dashboard</title>
+    <title>Thrones Trade | Crypto Sponsorship Portal</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <style>
-        :root { --bg: #0b0e11; --sidebar: #161b22; --text: #e6edf3; --green: #238636; --red: #da3633; --border: #30363d; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        :root { --bg: #060708; --card: #121417; --primary: #00ff88; --text: #ffffff; --red: #ff4d4d; --border: #2a2e33; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         
-        /* Top News Ticker */
-        .ticker { height: 40px; background: #000; border-bottom: 1px solid var(--border); overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+        /* Top News Bar */
+        .ticker-wrap { height: 35px; background: #000; border-bottom: 1px solid var(--border); overflow: hidden; }
         
-        /* Main Layout */
-        .app-container { display: flex; flex: 1; overflow: hidden; }
+        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 1px solid var(--border); }
+        .logo { font-weight: bold; color: var(--primary); letter-spacing: 1px; }
+
+        .main-view { display: flex; flex: 1; overflow: hidden; }
         
-        /* Sidebar Left: Assets */
-        .sidebar-left { width: 220px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 15px; display: none; } /* Hidden on mobile */
-        @media (min-width: 900px) { .sidebar-left { display: block; } }
-        
-        /* Center: Chart */
-        .main-chart { flex: 1; background: #000; position: relative; }
-        
-        /* Sidebar Right: Trade & Ads */
-        .sidebar-right { width: 300px; background: var(--sidebar); border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        /* Buttons */
-        .trade-btn { padding: 18px; border-radius: 8px; border: none; font-weight: bold; font-size: 1.1rem; cursor: pointer; color: white; text-align: center; text-decoration: none; transition: 0.2s; }
-        .trade-btn:hover { opacity: 0.8; transform: scale(1.02); }
-        .buy { background: var(--green); box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3); }
-        .sell { background: var(--red); box-shadow: 0 4px 15px rgba(218, 54, 51, 0.3); }
-        
-        .ad-box { margin-top: auto; background: var(--bg); border: 1px dashed #484f58; padding: 10px; text-align: center; border-radius: 5px; min-height: 250px; }
-        .dev-note { font-size: 11px; color: #8b949e; text-align: center; margin-top: 10px; }
+        /* Left: Markets */
+        .market-list { width: 200px; background: var(--card); border-right: 1px solid var(--border); padding: 15px; display: none; }
+        @media (min-width: 1000px) { .market-list { display: block; } }
+
+        /* Center: The Professional Chart */
+        .chart-area { flex: 1; background: #000; position: relative; }
+
+        /* Right: The "Money" Panel */
+        .trade-panel { width: 320px; background: var(--card); border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        .btn { padding: 20px; border-radius: 4px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; color: white; text-transform: uppercase; }
+        .buy-btn { background: #00c853; box-shadow: 0 0 15px rgba(0, 200, 83, 0.2); }
+        .sell-btn { background: #ff3d00; box-shadow: 0 0 15px rgba(255, 61, 0, 0.2); }
+        .btn:hover { filter: brightness(1.2); }
+
+        .ad-container { margin-top: auto; border: 1px solid var(--border); background: var(--bg); border-radius: 4px; padding: 5px; text-align: center; min-height: 250px; }
+        .status-tag { font-size: 10px; color: var(--primary); background: rgba(0,255,136,0.1); padding: 2px 8px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="ticker">
+    <div class="ticker-wrap">
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-        { "symbols": [ {"proName": "BITSTAMP:BTCUSD", "title": "Bitcoin"}, {"proName": "BITSTAMP:ETHUSD", "title": "Ethereum"}, {"s": "BINANCE:SOLUSDT"}, {"s": "BINANCE:BNBUSDT"} ], "theme": "dark", "isTransparent": true, "displayMode": "adaptive", "locale": "en" }
+        { "symbols": [{"proName":"BINANCE:BTCUSDT","title":"BTC"},{"proName":"BINANCE:ETHUSDT","title":"ETH"},{"s":"BINANCE:SOLUSDT"},{"s":"BINANCE:BNBUSDT"}], "theme": "dark", "displayMode": "adaptive", "locale": "en" }
         </script>
     </div>
 
-    <div class="app-container">
-        <div class="sidebar-left">
-            <h4 style="margin-top:0">Market Watch</h4>
-            <div style="font-size: 13px; line-height: 2.5;">
-                <div style="color:var(--green)">▲ BTC/USD</div>
-                <div style="color:var(--green)">▲ ETH/USD</div>
-                <div style="color:var(--red)">▼ SOL/USD</div>
-                <div style="color:var(--text)">● DOGE/USD</div>
-            </div>
-            <div class="dev-note" style="margin-top: 40px;">
-                Support Project:<br><b>Thrones of Legends</b>
+    <header>
+        <div class="logo">THRONES TRADE <span style="color:white; font-size: 10px; margin-left:10px;">V2.1</span></div>
+        <div class="status-tag">● LIVE SERVERS</div>
+    </header>
+
+    <div class="main-view">
+        <div class="market-list">
+            <p style="font-size: 12px; color: #888;">FAVORITES</p>
+            <div style="font-size: 14px; display: flex; flex-direction: column; gap: 15px;">
+                <div>BTC/USD <span style="color:#00c853; float:right;">+2.4%</span></div>
+                <div>ETH/USD <span style="color:#00c853; float:right;">+1.8%</span></div>
+                <div>SOL/USD <span style="color:#ff3d00; float:right;">-0.5%</span></div>
             </div>
         </div>
 
-        <div class="main-chart">
-            <div id="tradingview_chart" style="height:100%; width:100%;"></div>
+        <div class="chart-area">
+            <div id="tv-chart" style="height:100%;"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
-            new TradingView.widget({
-              "autosize": true,
-              "symbol": "BINANCE:BTCUSDT",
-              "interval": "1",
-              "timezone": "Etc/UTC",
-              "theme": "dark",
-              "style": "1",
-              "locale": "en",
-              "toolbar_bg": "#f1f3f6",
-              "enable_publishing": false,
-              "hide_side_toolbar": false,
-              "allow_symbol_change": true,
-              "container_id": "tradingview_chart"
-            });
+                new TradingView.widget({
+                  "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "timezone": "Etc/UTC",
+                  "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#f1f3f6",
+                  "enable_publishing": false, "hide_side_toolbar": false, "allow_symbol_change": true,
+                  "container_id": "tv-chart"
+                });
             </script>
         </div>
 
-        <div class="sidebar-right">
-            <h3 style="margin:0; text-align:center;">Execute Trade</h3>
+        <div class="trade-panel">
+            <h4 style="margin:0">QUICK EXECUTION</h4>
             
-            <a href="#" class="trade-btn buy">CALL (HIGHER)</a>
-            <a href="#" class="trade-btn sell">PUT (LOWER)</a>
-            
-            <p style="font-size: 12px; text-align:center; color:#8b949e;">Select your amount and click to trade</p>
+            <a href="#" class="btn buy-btn">CALL (UP)</a>
+            <a href="#" class="btn sell-btn">PUT (DOWN)</a>
 
-            <div class="ad-box">
-                <p style="font-size:10px; color:#484f58;">SPONSORED AD</p>
+            <p style="font-size: 11px; color: #666; text-align: center;">Liquidity provided by Global Exchanges</p>
+
+            <div class="ad-container">
+                <p style="font-size: 9px; color: #444; margin: 5px 0;">SPONSORED DATA</p>
                 <iframe data-aa='YOUR_ID' src='//ad.a-ads.com/YOUR_ID?size=240x400' style='width:240px; height:400px; border:0px; padding:0; overflow:hidden; background-color:transparent;'></iframe>
             </div>
-
-            <div class="dev-note">
-                Fast processing & Secure <br> © 2026 Thrones Trade
+            
+            <div style="font-size: 10px; color: #444; text-align: center;">
+                Sponsoring Development of<br><b>THRONES OF LEGENDS</b>
             </div>
         </div>
     </div>
 
-</body>
-</html>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Crypto Hub | Live Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-</head>
-<body>
-
-    <nav>
-        <div class="logo">🚀 CRYPTO HUB</div>
-        <div class="nav-links">
-            <a href="#market">Market</a>
-            <a href="#chart-section">Live Chart</a>
-            <a href="#news-section">Crypto News</a>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="ad-container">
-            <p class="ad-label">SPONSORED</p>
-            <div id="frame">
-                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311/?size=300x250&background_color=32a88f&title_color=0e1928&title_hover_color=9fc962&text_color=000000&link_color=000000&link_hover_color=ab8642'
-                style='border:0; padding:0; width:300px; height:250px; overflow:hidden; display: block; margin: auto'></iframe>
-            </div>
-        </div>
-
-        <section id="chart-section">
-            <h2>Bitcoin Real-Time Performance</h2>
-            <div id="tv-chart"></div>
-        </section>
-
-        <section id="market">
-            <h2>Top Crypto Assets</h2>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Price (USD)</th>
-                            <th>24h Change</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="market-data">
-                        </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="news-section">
-            <h2>Breaking Crypto News</h2>
-            <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                {
-                "feedMode": "all_symbols",
-                "colorTheme": "dark",
-                "isTransparent": true,
-                "displayMode": "regular",
-                "width": "100%",
-                "height": 550,
-                "locale": "en"
-                }
-                </script>
-            </div>
-        </section>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 Crypto Hub | Funding "Thrones of Legends" Project</p>
-    </footer>
-
-    <script src="script.js"></script>
 </body>
 </html>
