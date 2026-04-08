@@ -3,152 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade | Thrones Global Forex Terminal</title>
-    <meta name="description" content="Secure Forex and Stock Trading Terminal. Execute global trades instantly.">
-    <meta name="keywords" content="trade, forex, stock, crypto, nigeria trade, opay trading">
-
+    <title>Trade | Thrones Forex & Stock Terminal</title>
+    <meta name="description" content="Professional Forex and Stock trading terminal. Secure global market access.">
+    <meta name="keywords" content="trade, forex, stocks, nigeria trade, opay forex, palmpay trade">
+    
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         @keyframes led-glow { 0% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #00ff00; box-shadow: 0 0 10px #00ff00; } 100% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
 
         /* MODALS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; align-items: center; justify-content: center; }
-        .modal-card { background: var(--panel); padding: 25px; border-radius: 12px; border: 1px solid var(--accent); width: 340px; text-align: center; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; }
+        .modal-card { background: var(--panel); padding: 25px; border-radius: 12px; border: 2px solid var(--accent); width: 360px; text-align: center; box-shadow: 0 0 40px rgba(193, 164, 97, 0.3); }
         
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; }
-        .amt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-        .amt-btn { padding: 10px; background: #000; border: 1px solid var(--border); color: var(--green); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        
-        /* LOGIN & UI */
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
+        .amt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+        .amt-btn { padding: 12px; background: #000; border: 1px solid var(--border); color: var(--green); cursor: pointer; border-radius: 4px; font-weight: 900; font-size: 13px; }
+        .amt-btn:hover { border-color: var(--green); background: rgba(0,255,136,0.05); }
+
+        /* LOGIN */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 8px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 10px 0; font-size: 12px; text-align: left; }
+        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 10px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 12px 0; text-align: left; }
         .btn-action { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
 
-        header { background: var(--panel); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        /* INTERFACE */
+        header { background: var(--panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .app-shell { display: flex; height: calc(100vh - 55px); }
+        .center-stack { flex: 1; background: #000; display: flex; flex-direction: column; }
         .sidebar-right { width: 320px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; }
         
-        .wallet-info { background: #000; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .wallet-card { background: #000; padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div id="depositModal" class="overlay">
         <div class="modal-card">
-            <h3 style="color:var(--accent)">FUND WALLET</h3>
-            <select id="bankSelect">
-                <option value="" disabled selected>-- Select Bank --</option>
-                <optgroup label="Nigeria Online Banks">
-                    <option value="OPay">OPay Digital</option>
-                    <option value="PalmPay">PalmPay</option>
-                    <option value="Kuda">Kuda Microfinance</option>
-                    <option value="Moniepoint">Moniepoint</option>
-                </optgroup>
-                <optgroup label="Nigeria Commercial Banks">
-                    <option value="GTBank">GTBank</option>
-                    <option value="Zenith">Zenith Bank</option>
-                    <option value="Access">Access Bank</option>
-                    <option value="FirstBank">First Bank Nigeria</option>
-                </optgroup>
-                <optgroup label="International">
-                    <option value="Barclays">Barclays (UK/INT)</option>
-                    <option value="HSBC">HSBC (GLOBAL)</option>
-                    <option value="Crypto">USDT / BTC Wallet</option>
-                </optgroup>
-            </select>
-
-            <div class="amt-grid">
-                <button class="amt-btn" onclick="confirmDeposit(7000)">$7,000</button>
-                <button class="amt-btn" onclick="confirmDeposit(50000)">$50,000</button>
-                <button class="amt-btn" onclick="confirmDeposit(100000)">$100,000</button>
-                <button class="amt-btn" onclick="confirmDeposit(200000)">$200,000</button>
-                <button class="amt-btn" onclick="confirmDeposit(300000)">$300,000</button>
-                <button class="amt-btn" onclick="confirmDeposit(500000)">$500,000</button>
-            </div>
-            <button onclick="hideDeposit()" style="background:none; border:none; color:#555; cursor:pointer; font-size:10px;">CANCEL</button>
-        </div>
-    </div>
-
-    <div id="loginScreen">
-        <div class="modal-card">
-            <h2 style="color:var(--accent); margin-bottom:15px;">THRONES TRADE</h2>
-            <form onsubmit="doLogin(event)">
-                <input type="text" id="uID" placeholder="Trader ID" required autocomplete="username">
-                <input type="tel" id="uPhone" placeholder="Phone Number (e.g. 08153609706)" required>
-                <div style="position:relative">
-                    <input type="password" id="uPass" placeholder="Password" required autocomplete="current-password">
-                </div>
-                <div class="classic-captcha">
-                    <div style="display:flex; align-items:center;">
-                        <input type="checkbox" required style="width:20px; margin-right:10px;"> <span>I'm not a robot</span>
-                    </div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" width="25">
-                </div>
-                <button class="btn-action" type="submit">PROCEED</button>
-            </form>
-        </div>
-    </div>
-
-    <header>
-        <div style="font-weight:900; color:var(--accent); font-size: 18px;">THRONES <span style="color:white">TRADE</span></div>
-        <div style="font-size: 10px; color: var(--green);">● SECURE FOREX NODE</div>
-    </header>
-
-    <div class="app-shell">
-        <div style="flex:1; display:flex; flex-direction:column;">
-            <div style="flex:2; border-bottom: 1px solid var(--border);">
-                <div id="tv_chart" style="height:100%;"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                    new TradingView.widget({ "autosize": true, "symbol": "FX:EURUSD", "theme": "dark", "container_id": "tv_chart" });
-                </script>
-            </div>
-            <div style="flex:1; background: var(--panel);">
-                <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
-            </div>
-        </div>
-
-        <div class="sidebar-right">
-            <div class="wallet-info">
-                <div style="font-size: 9px; color: #444; margin-bottom:5px;">TRADER WALLET</div>
-                <div id="displayPhone" style="font-size: 11px; color: var(--accent); margin-bottom: 5px;">ID: ---</div>
-                <div id="balance" style="font-size: 24px; font-weight: 900; color: var(--red);">$0.00</div>
-                <button onclick="showDeposit()" style="width:100%; margin-top:10px; padding:8px; background:var(--accent); border:none; border-radius:4px; cursor:pointer; font-size:10px; font-weight:bold;">+ ADD FUNDS</button>
-            </div>
-            
-            <div style="font-size: 9px; color: #6a737d; margin: 10px 0;">MARKET ACTIONS</div>
-            <button class="btn-action" style="background:var(--green); margin-bottom:8px;" onclick="showDeposit()">▲ BUY / CALL</button>
-            <button class="btn-action" style="background:var(--red); color:white;" onclick="window.location.href='https://YOUR_SELL_SITE.com'">✖ SELL OUT</button>
-        </div>
-    </div>
-
-    <script>
-        function showDeposit() { document.getElementById('depositModal').style.display = 'flex'; }
-        function hideDeposit() { document.getElementById('depositModal').style.display = 'none'; }
-
-        function confirmDeposit(amt) {
-            const bank = document.getElementById('bankSelect').value;
-            if(!bank) { alert("Please select a Bank (OPay, PalmPay, etc) first."); return; }
-            alert("Connecting to " + bank + " for $" + amt.toLocaleString() + " transfer...");
-            window.location.href = "https://YOUR_PAYMENT_PAGE.com?amount=" + amt + "&bank=" + bank;
-        }
-
-        function doLogin(e) {
-            e.preventDefault();
-            const phone = document.getElementById('uPhone').value;
-            localStorage.setItem('tradeAuth', phone);
-            document.getElementById('displayPhone').innerText = "WALLET ID: " + phone;
-            document.getElementById('loginScreen').style.display = 'none';
-        }
-
-        window.onload = function() {
-            const saved = localStorage.getItem('tradeAuth');
-            if(saved) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('displayPhone').innerText = "WALLET ID: " + saved;
-            }
-        }
-    </script>
-</body>
-</html>
