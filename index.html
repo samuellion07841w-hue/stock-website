@@ -3,120 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Global Execution Terminal</title>
+    <title>Thrones Trade | Global Terminal</title>
     <style>
-        :root { --bg: #06080c; --panel: #11151c; --green: #00ff88; --red: #ff4757; --accent: #c1a461; --text: #ffffff; --border: #232a35; }
+        :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* Top Bar Branding */
-        header { background: var(--panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); }
-        .logo { font-size: 22px; font-weight: 900; color: var(--accent); letter-spacing: 1px; }
-        .demo-balance { background: #000; border: 1px solid var(--green); color: var(--green); padding: 5px 15px; border-radius: 4px; font-weight: bold; font-family: monospace; }
+        /* Top Header with Auth */
+        header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); }
+        .logo { font-size: 20px; font-weight: 900; color: var(--accent); }
+        .auth-bar { display: flex; gap: 10px; align-items: center; }
+        .auth-btn { background: transparent; border: 1px solid var(--border); color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .signup-btn { background: var(--accent); color: black; border: none; font-weight: bold; }
 
-        .app-shell { display: flex; flex: 1; overflow: hidden; }
+        .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* Left: Global Market Profile */
-        .sidebar-left { width: 260px; background: var(--panel); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; gap: 20px; }
-        .section-title { font-size: 11px; color: #6a737d; text-transform: uppercase; font-weight: bold; border-left: 3px solid var(--accent); padding-left: 8px; }
+        /* Left Sidebar: Both Market Profile & Old List */
+        .sidebar-left { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+        .section-header { font-size: 10px; color: #6a737d; padding: 10px 15px; background: #0d1117; font-weight: bold; text-transform: uppercase; }
 
-        /* Center: Advanced Chart */
-        .chart-view { flex: 1; background: #000; }
+        /* Center: Chart */
+        .chart-main { flex: 1; background: #000; }
 
-        /* Right: Execution Console */
-        .sidebar-right { width: 320px; background: var(--panel); border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        /* Right: Execution */
+        .sidebar-right { width: 300px; background: var(--panel); border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .box { background: #06090f; border: 1px solid var(--border); padding: 12px; border-radius: 6px; }
+        .label { font-size: 10px; color: #57606f; margin-bottom: 5px; }
         
-        .box { background: #06080c; border: 1px solid var(--border); padding: 12px; border-radius: 6px; }
-        .label { font-size: 10px; color: #57606f; margin-bottom: 5px; text-transform: uppercase; }
-        .val { font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; }
+        .trade-btn { height: 80px; border-radius: 8px; border: none; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
+        .up { background: var(--green); color: black; font-weight: 900; }
+        .down { background: var(--red); }
+        .trade-btn:hover { transform: scale(1.02); }
 
-        /* Buttons */
-        .trade-btn { height: 85px; border-radius: 8px; border: none; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
-        .up { background: var(--green); color: #000; font-weight: 900; box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2); }
-        .down { background: var(--red); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.2); }
-        .trade-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
-        .btn-main { font-size: 22px; }
-        .btn-sub { font-size: 10px; opacity: 0.8; }
-
-        /* MODAL POPUP */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
-        .modal { background: #1a1f26; width: 350px; padding: 30px; border-radius: 12px; border: 1px solid var(--accent); text-align: center; }
+        /* Pop-up Overlay */
+        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal { background: #1a1f26; width: 340px; padding: 30px; border-radius: 12px; border: 1px solid var(--accent); text-align: center; }
         .modal input { width: 100%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 4px; }
-        .confirm { background: var(--accent); color: black; width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">THRONES <span style="color:white">TRADE</span></div>
-        <div class="demo-balance">BALANCE: $10,000.00</div>
+        <div class="auth-bar" id="authUI">
+            <button class="auth-btn" onclick="openLogin()">LOG IN</button>
+            <button class="auth-btn signup-btn" onclick="openLogin()">SIGN UP</button>
+        </div>
     </header>
 
-    <div class="app-shell">
+    <div class="app-body">
         <div class="sidebar-left">
-            <div>
-                <div class="section-title">Market Profile</div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "320", "symbol": "BINANCE:BTCUSDT", "showIntervalTabs": true, "locale": "en", "colorTheme": "dark" }
+            <div class="section-header">Market Profile</div>
+            <div style="height: 220px; overflow: hidden;"> <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "220", "symbol": "BINANCE:BTCUSDT", "showIntervalTabs": false, "locale": "en", "colorTheme": "dark" }
                 </script>
             </div>
-            <div style="margin-top:auto; font-size: 10px; color: #444; text-align: center;">
-                Sponsoring:<br><b>Thrones of Legends</b>
+
+            <div class="section-header">Asset List</div>
+            <div style="flex: 1;"> <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                { "colorTheme": "dark", "width": "100%", "height": "100%", "symbolsGroups": [ { "name": "Crypto", "symbols": [ {"name":"BINANCE:BTCUSDT"}, {"name":"BINANCE:ETHUSDT"}, {"name":"BINANCE:SOLUSDT"} ] } ] }
+                </script>
             </div>
         </div>
 
-        <div class="chart-view">
-            <div id="trading_chart" style="height:100%;"></div>
+        <div class="chart-main">
+            <div id="tv_chart" style="height:100%;"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
-                new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "theme": "dark", "container_id": "trading_chart" });
+                new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "theme": "dark", "container_id": "tv_chart" });
             </script>
         </div>
 
         <div class="sidebar-right">
             <div class="box">
-                <div class="label">Trade Amount</div>
-                <div class="val"><span>$</span><span>1,000.00</span></div>
+                <div class="label">Balance (Demo)</div>
+                <div style="font-size: 18px; font-weight: bold; color: var(--green);">$10,000.00</div>
             </div>
 
-            <button class="trade-btn up" onclick="openOrder('CALL')">
-                <span class="btn-main">▲ CALL</span>
-                <span class="btn-sub">Higher (Payout 92%)</span>
+            <button class="trade-btn up" onclick="trade('CALL')">
+                <b style="font-size: 20px;">▲ CALL</b>
+                <span style="font-size: 10px;">Profit 92%</span>
             </button>
 
-            <button class="trade-btn down" onclick="openOrder('PUT')">
-                <span class="btn-main">▼ PUT</span>
-                <span class="btn-sub">Lower (Payout 92%)</span>
+            <button class="trade-btn down" onclick="trade('PUT')">
+                <b style="font-size: 20px;">▼ PUT</b>
+                <span style="font-size: 10px;">Profit 92%</span>
             </button>
 
-            <div class="box" style="margin-top:auto; min-height: 200px; border-style: dashed; display:flex; align-items:center; justify-content:center; color:#3d4552; font-size:10px;">
-                ADS LOADED
+            <div class="box" style="margin-top:auto; height: 250px; border-style: dashed; display: flex; align-items: center; justify-content: center; color: #444; font-size: 10px;">
+                SPONSORED DATA
             </div>
         </div>
     </div>
 
-    <div id="orderOverlay" class="overlay">
+    <div id="modalBox" class="overlay">
         <div class="modal">
-            <h2 id="modalHead" style="color:var(--accent); margin-top:0;">THRONES EXECUTION</h2>
-            <p style="font-size: 12px; color: #848e9c;">Syncing transaction with Global Servers. Enter your Trade ID or Email to continue.</p>
-            <input type="text" id="userID" placeholder="ID / Email / Wallet">
-            <button class="confirm" onclick="execute()">CONFIRM TRANSACTION</button>
-            <p style="font-size: 10px; color: #57606f; margin-top: 15px; cursor:pointer;" onclick="closeOrder()">Cancel</p>
+            <h2 id="modalTitle" style="color:var(--accent); margin-top:0;">THRONES AUTH</h2>
+            <p id="modalText" style="font-size: 12px; color: #848e9c;">Log in to your Thrones Trade account to sync transactions.</p>
+            <input type="text" id="userInput" placeholder="Email or Trader ID">
+            <button class="auth-btn signup-btn" style="width:100%; padding:12px;" onclick="confirmAction()">CONTINUE</button>
+            <p style="font-size: 10px; color: #57606f; margin-top: 15px; cursor:pointer;" onclick="closeModal()">Close</p>
         </div>
     </div>
 
     <script>
-        function openOrder(type) {
-            document.getElementById('orderOverlay').style.display = 'flex';
-            document.getElementById('modalHead').innerText = 'THRONES ' + type;
+        let currentMode = 'LOGIN';
+
+        function openLogin() {
+            currentMode = 'LOGIN';
+            document.getElementById('modalTitle').innerText = 'THRONES LOGIN';
+            document.getElementById('modalBox').style.display = 'flex';
         }
-        function closeOrder() {
-            document.getElementById('orderOverlay').style.display = 'none';
+
+        function trade(type) {
+            currentMode = 'TRADE';
+            document.getElementById('modalTitle').innerText = 'THRONES ' + type;
+            document.getElementById('modalBox').style.display = 'flex';
         }
-        function execute() {
-            const id = document.getElementById('userID').value;
-            if(!id) { alert("Enter ID to continue"); return; }
-            // THIS IS YOUR SPONSOR LINK
-            window.location.href = "YOUR_AFFILIATE_LINK_HERE";
+
+        function closeModal() {
+            document.getElementById('modalBox').style.display = 'none';
+        }
+
+        function confirmAction() {
+            const val = document.getElementById('userInput').value;
+            if(!val) { alert("Please enter your details"); return; }
+            
+            if(currentMode === 'LOGIN') {
+                localStorage.setItem('thronesUser', val);
+                alert("Welcome back, " + val);
+                location.reload();
+            } else {
+                // REDIRECT TO SPONSOR LINK
+                window.location.href = "YOUR_AFFILIATE_LINK_HERE";
+            }
+        }
+
+        window.onload = function() {
+            const user = localStorage.getItem('thronesUser');
+            if(user) {
+                document.getElementById('authUI').innerHTML = `<span style="color:var(--green); font-size:12px; font-weight:bold;">● ${user}</span>`;
+            }
         }
     </script>
 </body>
