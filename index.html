@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Secure Terminal</title>
+    <title>Thrones Trade | Global Terminal</title>
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         
@@ -11,33 +11,30 @@
         
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
 
-        /* LOGIN SCREEN */
+        /* GATEWAY */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--panel); width: 340px; padding: 30px; border-radius: 12px; border: 2px solid var(--accent); text-align: center; }
-        
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .s-btn { padding: 12px; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: bold; }
         .google { background: #df4b37; }
         .fb { background: #3b5998; }
 
-        .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
-        .toggle-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); font-size: 10px; font-weight: bold; cursor: pointer; z-index: 10; padding: 5px; }
-
         .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
 
-        /* MAIN UI */
+        /* UI LAYOUT */
         header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .app-shell { display: flex; height: calc(100vh - 50px); }
         .sidebar-left { width: 240px; background: var(--panel); border-right: 1px solid var(--border); }
-        .chart-main { flex: 1; background: #000; display: flex; flex-direction: column; }
+        .center-stack { flex: 1; background: #000; display: flex; flex-direction: column; }
         .sidebar-right { width: 300px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; gap: 10px; }
         .section-header { font-size: 9px; color: #6a737d; padding: 8px 15px; background: #0d1117; font-weight: bold; text-transform: uppercase; }
 
-        /* TRADE BUTTONS */
-        .trade-btn { height: 75px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; color: white; font-weight: 900; animation: led-glow 3s infinite; }
+        /* RGB ACTION BUTTONS */
+        .trade-btn { height: 65px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; color: white; font-weight: 900; animation: led-glow 3s infinite; margin-bottom: 5px; }
         .up { background: rgba(0, 255, 136, 0.1); color: var(--green); }
-        .down { background: rgba(255, 59, 59, 0.1); color: var(--red); }
+        .sell { background: rgba(255, 59, 59, 0.1); color: var(--red); }
+        .down { background: rgba(100, 100, 100, 0.1); color: #888; }
     </style>
 </head>
 <body>
@@ -51,38 +48,35 @@
             </div>
             <form id="authForm" onsubmit="doLogin(event)">
                 <input type="text" id="uID" name="username" placeholder="Trader ID" required autocomplete="username">
-                <div class="pass-wrapper">
-                    <input type="password" id="uPass" name="password" placeholder="Password" required autocomplete="current-password">
-                    <button class="toggle-btn" type="button" onclick="handleToggle()">SHOW</button>
-                </div>
-                <div style="margin: 15px 0; font-size: 12px;"><input type="checkbox" required> I am not a robot</div>
-                <button class="btn-enter" type="submit">PROCEED TO TERMINAL</button>
+                <input type="password" id="uPass" name="password" placeholder="Password" required autocomplete="current-password">
+                <div style="margin: 15px 0; font-size: 12px;"><input type="checkbox" required> Verifying Human User</div>
+                <button class="btn-enter" type="submit">ENTER TERMINAL</button>
             </form>
         </div>
     </div>
 
     <header>
         <div style="font-weight:900; color:var(--accent); font-size: 18px;">THRONES <span style="color:white">TRADE</span></div>
-        <div id="badge" style="font-size: 10px; color: var(--green);">● SECURE</div>
+        <div id="badge" style="font-size: 10px; color: var(--green);">● GLOBAL HUB ACTIVE</div>
     </header>
 
     <div class="app-shell">
         <div class="sidebar-left">
-            <div class="section-header">Analysis</div>
-            <div style="height: 140px; overflow: hidden;">
+            <div class="section-header">Market Analysis</div>
+            <div style="height: 180px;">
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "140", "symbol": "BINANCE:BTCUSDT", "colorTheme": "dark" }
+                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "180", "symbol": "BINANCE:BTCUSDT", "colorTheme": "dark" }
                 </script>
             </div>
-            <div class="section-header">Markets</div>
-            <div style="flex: 1;">
+            <div class="section-header">Ticker Stream</div>
+            <div style="flex:1">
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-                { "colorTheme": "dark", "width": "100%", "height": "100%", "symbolsGroups": [ { "name": "Crypto", "symbols": [ {"name":"BINANCE:BTCUSDT"} ] } ] }
+                { "colorTheme": "dark", "width": "100%", "height": "100%", "symbolsGroups": [ { "name": "Assets", "symbols": [ {"name":"BINANCE:BTCUSDT"}, {"name":"BINANCE:ETHUSDT"} ] } ] }
                 </script>
             </div>
         </div>
 
-        <div class="chart-main">
+        <div class="center-stack">
             <div style="flex: 2; border-bottom: 1px solid var(--border);">
                 <div id="tv_chart" style="height:100%;"></div>
                 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -90,64 +84,72 @@
                     new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "theme": "dark", "container_id": "tv_chart" });
                 </script>
             </div>
-            <div style="flex: 1; background: var(--panel);">
-                <div class="section-header">Live Chat</div>
-                <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
+            <div style="flex: 1.2; background: var(--panel);">
+                <div class="section-header" style="display:flex; justify-content:space-between;">
+                    <span>GLOBAL TRADER CHAT</span>
+                    <span style="color:var(--green)">Online: 1,422</span>
+                </div>
+                <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0" style="background:transparent;"></iframe>
             </div>
         </div>
 
         <div class="sidebar-right">
-            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
-                <div style="font-size: 9px; color: #444;">AVAILABLE EQUITY</div>
+            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border);">
+                <div style="font-size: 9px; color: #444;">TRADING BALANCE</div>
                 <div id="equityDisplay" style="font-size: 20px; font-weight: 900; color: var(--green);">$0.00</div>
-                <button onclick="topUp()" style="width:100%; margin-top:10px; padding:5px; background:var(--accent); border:none; border-radius:4px; cursor:pointer; font-size:10px; font-weight:bold;">+ ADD FUNDS</button>
+                <button onclick="goTo('DEPOSIT')" style="width:100%; margin-top:10px; padding:8px; background:var(--accent); border:none; border-radius:4px; cursor:pointer; font-size:10px; font-weight:bold;">DEPOSIT FUNDS</button>
             </div>
 
-            <button class="trade-btn up" onclick="handleTrade('CALL')">▲ CALL (92%)</button>
-            <button class="trade-btn down" onclick="handleTrade('PUT')">▼ PUT (92%)</button>
+            <div class="section-header">Executive Actions</div>
+            <button class="trade-btn up" onclick="handleAction('BUY')">▲ BUY / CALL</button>
+            <button class="trade-btn sell" onclick="handleAction('SELL')">✖ SELL STOCK OUT</button>
+            <button class="trade-btn down" onclick="handleAction('PUT')">▼ PUT / LOWER</button>
             
-            <div class="section-header">Ads</div>
-            <div style="margin-top:auto; height: 180px; border: 1px dashed #222;"></div>
+            <div style="margin-top:auto; background:rgba(255,255,255,0.02); padding:10px; border-radius:6px; text-align:center;">
+                <p style="font-size: 9px; color: #555;">Verified Secure Transaction Portal</p>
+                <div style="display:flex; justify-content:center; gap:5px; opacity:0.3;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="30">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" width="20">
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Set your transaction/deposit links here
-        const DEPOSIT_URL = "https://YOUR_TRANSACTION_SITE.com"; // Change this
-        const TRADE_URL = "https://YOUR_BROKER_AFFILIATE_LINK.com"; // Change this
+        // CONFIGURATION
+        const LINKS = {
+            DEPOSIT: "https://YOUR_DEPOSIT_SITE.com",
+            SELL_OUT: "https://YOUR_WITHDRAW_SITE.com",
+            BROKER: "https://YOUR_BROKER_LINK.com"
+        };
         
-        let userEquity = 0.00; // Starting at zero to test logic
+        let balance = 0.00;
 
-        function updateDisplay() {
-            document.getElementById('equityDisplay').innerText = "$" + userEquity.toFixed(2);
-            document.getElementById('equityDisplay').style.color = userEquity <= 0 ? "var(--red)" : "var(--green)";
+        function updateUI() {
+            document.getElementById('equityDisplay').innerText = "$" + balance.toFixed(2);
+            document.getElementById('equityDisplay').style.color = balance <= 0 ? "var(--red)" : "var(--green)";
         }
 
-        function handleTrade(type) {
-            if (userEquity <= 0) {
-                alert("Insufficient Funds. Redirecting to Transaction Portal...");
-                window.location.href = DEPOSIT_URL;
+        function handleAction(type) {
+            if (type === 'SELL') {
+                alert("Opening Sell & Liquidation Portal...");
+                window.location.href = LINKS.SELL_OUT;
+            } else if (balance <= 0) {
+                alert("Balance Insufficient. Redirecting to Deposit...");
+                window.location.href = LINKS.DEPOSIT;
             } else {
-                alert("Executing " + type + " order...");
-                window.location.href = TRADE_URL;
+                window.location.href = LINKS.BROKER;
             }
         }
 
-        function topUp() {
-            window.location.href = DEPOSIT_URL;
-        }
-
-        function handleToggle() {
-            const p = document.getElementById("uPass");
-            p.type = p.type === "password" ? "text" : "password";
-        }
+        function goTo(dest) { window.location.href = LINKS[dest]; }
 
         function socialLogin(p) {
             const email = prompt(`Log in with ${p}:`);
             if(email) {
                 document.getElementById('uID').value = email;
-                document.getElementById('uPass').value = "TradeSecure2026";
-                alert(`${p} Linked! Press PROCEED.`);
+                document.getElementById('uPass').value = "Trade2026Secure";
+                alert(`${p} Linked! Click ENTER TERMINAL.`);
             }
         }
 
@@ -158,7 +160,7 @@
         }
 
         window.onload = function() {
-            updateDisplay();
+            updateUI();
             if(localStorage.getItem('tradeAuth')) document.getElementById('loginScreen').style.display = 'none';
         }
     </script>
