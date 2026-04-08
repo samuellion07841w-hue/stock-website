@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Global Terminal</title>
+    <title>Thrones Trade | Global Hub</title>
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* Top Header */
-        header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); z-index: 10; }
+        /* Header */
+        header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); }
         .logo { font-size: 20px; font-weight: 900; color: var(--accent); }
         .auth-bar { display: flex; gap: 10px; align-items: center; }
         .auth-btn { background: transparent; border: 1px solid var(--border); color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; }
@@ -17,14 +17,16 @@
 
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* Left Sidebar: Extra Compact Profile */
-        .sidebar-left { width: 240px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-        .section-header { font-size: 9px; color: #6a737d; padding: 8px 15px; background: #0d1117; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        /* Left: Markets & Analysis */
+        .sidebar-left { width: 240px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .section-header { font-size: 9px; color: #6a737d; padding: 8px 15px; background: #0d1117; font-weight: bold; text-transform: uppercase; }
 
-        /* Center: Chart */
-        .chart-main { flex: 1; background: #000; }
+        /* Center: Chart & Global Chat */
+        .center-stack { flex: 1; display: flex; flex-direction: column; background: #000; }
+        .chart-main { flex: 2; border-bottom: 1px solid var(--border); }
+        .chat-section { flex: 1; background: var(--panel); display: flex; flex-direction: column; }
 
-        /* Right: Execution */
+        /* Right: Trade & Ads */
         .sidebar-right { width: 280px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; gap: 12px; }
         .box { background: #06090f; border: 1px solid var(--border); padding: 10px; border-radius: 6px; }
         .label { font-size: 9px; color: #57606f; margin-bottom: 3px; }
@@ -32,10 +34,9 @@
         .trade-btn { height: 75px; border-radius: 8px; border: none; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
         .up { background: var(--green); color: black; font-weight: 900; }
         .down { background: var(--red); font-weight: 900; }
-        .trade-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
 
         /* Overlay */
-        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.92); z-index: 10000; align-items: center; justify-content: center; }
+        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
         .modal { background: #1a1f26; width: 320px; padding: 25px; border-radius: 12px; border: 1px solid var(--accent); text-align: center; }
         .modal input { width: 100%; padding: 12px; margin: 15px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
     </style>
@@ -45,4 +46,89 @@
     <header>
         <div class="logo">THRONES <span style="color:white">TRADE</span></div>
         <div class="auth-bar" id="authUI">
-            <button class="auth-btn" onclick="openLogin()">
+            <button class="auth-btn" onclick="openLogin()">LOG IN</button>
+            <button class="auth-btn signup-btn" onclick="openLogin()">SIGN UP</button>
+        </div>
+    </header>
+
+    <div class="app-body">
+        <div class="sidebar-left">
+            <div class="section-header">Analysis Gauge</div>
+            <div style="height: 140px; overflow: hidden;">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "140", "symbol": "BINANCE:BTCUSDT", "showIntervalTabs": false, "locale": "en", "colorTheme": "dark" }
+                </script>
+            </div>
+            <div class="section-header">Asset List</div>
+            <div style="flex: 1;">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                { "colorTheme": "dark", "width": "100%", "height": "100%", "symbolsGroups": [ { "name": "Crypto", "symbols": [ {"name":"BINANCE:BTCUSDT"}, {"name":"BINANCE:ETHUSDT"} ] } ] }
+                </script>
+            </div>
+        </div>
+
+        <div class="center-stack">
+            <div class="chart-main">
+                <div id="tv_chart" style="height:100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript">
+                    new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "1", "theme": "dark", "container_id": "tv_chart" });
+                </script>
+            </div>
+            
+            <div class="chat-section">
+                <div class="section-header">Global Hub Chat</div>
+                <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0" scrolling="auto" allowtransparency="yes"></iframe>
+            </div>
+        </div>
+
+        <div class="sidebar-right">
+            <div class="box">
+                <div class="label">Total Assets</div>
+                <div style="font-size: 16px; font-weight: bold; color: var(--green);">$10,000.00</div>
+            </div>
+
+            <button class="trade-btn up" onclick="trade('CALL')">
+                <b style="font-size: 18px;">▲ CALL</b>
+                <span style="font-size: 9px;">HIGHER (92%)</span>
+            </button>
+
+            <button class="trade-btn down" onclick="trade('PUT')">
+                <b style="font-size: 18px;">▼ PUT</b>
+                <span style="font-size: 9px;">LOWER (92%)</span>
+            </button>
+
+            <div class="section-header">Sponsored Infrastructure</div>
+            <div class="box" style="margin-top:auto; height: 200px; border-style: dashed; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <iframe data-aa='YOUR_ID' src='//ad.a-ads.com/YOUR_ID?size=240x400' style='width:240px; height:400px; border:0px; padding:0; overflow:hidden; background-color:transparent;'></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalBox" class="overlay">
+        <div class="modal">
+            <h2 id="modalTitle" style="color:var(--accent); margin-top:0;">THRONES AUTH</h2>
+            <input type="text" id="userInput" placeholder="Email or Trader ID">
+            <button class="signup-btn" style="width:100%; padding:12px; border-radius:4px; border:none; cursor:pointer;" onclick="confirmAction()">CONTINUE</button>
+            <p style="font-size: 10px; color: #57606f; margin-top: 15px; cursor:pointer;" onclick="closeModal()">Cancel</p>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'LOGIN';
+        function openLogin() { currentMode = 'LOGIN'; document.getElementById('modalBox').style.display = 'flex'; }
+        function trade(type) { currentMode = 'TRADE'; document.getElementById('modalTitle').innerText = 'THRONES ' + type; document.getElementById('modalBox').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modalBox').style.display = 'none'; }
+        function confirmAction() {
+            const val = document.getElementById('userInput').value;
+            if(!val) return;
+            if(currentMode === 'LOGIN') { localStorage.setItem('thronesUser', val); location.reload(); }
+            else { window.location.href = "YOUR_AFFILIATE_LINK_HERE"; }
+        }
+        window.onload = function() {
+            const user = localStorage.getItem('thronesUser');
+            if(user) document.getElementById('authUI').innerHTML = `<span style="color:var(--green); font-size:12px; font-weight:bold;">● ${user}</span>`;
+        }
+    </script>
+</body>
+</html>
