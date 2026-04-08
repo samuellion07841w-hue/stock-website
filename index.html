@@ -20,28 +20,18 @@
         .google { background: #df4b37; }
         .fb { background: #3b5998; }
 
-        /* PASSWORD FIELD FIX */
         .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
         
-        /* The "Show" button now has higher z-index to stay clickable */
-        .toggle-btn { 
-            position: absolute; 
-            right: 10px; 
-            background: none; 
-            border: none; 
-            color: var(--accent); 
-            font-size: 10px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            z-index: 10;
-            padding: 5px;
-        }
+        .toggle-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); font-size: 10px; font-weight: bold; cursor: pointer; z-index: 10; padding: 5px; }
 
         .bot-check { display: flex; align-items: center; background: #0b0e14; padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin: 15px 0; font-size: 13px; text-align: left; }
         .bot-check input { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; }
+        
+        /* Proceed Button */
         .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
 
+        /* Main UI */
         header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .app-shell { display: flex; height: calc(100vh - 50px); }
         .sidebar-left { width: 240px; background: var(--panel); border-right: 1px solid var(--border); }
@@ -66,19 +56,21 @@
                 <button class="s-btn fb" type="button" onclick="socialLogin('Facebook')">FACEBOOK</button>
             </div>
 
-            <input type="text" id="uID" placeholder="Email / Username">
-            
-            <div class="pass-wrapper">
-                <input type="password" id="uPass" placeholder="Password">
-                <button class="toggle-btn" type="button" id="toggleP" onclick="handleToggle()">SHOW</button>
-            </div>
+            <form id="authForm" onsubmit="doLogin(event)">
+                <input type="text" id="uID" name="username" placeholder="Email / Username" required autocomplete="username">
+                
+                <div class="pass-wrapper">
+                    <input type="password" id="uPass" name="password" placeholder="Password" required autocomplete="current-password">
+                    <button class="toggle-btn" type="button" id="toggleP" onclick="handleToggle()">SHOW</button>
+                </div>
 
-            <div class="bot-check">
-                <input type="checkbox" id="robotCheck"> 
-                <span>Secure Verification</span>
-            </div>
+                <div class="bot-check">
+                    <input type="checkbox" id="robotCheck" required> 
+                    <span>Secure Verification</span>
+                </div>
 
-            <button class="btn-enter" type="button" onclick="doLogin()">PROCEED TO TERMINAL</button>
+                <button class="btn-enter" type="submit">PROCEED TO TERMINAL</button>
+            </form>
         </div>
     </div>
 
@@ -130,11 +122,9 @@
     </div>
 
     <script>
-        // FIXED TOGGLE FUNCTION
         function handleToggle() {
             const passInput = document.getElementById("uPass");
             const btn = document.getElementById("toggleP");
-            
             if (passInput.type === "password") {
                 passInput.type = "text";
                 btn.innerText = "HIDE";
@@ -150,16 +140,19 @@
                 document.getElementById('uID').value = email;
                 document.getElementById('uPass').value = "Trade2026Secure";
                 document.getElementById('robotCheck').checked = true;
-                alert(`${p} Linked! Click PROCEED.`);
+                alert(`${p} Auth Linked. Press PROCEED to save credentials.`);
             }
         }
 
-        function doLogin() {
+        function doLogin(event) {
+            // This prevents the page from actually clearing the data before saving
+            event.preventDefault(); 
+            
             const user = document.getElementById('uID').value;
-            const pass = document.getElementById('uPass').value;
-            const bot = document.getElementById('robotCheck').checked;
-            if(!user || !pass || !bot) { alert("Complete all fields."); return; }
             localStorage.setItem('tradeAuth', user);
+            
+            // This small alert often triggers Google Chrome to ask "Save Password?"
+            alert("Security Protocol Verified. Access Granted.");
             document.getElementById('loginScreen').style.display = 'none';
         }
 
