@@ -3,143 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Secure Portal</title>
+    <title>Thrones Trade | Global Terminal</title>
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         
-        /* LED FRAME */
         @keyframes led-glow { 0% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #00ff00; box-shadow: 0 0 10px #00ff00; } 100% { border-color: #ff0000; box-shadow: 0 0 10px #ff0000; } }
+        
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; border: 4px solid #f00; animation: led-glow 5s infinite; box-sizing: border-box; }
 
-        /* LOGIN SCREEN */
+        /* SECURE GATEWAY */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--panel); width: 340px; padding: 30px; border-radius: 12px; border: 1px solid var(--accent); text-align: center; }
+        .login-card { background: var(--panel); width: 340px; padding: 30px; border-radius: 12px; border: 2px solid var(--accent); text-align: center; box-shadow: 0 0 20px rgba(193, 164, 97, 0.3); }
         
-        /* SOCIAL BUTTONS */
-        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .s-btn { padding: 12px; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .s-btn { padding: 12px; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: bold; }
         .google { background: #df4b37; }
         .fb { background: #3b5998; }
-        .s-btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
         input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
-        .btn-main { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        
-        /* Bot Check */
         .bot-check { display: flex; align-items: center; background: #0b0e14; padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin: 15px 0; font-size: 13px; text-align: left; }
         .bot-check input { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; }
+        .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; margin-top: 5px; }
 
-        /* Mobile Layout */
+        /* APP LAYOUT */
+        header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .app-shell { display: flex; height: calc(100vh - 50px); }
+        
+        .sidebar-left { width: 240px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .chart-main { flex: 1; background: #000; display: flex; flex-direction: column; }
+        .sidebar-right { width: 300px; background: var(--panel); border-left: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+
+        .section-header { font-size: 9px; color: #6a737d; padding: 8px 15px; background: #0d1117; font-weight: bold; text-transform: uppercase; }
+        
+        /* MOBILE VIEW */
         @media (max-width: 768px) {
             .sidebar-left, .chart-main { display: none !important; }
             .sidebar-right { width: 100% !important; border: none !important; }
-            .mobile-only { display: block !important; }
+            .mobile-txt { display: block !important; }
         }
-        .mobile-only { display: none; padding: 20px; text-align: center; border-bottom: 1px solid var(--border); }
-        .app-shell { display: flex; height: calc(100vh - 50px); }
+        .mobile-txt { display: none; padding: 20px; text-align: center; }
+
+        /* RGB BUTTONS */
+        .trade-btn { height: 75px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; color: white; font-weight: 900; animation: led-glow 3s infinite; }
+        .up { background: rgba(0, 255, 136, 0.1); color: var(--green); }
+        .down { background: rgba(255, 59, 59, 0.1); color: var(--red); }
     </style>
 </head>
 <body>
 
     <div id="loginScreen">
         <div class="login-card">
-            <h2 style="color:var(--accent); margin-bottom:5px;">THRONES TRADE</h2>
-            <p style="font-size: 10px; color: #666; margin-bottom: 20px;">April 14th Protocol Active</p>
+            <h2 style="color:var(--accent); margin-bottom:5px; letter-spacing: 2px;">THRONES TRADE</h2>
+            <p style="font-size: 10px; color: #555; margin-bottom: 20px;">GLOBAL FINANCIAL ACCESS</p>
             
             <div class="social-grid">
-                <button class="s-btn google" onclick="socialAuth('Google')">GOOGLE</button>
-                <button class="s-btn fb" onclick="socialAuth('Facebook')">FACEBOOK</button>
+                <button class="s-btn google" onclick="socialLogin('Google')">GOOGLE</button>
+                <button class="s-btn fb" onclick="socialLogin('Facebook')">FACEBOOK</button>
             </div>
 
-            <div style="font-size: 10px; color: #444; margin: 10px 0;">OR USE TRADER ID</div>
-            <input type="email" id="uMail" placeholder="Email / Trader ID">
-            <input type="password" id="uPass" placeholder="Security Password">
+            <input type="text" id="uID" placeholder="Email or Username">
+            <input type="password" id="uPass" placeholder="Access Password">
 
             <div class="bot-check">
                 <input type="checkbox" id="robotCheck"> 
-                <span>I'm not a robot</span>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" width="25" style="margin-left:auto; opacity:0.5;">
+                <span>Secure Verification</span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" width="20" style="margin-left:auto; opacity:0.3;">
             </div>
 
-            <button class="btn-main" onclick="validateLogin()">SECURE SIGN IN</button>
+            <button class="btn-enter" onclick="doLogin()">PROCEED TO TERMINAL</button>
         </div>
     </div>
 
-    <header style="background:var(--panel); padding:10px 25px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
-        <div style="font-weight:900; color:var(--accent);">THRONES <span style="color:white">TERMINAL</span></div>
-        <div id="userBadge" style="font-size: 11px; color: var(--green);">● STANDBY</div>
+    <header>
+        <div style="font-weight:900; color:var(--accent); font-size: 18px;">THRONES <span style="color:white">TRADE</span></div>
+        <div id="badge" style="font-size: 10px; color: var(--green);">● SECURE CONNECTION</div>
     </header>
 
     <div class="app-shell">
-        <div class="sidebar-left" style="width: 240px; background: var(--panel); border-right: 1px solid var(--border);">
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-            { "interval": "1m", "width": "100%", "height": "220", "symbol": "BINANCE:BTCUSDT", "colorTheme": "dark" }
-            </script>
+        <div class="sidebar-left">
+            <div class="section-header">Live Market Gauge</div>
+            <div style="height: 140px; overflow: hidden;">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                { "interval": "1m", "width": "100%", "isTransparent": true, "height": "140", "symbol": "BINANCE:BTCUSDT", "colorTheme": "dark" }
+                </script>
+            </div>
+            <div class="section-header">Asset Stream</div>
+            <div style="flex: 1;">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                { "colorTheme": "dark", "width": "100%", "height": "100%", "symbolsGroups": [ { "name": "Crypto", "symbols": [ {"name":"BINANCE:BTCUSDT"}, {"name":"BINANCE:ETHUSDT"} ] } ] }
+                </script>
+            </div>
         </div>
 
-        <div class="chart-main" style="flex: 1; background: #000;">
-            <div id="tv_chart" style="height:100%;"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-            <script type="text/javascript">
-                new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "theme": "dark", "container_id": "tv_chart" });
-            </script>
+        <div class="chart-main">
+            <div style="flex: 2; border-bottom: 1px solid var(--border);">
+                <div id="tv_chart" style="height:100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript">
+                    new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "theme": "dark", "container_id": "tv_chart" });
+                </script>
+            </div>
+            <div style="flex: 1; background: var(--panel);">
+                <div class="section-header">Global Trade Chat</div>
+                <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
         </div>
 
-        <div class="sidebar-right" style="width: 300px; background: var(--panel); border-left: 1px solid var(--border); padding: 20px; display:flex; flex-direction:column;">
-            <div class="mobile-only">
-                <h3 style="color:var(--accent)">SECURITY VERIFIED</h3>
-                <p style="font-size: 11px; color: #888;">Welcome to the mobile portal. You are now logged in. Trading execution is active via the buttons below.</p>
+        <div class="sidebar-right">
+            <div class="mobile-txt">
+                <h3 style="color:var(--accent)">THRONES TRADE MOBILE</h3>
+                <p style="font-size: 11px; color: #666;">You are securely logged in. Mobile trading execution is enabled via the action buttons below.</p>
             </div>
 
-            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:20px;">
-                <div style="font-size: 9px; color: #555;">PORTFOLIO BALANCE</div>
-                <div style="font-size: 22px; font-weight: bold; color: var(--green);">$10,000.00</div>
+            <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
+                <div style="font-size: 9px; color: #444;">AVAILABLE EQUITY</div>
+                <div style="font-size: 20px; font-weight: 900; color: var(--green);">$10,000.00</div>
             </div>
 
-            <button style="height:70px; width:100%; background:var(--green); border:none; border-radius:8px; font-weight:900; cursor:pointer; margin-bottom:12px;" onclick="go()">▲ CALL</button>
-            <button style="height:70px; width:100%; background:var(--red); color:white; border:none; border-radius:8px; font-weight:900; cursor:pointer;" onclick="go()">▼ PUT</button>
-            
-            <div style="margin-top:auto; background:rgba(255,255,255,0.03); padding:10px; border-radius:6px; font-size:10px; color:#444; text-align:center;">
-                Connected to <b>Thrones of Legends</b> Database
+            <button class="trade-btn up" onclick="trade()">▲ CALL (92%)</button>
+            <button class="trade-btn down" onclick="trade()">▼ PUT (92%)</button>
+
+            <div class="section-header">Sponsored Infrastructure</div>
+            <div style="margin-top:auto; height: 180px; border: 1px dashed #222; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #333;">
+                ADVERTISING MODULE READY
             </div>
         </div>
     </div>
 
     <script>
-        // Fakes the Google/FB popup
-        function socialAuth(provider) {
-            const user = prompt(`Enter your ${provider} Email to link accounts:`);
-            if(user) {
-                localStorage.setItem('thronesUser', user);
-                alert(`${provider} Connection Successful! Please click "Secure Sign In" to continue.`);
-                document.getElementById('uMail').value = user;
+        function socialLogin(p) {
+            const email = prompt(`Log in with ${p}:`);
+            if(email) {
+                document.getElementById('uID').value = email;
                 document.getElementById('uPass').value = "********";
                 document.getElementById('robotCheck').checked = true;
+                alert(`${p} account linked. Click Proceed to enter.`);
             }
         }
 
-        function validateLogin() {
-            const mail = document.getElementById('uMail').value;
+        function doLogin() {
+            const user = document.getElementById('uID').value;
             const pass = document.getElementById('uPass').value;
-            const robot = document.getElementById('robotCheck').checked;
+            const bot = document.getElementById('robotCheck').checked;
 
-            if(!mail || !pass) { alert("Access Denied: Email and Password required."); return; }
-            if(!robot) { alert("Verification Failed: Please check the 'Not a Robot' box."); return; }
+            if(!user || !pass) { alert("Enter credentials."); return; }
+            if(!bot) { alert("Please complete verification."); return; }
 
-            localStorage.setItem('thronesUser', mail);
+            localStorage.setItem('tradeAuth', user);
             document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('userBadge').innerText = "● " + mail;
+            document.getElementById('badge').innerText = "● " + user;
         }
 
-        function go() {
-            window.location.href = "YOUR_AFFILIATE_LINK_HERE";
-        }
+        function trade() { window.location.href = "YOUR_AFFILIATE_LINK_HERE"; }
 
         window.onload = function() {
-            const saved = localStorage.getItem('thronesUser');
-            if(saved) {
+            const auth = localStorage.getItem('tradeAuth');
+            if(auth) {
                 document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('userBadge').innerText = "● " + saved;
+                document.getElementById('badge').innerText = "● " + auth;
             }
         }
     </script>
