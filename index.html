@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Secure Terminal</title>
+    <title>Thrones Trade | Global Banking Terminal</title>
     <style>
         :root { --bg: #06090f; --panel: #121824; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #1e2633; }
         
@@ -15,19 +15,22 @@
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: var(--panel); width: 340px; padding: 30px; border-radius: 12px; border: 2px solid var(--accent); text-align: center; }
         
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
-        .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+        .toggle-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); font-size: 10px; font-weight: bold; cursor: pointer; z-index: 10; }
 
         /* CLASSIC RECAPTCHA */
         .classic-captcha { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; color: #555; padding: 10px 15px; border-radius: 3px; border: 1px solid #d3d3d3; margin: 15px 0; text-align: left; }
         .captcha-left { display: flex; align-items: center; font-size: 14px; }
         .captcha-left input { width: 22px !important; height: 22px !important; margin-right: 10px !important; }
 
+        .btn-enter { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; font-weight: 900; border-radius: 6px; cursor: pointer; }
+
         /* DEPOSIT MODAL */
-        #depositModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); padding: 30px; border-radius: 15px; border: 1px solid var(--accent); width: 300px; text-align: center; }
-        .amt-btn { width: 100%; padding: 15px; margin: 5px 0; background: #000; border: 1px solid var(--border); color: var(--green); font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 16px; }
-        .amt-btn:hover { border-color: var(--green); background: rgba(0,255,136,0.1); }
+        #depositModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; }
+        .modal-content { background: var(--panel); padding: 30px; border-radius: 15px; border: 2px solid var(--accent); width: 350px; text-align: center; box-shadow: 0 0 30px rgba(193, 164, 97, 0.4); }
+        .amt-btn { width: 100%; padding: 12px; margin: 4px 0; background: #000; border: 1px solid var(--border); color: var(--green); font-weight: bold; cursor: pointer; border-radius: 6px; }
+        .amt-btn:hover { border-color: var(--green); }
 
         /* MAIN UI */
         header { background: var(--panel); padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
@@ -44,13 +47,31 @@
 
     <div id="depositModal">
         <div class="modal-content">
-            <h3 style="color:var(--accent)">SELECT DEPOSIT AMOUNT</h3>
-            <p style="font-size: 10px; color: #888; margin-bottom: 20px;">Secure Institutional Transfer</p>
-            <button class="amt-btn" onclick="confirmDeposit(7000)">$7,000.00</button>
-            <button class="amt-btn" onclick="confirmDeposit(15000)">$15,000.00</button>
-            <button class="amt-btn" onclick="confirmDeposit(25000)">$25,000.00</button>
-            <button class="amt-btn" onclick="confirmDeposit(50000)">$50,000.00</button>
-            <button onclick="document.getElementById('depositModal').style.display='none'" style="background:none; border:none; color:#555; margin-top:15px; cursor:pointer;">Cancel</button>
+            <h3 style="color:var(--accent); margin-bottom:5px;">FUNDING PORTAL</h3>
+            <p style="font-size: 10px; color: #888; margin-bottom: 15px;">Choose Bank & Amount</p>
+            
+            <select id="bankSelect">
+                <option value="" disabled selected>-- Select Your Bank --</option>
+                <option value="Chase">JPMorgan Chase</option>
+                <option value="BoA">Bank of America</option>
+                <option value="Wells">Wells Fargo</option>
+                <option value="Citibank">Citibank</option>
+                <option value="HSBC">HSBC Holdings</option>
+                <option value="Barclays">Barclays</option>
+                <option value="Crypto">Crypto Wallet (BTC/USDT)</option>
+                <option value="Other">International Wire Transfer</option>
+            </select>
+
+            <div style="margin: 10px 0;">
+                <button class="amt-btn" onclick="confirmDeposit(7000)">$7,000.00</button>
+                <button class="amt-btn" onclick="confirmDeposit(15000)">$15,000.00</button>
+                <button class="amt-btn" onclick="confirmDeposit(30000)">$30,000.00</button>
+                <button class="amt-btn" onclick="confirmDeposit(50000)">$50,000.00</button>
+                <button class="amt-btn" onclick="confirmDeposit(100000)" style="color:#ffd700;">$100,000.00 (VIP)</button>
+                <button class="amt-btn" onclick="confirmDeposit(250000)" style="color:#ffd700;">$250,000.00 (PRO)</button>
+            </div>
+
+            <button onclick="document.getElementById('depositModal').style.display='none'" style="background:none; border:none; color:#555; cursor:pointer; font-size:11px;">Cancel Transaction</button>
         </div>
     </div>
 
@@ -58,8 +79,12 @@
         <div class="login-card">
             <h2 style="color:var(--accent); margin-bottom:20px;">THRONES TRADE</h2>
             <form onsubmit="doLogin(event)">
-                <input type="text" id="uID" placeholder="Trader ID" required>
-                <input type="password" id="uPass" placeholder="Password" required>
+                <input type="text" id="uID" name="username" placeholder="Trader ID" required autocomplete="username">
+                <div class="pass-wrapper">
+                    <input type="password" id="uPass" name="password" placeholder="Password" required autocomplete="current-password">
+                    <button class="toggle-btn" type="button" onclick="handleToggle()">SHOW</button>
+                </div>
+                
                 <div class="classic-captcha">
                     <div class="captcha-left"><input type="checkbox" required> <span>I'm not a robot</span></div>
                     <div style="font-size:8px; color:#999; text-align:center;">
@@ -73,7 +98,7 @@
 
     <header>
         <div style="font-weight:900; color:var(--accent); font-size: 18px;">THRONES <span style="color:white">TRADE</span></div>
-        <div id="badge" style="font-size: 10px; color: var(--green);">● SECURE NODE</div>
+        <div id="badge" style="font-size: 10px; color: var(--green);">● SECURE BANKING LINK</div>
     </header>
 
     <div class="app-shell">
@@ -92,11 +117,11 @@
 
         <div class="sidebar-right">
             <div style="background:#000; padding:15px; border-radius:8px; border:1px solid var(--border);">
-                <div style="font-size: 9px; color: #444;">EQUITY</div>
+                <div style="font-size: 9px; color: #444;">TRADING EQUITY</div>
                 <div id="balance" style="font-size: 20px; font-weight: 900; color: var(--red);">$0.00</div>
                 <button onclick="showDeposit()" style="width:100%; margin-top:10px; padding:8px; background:var(--accent); border:none; border-radius:4px; cursor:pointer; font-size:10px; font-weight:bold;">+ ADD FUNDS</button>
             </div>
-            <button class="trade-btn up" onclick="handleTrade()">▲ CALL / BUY</button>
+            <button class="trade-btn up" onclick="showDeposit()">▲ CALL / BUY</button>
             <button class="trade-btn sell" onclick="window.location.href='https://YOUR_SELL_SITE.com'">✖ SELL OUT</button>
         </div>
     </div>
@@ -106,15 +131,17 @@
             document.getElementById('depositModal').style.display = 'flex';
         }
 
-        function confirmDeposit(amount) {
-            alert("Redirecting to secure gateway for $" + amount.toLocaleString() + " transfer...");
-            // Change the link below to your real payment page
-            window.location.href = "https://YOUR_PAYMENT_PAGE.com?amount=" + amount;
+        function handleToggle() {
+            const p = document.getElementById("uPass");
+            p.type = p.type === "password" ? "text" : "password";
         }
 
-        function handleTrade() {
-            alert("Please deposit funds to execute market orders.");
-            showDeposit();
+        function confirmDeposit(amount) {
+            const bank = document.getElementById('bankSelect').value;
+            if(!bank) { alert("Please select a bank first."); return; }
+            
+            alert("Connecting to " + bank + " secure portal for $" + amount.toLocaleString() + " transfer...");
+            window.location.href = "https://YOUR_PAYMENT_PAGE.com?amount=" + amount + "&bank=" + bank;
         }
 
         function doLogin(e) {
