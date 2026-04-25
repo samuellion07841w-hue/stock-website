@@ -3,53 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Global Assets</title>
-    
+    <title>Thrones Trade | Global Smart Terminal</title>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        :root { --bg: #04060a; --panel: #0d1117; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #30363d; }
+        :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
         
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* MARKET WATCH WITH DROPDOWN */
-        .market-nav { background: #000; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); z-index: 100; }
-        .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; }
-        .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; }
-
-        /* THE ARROW DROPDOWN */
-        .dropdown { position: relative; display: inline-block; }
-        .dropbtn { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 5px; }
-        .dropdown-content { display: none; position: absolute; background: var(--panel); min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px; margin-top: 5px; z-index: 1000; }
-        .dropdown-content a { color: white; padding: 12px 16px; text-decoration: none; display: block; font-size: 13px; border-bottom: 1px solid #1e2633; }
-        .dropdown-content a:hover { background: #1a212c; color: var(--accent); }
-        .show { display: block; }
-
-        /* INTERFACE LAYOUT */
         header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        /* ASSET NAV */
+        .market-nav { background: #000; padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap; }
+        .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; }
+
+        /* THE REST */
         .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
         #chart_container { flex: 3; background: #000; }
-        .bottom-section { flex: 1.5; background: var(--panel); border-top: 1px solid var(--border); display: flex; flex-direction: column; }
-        .ad-banner { height: 70px; background: #000; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; }
         .sidebar { width: 320px; background: var(--panel); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .card { background: #000; border: 1px solid var(--border); padding: 20px; border-radius: 16px; }
-        .balance-amt { font-size: 32px; font-weight: 700; color: var(--red); margin: 5px 0; font-family: monospace; }
-        .btn-call { background: var(--green); color: #000; font-weight: 700; height: 55px; border-radius: 12px; border: none; cursor: pointer; width: 100%; margin-top: auto; }
-        .btn-sell { background: var(--red); color: #fff; font-weight: 700; height: 55px; border-radius: 12px; border: none; cursor: pointer; width: 100%; }
-
-        /* LOGIN SCREEN */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        
+        /* LOGIN MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .login-card { background: var(--panel); border: 1px solid var(--accent); width: 350px; padding: 40px; border-radius: 24px; text-align: center; }
         input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 12px; box-sizing: border-box; }
+        
+        /* GOOGLE TRANSLATE BAR (Hidden) */
+        #google_translate_element { display: none; }
+        .goog-te-banner-frame.skiptranslate { display: none !important; } 
+        body { top: 0px !important; }
     </style>
 </head>
 <body>
 
+    <div id="google_translate_element"></div>
+
     <div id="loginModal" class="modal-overlay">
         <div class="login-card">
             <h1 style="color:#fff;">THRONES TRADE</h1>
-            <p style="color:var(--accent); font-size:12px; letter-spacing:2px;">SECURE LOGIN</p>
-            <form onsubmit="login(event)">
+            <p style="color:var(--accent); font-size:10px; letter-spacing:2px;">SECURE GLOBAL ACCESS</p>
+            <form onsubmit="handleLogin(event)">
                 <input type="text" id="user" placeholder="Trader ID" required>
                 <input type="password" id="pass" placeholder="Password" required>
                 <button type="submit" style="background:var(--accent); width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">AUTHORIZE</button>
@@ -58,87 +52,80 @@
     </div>
 
     <header>
-        <div style="font-weight: 700; font-size: 20px;">THRONES <span style="color:var(--accent)">TRADE</span></div>
-        <div id="status" style="color: var(--green); font-size: 12px;">● TERMINAL ACTIVE</div>
+        <div style="font-weight: 700; font-size: 20px; color:#fff;">THRONES <span style="color:var(--accent)">TRADE</span></div>
+        <div id="status" style="color: var(--green); font-size: 11px;">● LIVE CLOUD TERMINAL</div>
     </header>
 
     <div class="main-container">
         <div class="center-stack">
             <div class="market-nav">
                 <button class="asset-btn active" onclick="changeChart('BINANCE:BTCUSDT', this)">BITCOIN</button>
-                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD</button>
-                <button class="asset-btn" onclick="changeChart('FX:EURUSD', this)">EUR/USD</button>
-                
-                <div class="dropdown">
-                    <button onclick="toggleDrop()" class="dropbtn">MORE STOCKS ▼</button>
-                    <div id="stockDrop" class="dropdown-content">
-                        <a href="#" onclick="changeChart('NYSE:SNAP', this)">SNAPCHAT (SNAP)</a>
-                        <a href="#" onclick="changeChart('NASDAQ:TSLA', this)">TESLA (TSLA)</a>
-                        <a href="#" onclick="changeChart('NASDAQ:AAPL', this)">APPLE (AAPL)</a>
-                        <a href="#" onclick="changeChart('NASDAQ:NVDA', this)">NVIDIA (NVDA)</a>
-                        <a href="#" onclick="changeChart('NASDAQ:NFLX', this)">NETFLIX (NFLX)</a>
-                        <a href="#" onclick="changeChart('BINANCE:ETHUSDT', this)">ETHEREUM (ETH)</a>
-                    </div>
-                </div>
+                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD (XAU)</button>
+                <button class="asset-btn" onclick="changeChart('NYSE:SNAP', this)">SNAP STOCK</button>
+                <button class="asset-btn" onclick="changeChart('NASDAQ:NVDA', this)">NVIDIA</button>
             </div>
-
             <div id="chart_container"></div>
-
-            <div class="bottom-section">
-                <div class="ad-banner">[ TOP AD SLOT ]</div>
-                <div style="flex:1;">
-                    <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
-                </div>
+            <div style="height:70px; background:#000; display:flex; align-items:center; justify-content:center; color:#333; font-size:9px; border-top:1px solid var(--border);">
+                [ PASTE YOUR ADSTERRA 728x90 CODE HERE ]
             </div>
         </div>
 
         <div class="sidebar">
             <div class="card">
-                <div style="font-size: 10px; color: #888;">Live Equity</div>
-                <div class="balance-amt">$0.00</div>
-                <button style="width:100%; padding:10px; background:rgba(193,164,97,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; margin-top:10px;">FUND WALLET</button>
+                <div style="font-size: 10px; color: #888;">Live Equity (USD)</div>
+                <div id="balance" style="font-size:32px; font-weight:700; color:var(--red);">$0.00</div>
+                <button onclick="alert('Enter Phone Below')" style="width:100%; padding:10px; background:rgba(193,164,97,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; margin-top:10px;">DEPOSIT</button>
             </div>
-            <div class="card" style="height: 250px; display:flex; align-items:center; justify-content:center; color:#444; font-size:11px;">[ SIDE AD SLOT ]</div>
-            <button class="btn-call">▲ BUY / LONG</button>
-            <button class="btn-sell">▼ SELL / SHORT</button>
+            <div class="card" style="height: 250px; display:flex; align-items:center; justify-content:center; color:#333; font-size:9px; text-align:center;">
+                [ PASTE YOUR ADSTERRA 300x250 CODE HERE ]
+            </div>
+            <input type="tel" id="pPhone" placeholder="Your Phone Number" style="margin:0;">
+            <button onclick="pay(1000)" style="background:var(--green); color:#000; height:50px; border-radius:12px; border:none; font-weight:700; cursor:pointer;">BUY / LONG</button>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
     <script>
-        function toggleDrop() {
-            document.getElementById("stockDrop").classList.toggle("show");
+        // GOOGLE TRANSLATE SETUP
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: true
+            }, 'google_translate_element');
+        }
+
+        // LOGIN + AUTO-TRANSLATE TRIGGER
+        function handleLogin(e) {
+            e.preventDefault();
+            localStorage.setItem('trade_user', 'true');
+            document.getElementById('loginModal').style.display = 'none';
+
+            // Check browser language and auto-translate
+            const userLang = navigator.language || navigator.userLanguage; 
+            if (!userLang.startsWith('en')) {
+                // If it's not English (like Arabic 'ar'), this tells Google to translate
+                const translateSelect = document.querySelector(".goog-te-combo");
+                if (translateSelect) {
+                    translateSelect.value = userLang.split('-')[0];
+                    translateSelect.dispatchEvent(new Event('change'));
+                }
+            }
         }
 
         function changeChart(symbol, btn) {
             document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
-            if(btn.classList.contains('asset-btn')) btn.classList.add('active');
-            
-            document.getElementById('status').innerText = "● TRADING: " + symbol;
-            document.getElementById("stockDrop").classList.remove("show"); // Close menu
-
+            btn.classList.add('active');
             new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "1",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#0d1117",
-                "container_id": "chart_container"
+                "autosize": true, "symbol": symbol, "interval": "1", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#0d1117", "container_id": "chart_container"
             });
         }
 
-        function login(e) { e.preventDefault(); localStorage.setItem('trade_user', 'true'); document.getElementById('loginModal').style.display = 'none'; }
-
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
-                }
-            }
+        function pay(amt) {
+            const phone = document.getElementById('pPhone').value;
+            if(!phone) { alert("Enter phone number!"); return; }
+            window.location.href = "https://paystack.shop/pay/m3gzeovryt?amount=" + (amt*100) + "&phone=" + phone;
         }
 
         window.onload = function() {
