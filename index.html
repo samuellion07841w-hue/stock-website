@@ -1,14 +1,99 @@
-<div class="ad-container" style="margin: 20px auto; text-align: center; min-height: 250px;">
-    <span style="display: block; font-size: 10px; color: #666; margin-bottom: 5px;">ADVERTISEMENT</span>
-    
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-YOUR_AD_ID_HERE"
-         data-ad-slot="YOUR_SLOT_ID"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-         
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrones Trade | Global Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .market-up { color: #00ff88; }
+        .market-down { color: #ff4d4d; }
+        /* Ad Slot Styling */
+        .ad-zone {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="glass m-4 p-4 flex justify-between items-center">
+        <div class="text-2xl font-bold tracking-tighter text-blue-400">THRONES <span class="text-white">TRADE</span></div>
+        <div class="hidden md:flex gap-6 text-sm">
+            <div class="market-up">BTC: $64,231.50 ↑</div>
+            <div class="market-up">ETH: $3,452.12 ↑</div>
+            <div class="market-down">SOL: $142.05 ↓</div>
+        </div>
+        <div id="language-toggle">
+            <button class="bg-blue-600 px-4 py-1 rounded text-sm hover:bg-blue-500 transition">EN / AR</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
+        
+        <div class="lg:col-span-1 flex flex-col gap-4">
+            <div class="glass p-6 flex-grow">
+                <h3 class="text-lg font-semibold mb-4">Trade Assets</h3>
+                <select class="w-full bg-gray-800 border border-gray-700 p-2 rounded mb-4 focus:outline-none focus:border-blue-500">
+                    <option>Thrones Token (TRT)</option>
+                    <option>Global Equity</option>
+                    <option>Real Estate NFT</option>
+                </select>
+                <div class="space-y-4">
+                    <input type="number" placeholder="Amount" class="w-full bg-gray-900 p-3 rounded border border-gray-800 focus:border-blue-500 outline-none">
+                    <button class="w-full bg-green-600 py-3 rounded font-bold hover:bg-green-500">BUY</button>
+                    <button class="w-full bg-red-600 py-3 rounded font-bold hover:bg-red-500">SELL</button>
+                </div>
+            </div>
+
+            <div class="ad-zone h-48 flex items-center justify-center">
+                <span class="text-xs text-gray-500 italic">[ Sidebar Ad Unit ]</span>
+                </div>
+        </div>
+
+        <div class="lg:col-span-2 flex flex-col gap-4">
+            <div class="glass p-4 flex-grow relative min-h-[400px]">
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full text-xs">Live Chart</span>
+                </div>
+                <div class="w-full h-full flex items-center justify-center border-b border-gray-800">
+                    <p class="text-gray-600 italic">Market Visualization Loading...</p>
+                </div>
+            </div>
+
+            <div class="ad-zone min-h-[90px]">
+                <span class="text-xs text-gray-500 italic">[ Horizontal Leaderboard Ad ]</span>
+                </div>
+        </div>
+
+        <div class="lg:col-span-1 flex flex-col gap-4">
+            <div class="glass p-4 h-1/2 flex flex-col">
+                <h3 class="text-md font-semibold mb-2 border-b border-gray-700 pb-2">Global Hub Chat</h3>
+                <div class="flex-grow overflow-y-auto text-sm space-y-2 py-2" id="chat-box">
+                    <p><span class="text-blue-400 font-bold">Admin:</span> Welcome to the trade terminal.</p>
+                </div>
+                <input type="text" placeholder="Send message..." class="bg-gray-900 p-2 rounded text-xs outline-none">
+            </div>
+
+            <div class="glass p-4 h-1/2">
+                <h3 class="text-md font-semibold mb-4">Secure Deposit</h3>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="bg-gray-800 px-3 py-1 rounded text-xs hover:bg-gray-700">Nigeria (Paystack)</button>
+                    <button class="bg-gray-800 px-3 py-1 rounded text-xs hover:bg-gray-700">Global (Stripe)</button>
+                    <button class="bg-gray-800 px-3 py-1 rounded text-xs hover:bg-gray-700">Crypto</button>
+                </div>
+                <div class="text-center p-4 border border-dashed border-gray
