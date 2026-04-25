@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Institutional Terminal</title>
+    <title>Thrones Trade | Multi-Asset Terminal</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
@@ -12,26 +12,22 @@
         
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden; }
         
-        /* THE BETTER LOGIN SCREEN (GLASSMORPHISM) */
+        /* LOGIN & MODALS */
         .modal-overlay { position: fixed; inset: 0; background: url('https://images.unsplash.com/photo-1611974715853-2b8ef9a3d136?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover; z-index: 10000; display: flex; align-items: center; justify-content: center; }
         .modal-overlay::before { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); }
-
-        .login-card { position: relative; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); width: 380px; padding: 40px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; }
+        .login-card { position: relative; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); width: 380px; padding: 40px; border-radius: 24px; text-align: center; }
         
-        .login-card h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 5px; letter-spacing: -1px; }
-        .login-card p { color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; font-weight: 500; }
+        /* MARKET WATCH BAR */
+        .market-nav { background: #000; padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap; transition: 0.2s; }
+        .asset-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
 
-        input { width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 12px; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: var(--accent); outline: none; background: rgba(0,0,0,0.6); }
-
-        .btn-login { background: var(--accent); color: #000; font-weight: 700; width: 100%; padding: 16px; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; transition: 0.3s; font-size: 15px; }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(193, 164, 97, 0.3); }
-
-        /* THE REST OF THE TERMINAL */
-        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
+        /* THE REST */
+        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
-        #chart_frame { flex: 3; background: #000; }
+        #chart_container { flex: 3; background: #000; position: relative; }
         .bottom-section { flex: 1.5; background: var(--panel); border-top: 1px solid var(--border); display: flex; flex-direction: column; }
         .ad-banner-top { height: 70px; background: #000; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; border-bottom: 1px solid var(--border); }
         
@@ -42,6 +38,7 @@
         .btn-fund { background: rgba(193, 164, 97, 0.1); color: var(--accent); border: 1px solid var(--accent); font-size: 11px; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
         .btn-call { background: var(--green); color: #000; font-weight: 700; height: 55px; border-radius: 12px; border: none; cursor: pointer; }
         .btn-sell { background: var(--red); color: #fff; font-weight: 700; height: 55px; border-radius: 12px; border: none; cursor: pointer; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 12px; }
     </style>
 </head>
 <body>
@@ -53,24 +50,15 @@
             <form onsubmit="login(event)">
                 <input type="text" id="user" placeholder="Trader ID" required>
                 <input type="password" id="pass" placeholder="Access Password" required>
-                <div style="margin: 15px 0; color: #888; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <input type="checkbox" required style="width: 15px;"> I am a verified human trader
-                </div>
-                <button type="submit" class="btn-login">ENTER TERMINAL</button>
+                <button type="submit" style="background:var(--accent); color:#000; font-weight:700; width:100%; padding:16px; border:none; border-radius:12px; cursor:pointer; margin-top:20px;">ENTER TERMINAL</button>
             </form>
-            <div style="margin-top: 25px; color: #555; font-size: 10px;">Encrypted via AES-256 Protocol</div>
         </div>
     </div>
 
     <div id="fundModal" class="modal-overlay" style="display:none; background: rgba(0,0,0,0.9);">
         <div class="login-card" style="background: var(--panel);">
             <h2 style="color:var(--accent);">WALLET TOP-UP</h2>
-            <input type="tel" id="pPhone" placeholder="Your Phone Number">
-            <select id="pBank" style="width:100%; padding:15px; background:#000; border:1px solid var(--border); color:#fff; border-radius:12px; margin:10px 0;">
-                <option value="OPay">OPay / PalmPay</option>
-                <option value="Kuda">Kuda Bank</option>
-                <option value="GTB">GTBank</option>
-            </select>
+            <input type="tel" id="pPhone" placeholder="Enter Your Phone Number">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <button class="btn-fund" onclick="pay(100000)" style="background:var(--green); color:#000;">$100k</button>
                 <button class="btn-fund" onclick="pay(1000000)" style="background:var(--accent); color:#000;">$1M</button>
@@ -81,20 +69,22 @@
 
     <header>
         <div style="font-weight: 700; font-size: 20px; color: #fff;">THRONES <span style="color:var(--accent)">TRADE</span></div>
-        <div style="color: var(--green); font-size: 12px;">● LIVE CLOUD CONNECTION</div>
+        <div id="status" style="color: var(--green); font-size: 12px;">● LIVE: BTC/USDT</div>
     </header>
 
     <div class="main-container">
         <div class="center-stack">
-            <div id="chart_frame">
-                <div id="tradingview_pro" style="height:100%;width:100%;"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                new TradingView.widget({
-                    "autosize": true, "symbol": "FX:EURUSD", "interval": "1", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#0d1117", "withdateranges": true, "container_id": "tradingview_pro"
-                });
-                </script>
+            <div class="market-nav">
+                <button class="asset-btn active" onclick="changeChart('BINANCE:BTCUSDT', this)">BITCOIN</button>
+                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD</button>
+                <button class="asset-btn" onclick="changeChart('FX:EURUSD', this)">EUR/USD</button>
+                <button class="asset-btn" onclick="changeChart('NYSE:SNAP', this)">SNAP STOCK</button>
+                <button class="asset-btn" onclick="changeChart('NASDAQ:TSLA', this)">TESLA</button>
             </div>
+
+            <div id="chart_container">
+                </div>
+
             <div class="bottom-section">
                 <div class="ad-banner-top">[ ADVERTISING REVENUE SLOT ]</div>
                 <div style="flex:1;">
@@ -105,7 +95,7 @@
 
         <div class="sidebar">
             <div class="card">
-                <div style="font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Available Equity</div>
+                <div style="font-size: 10px; color: #888;">Equity Balance</div>
                 <div id="balance" class="balance-amt">$0.00</div>
                 <button class="btn-fund" onclick="document.getElementById('fundModal').style.display='flex'">DEPOSIT FUNDS</button>
             </div>
@@ -121,8 +111,33 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const PAYSTACK_URL = "https://paystack.shop/pay/m3gzeovryt";
+        let currentSymbol = "BINANCE:BTCUSDT";
+
+        // FUNCTION TO CHANGE THE CHART
+        function changeChart(symbol, btn) {
+            currentSymbol = symbol;
+            
+            // UI Update
+            document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('status').innerText = "● LIVE: " + symbol;
+
+            // Reload Widget
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "1",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#0d1117",
+                "container_id": "chart_container"
+            });
+        }
 
         function login(e) {
             e.preventDefault();
@@ -132,7 +147,7 @@
 
         function pay(amt) {
             const phone = document.getElementById('pPhone').value;
-            if (!phone) { alert("Enter phone number to proceed"); return; }
+            if (!phone) { alert("Enter phone number"); return; }
             window.location.href = PAYSTACK_URL + "?amount=" + (amt * 100) + "&phone=" + phone;
         }
 
@@ -140,6 +155,8 @@
             if(localStorage.getItem('trade_user')) {
                 document.getElementById('loginModal').style.display = 'none';
             }
+            // Load initial chart
+            changeChart('BINANCE:BTCUSDT', document.querySelector('.asset-btn'));
         }
     </script>
 </body>
