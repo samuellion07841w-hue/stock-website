@@ -3,114 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Professional Terminal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Thrones Trade | Global Institutional Terminal</title>
+    
     <style>
-        body {
-            background-color: #0b0e11;
-            color: #eaecef;
-            font-family: 'Inter', sans-serif;
-        }
-        .sidebar {
-            background-color: #161a1e;
-            border-right: 1px solid #2b2f36;
-        }
-        .trade-panel {
-            background-color: #161a1e;
-            border-left: 1px solid #2b2f36;
-        }
-        .market-up { color: #00c076; }
-        .market-down { color: #cf304a; }
-        .btn-buy { background-color: #00c076; }
-        .btn-sell { background-color: #cf304a; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        :root { --bg: #04060a; --panel: #0d1117; --green: #00ff88; --red: #ff3b3b; --accent: #c1a461; --text: #f0f2f5; --border: #30363d; }
+        
+        body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* MARKET WATCH & DROPDOWN */
+        .market-nav { background: #000; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); z-index: 100; }
+        .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: var(--panel); border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .dropdown-content { display: none; position: absolute; background: var(--panel); min-width: 180px; border: 1px solid var(--border); border-radius: 8px; z-index: 1000; margin-top: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .dropdown-content a { color: white; padding: 12px 16px; text-decoration: none; display: block; font-size: 13px; border-bottom: 1px solid #1e2633; }
+        .dropdown-content a:hover { background: var(--accent); color: #000; }
+        .show { display: block; }
+
+        /* LAYOUT */
+        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; }
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+        #chart_container { flex: 3; background: #000; }
+        .bottom-section { flex: 1.5; background: var(--panel); border-top: 1px solid var(--border); display: flex; flex-direction: column; }
+        .sidebar { width: 320px; background: var(--panel); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .card { background: #000; border: 1px solid var(--border); padding: 20px; border-radius: 16px; }
+        .balance-amt { font-size: 32px; font-weight: 700; color: var(--red); margin: 5px 0; font-family: monospace; }
+        
+        /* LOGIN MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .login-card { background: var(--panel); border: 1px solid var(--accent); width: 350px; padding: 40px; border-radius: 24px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 12px; box-sizing: border-box; }
+        
+        /* FOOTER DISCLAIMER (For USA/Global Professionalism) */
+        footer { font-size: 10px; color: #555; padding: 10px 20px; background: #000; text-align: center; border-top: 1px solid var(--border); }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body>
 
-    <nav class="h-12 bg-[#161a1e] border-b border-[#2b2f36] flex items-center px-4 justify-between">
-        <div class="flex items-center gap-8">
-            <span class="font-bold text-lg tracking-tighter">THRONES<span class="text-yellow-500">TRADE</span></span>
-            <div class="hidden md:flex gap-4 text-xs">
-                <span>BTC/USDT <span class="market-up">64,231.50 +1.2%</span></span>
-                <span>ETH/USDT <span class="market-up">3,452.12 +0.8%</span></span>
-                <span>GOLD <span class="market-down">2,154.20 -0.3%</span></span>
-            </div>
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="login-card">
+            <h1 style="color:#fff; margin:0;">THRONES TRADE</h1>
+            <p style="color:var(--accent); font-size:10px; letter-spacing:3px; margin-bottom:30px;">GLOBAL ACCESS PROTOCOL</p>
+            <form onsubmit="login(event)">
+                <input type="text" id="user" placeholder="Trader ID" required>
+                <input type="password" id="pass" placeholder="Access Key" required>
+                <button type="submit" style="background:var(--accent); width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">AUTHORIZE TERMINAL</button>
+            </form>
         </div>
-        <div class="flex items-center gap-4 text-sm">
-            <button class="bg-yellow-500 text-black px-4 py-1 rounded font-bold">Deposit</button>
-            <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">U</div>
-        </div>
-    </nav>
-
-    <div class="flex-grow flex overflow-hidden">
-        
-        <aside class="sidebar w-64 flex flex-col">
-            <div class="p-4 border-b border-[#2b2f36]">
-                <input type="text" placeholder="Search Assets" class="w-full bg-[#0b0e11] border border-[#2b2f36] rounded px-3 py-1 text-xs outline-none focus:border-yellow-500">
-            </div>
-            <div class="flex-grow overflow-y-auto">
-                <div class="p-4 hover:bg-[#1e2329] cursor-pointer flex justify-between items-center text-sm border-b border-[#2b2f36]">
-                    <span>Bitcoin</span>
-                    <span class="market-up">64,231.50</span>
-                </div>
-                <div class="p-4 hover:bg-[#1e2329] cursor-pointer flex justify-between items-center text-sm border-b border-[#2b2f36]">
-                    <span>Ethereum</span>
-                    <span class="market-up">3,452.12</span>
-                </div>
-                <div class="p-4 hover:bg-[#1e2329] cursor-pointer flex justify-between items-center text-sm border-b border-[#2b2f36]">
-                    <span>Solana</span>
-                    <span class="market-down">142.05</span>
-                </div>
-                <div class="p-4 hover:bg-[#1e2329] cursor-pointer flex justify-between items-center text-sm border-b border-[#2b2f36]">
-                    <span>Thrones (TRT)</span>
-                    <span class="market-up">1.25</span>
-                </div>
-            </div>
-        </aside>
-
-        <main class="flex-grow relative bg-[#0b0e11]">
-            <div class="absolute inset-0 flex items-center justify-center text-gray-700">
-                <div class="text-center">
-                    <p class="text-2xl font-bold mb-2">LIVE CHART</p>
-                    <p class="text-sm">Connecting to global market liquidity...</p>
-                </div>
-            </div>
-        </main>
-
-        <aside class="trade-panel w-72 p-6 flex flex-col gap-6">
-            <div>
-                <label class="text-xs text-gray-500 block mb-2 font-bold uppercase">Amount</label>
-                <div class="relative">
-                    <span class="absolute left-3 top-3 text-gray-500">$</span>
-                    <input type="number" value="100" class="w-full bg-[#0b0e11] border border-[#2b2f36] rounded p-3 pl-8 outline-none focus:border-yellow-500 font-bold">
-                </div>
-            </div>
-
-            <div>
-                <label class="text-xs text-gray-500 block mb-2 font-bold uppercase">Time</label>
-                <select class="w-full bg-[#0b0e11] border border-[#2b2f36] rounded p-3 outline-none focus:border-yellow-500 font-bold">
-                    <option>1 Minute</option>
-                    <option>5 Minutes</option>
-                    <option>15 Minutes</option>
-                    <option>1 Hour</option>
-                </select>
-            </div>
-
-            <div class="mt-auto space-y-4">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-500 uppercase">Payout</span>
-                    <span class="market-up font-bold">82% ($182.00)</span>
-                </div>
-                <button class="btn-buy w-full py-4 rounded-xl text-black font-black text-xl hover:opacity-90 transition">CALL / BUY</button>
-                <button class="btn-sell w-full py-4 rounded-xl text-white font-black text-xl hover:opacity-90 transition">PUT / SELL</button>
-            </div>
-        </aside>
     </div>
 
-    <footer class="h-6 bg-[#161a1e] border-t border-[#2b2f36] flex items-center px-4 text-[10px] text-gray-600 justify-between">
-        <span>Connected: Secure Node 01 - Lagos</span>
-        <span>Account Balance: $0.00 (Demo Mode)</span>
+    <header>
+        <div style="font-weight: 700; font-size: 20px;">THRONES <span style="color:var(--accent)">TRADE</span></div>
+        <div id="status" style="color: var(--green); font-size: 11px;">● SERVER: GLOBAL-USA-NODE-1</div>
+    </header>
+
+    <div class="main-container">
+        <div class="center-stack">
+            <div class="market-nav">
+                <button class="asset-btn active" onclick="changeChart('BINANCE:BTCUSDT', this)">BITCOIN</button>
+                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD</button>
+                <button class="asset-btn" onclick="changeChart('FX:EURUSD', this)">EUR/USD</button>
+                
+                <div class="dropdown">
+                    <button onclick="toggleDrop()" class="dropbtn">GLOBAL STOCKS ▼</button>
+                    <div id="stockDrop" class="dropdown-content">
+                        <a href="#" onclick="changeChart('NYSE:SNAP', this)">SNAPCHAT (SNAP)</a>
+                        <a href="#" onclick="changeChart('NASDAQ:TSLA', this)">TESLA (TSLA)</a>
+                        <a href="#" onclick="changeChart('NASDAQ:AAPL', this)">APPLE (AAPL)</a>
+                        <a href="#" onclick="changeChart('NASDAQ:NVDA', this)">NVIDIA (NVDA)</a>
+                        <a href="#" onclick="changeChart('NASDAQ:NFLX', this)">NETFLIX (NFLX)</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chart_container"></div>
+
+            <div class="bottom-section">
+                <div style="height:70px; background:#000; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:#333; font-size:9px;">
+                    [ 728x90 ADSTERRA LEADERBOARD CODE HERE ]
+                </div>
+                <div style="flex:1;">
+                    <iframe src="https://www3.cbox.ws/box/?boxid=3541705&boxtag=thronestrade" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div style="font-size: 10px; color: #888;">Global Equity (USD)</div>
+                <div class="balance-amt">$0.00</div>
+                <button onclick="alert('Enter Phone Number Below First')" style="width:100%; padding:10px; background:rgba(193,164,97,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; margin-top:10px;">DEPOSIT</button>
+            </div>
+            
+            <div class="card" style="height: 250px; display:flex; align-items:center; justify-content:center; color:#333; font-size:9px; text-align:center;">
+                [ 300x250 ADSTERRA SIDEBAR CODE HERE ]
+            </div>
+
+            <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
+                <input type="tel" id="pPhone" placeholder="Enter Receiver Phone Number" style="margin:0; font-size:12px;">
+                <button class="asset-btn" onclick="pay(1000)" style="background:var(--green); color:#000; height:50px; font-weight:700;">BUY / CALL</button>
+                <button class="asset-btn" onclick="alert('Insufficient Balance')" style="background:var(--red); color:#fff; height:50px; font-weight:700;">SELL / PUT</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        DISCLAIMER: Thrones Trade is an analytical tool. Trading foreign exchange on margin carries a high level of risk. 
+        Not available in all jurisdictions. © 2026 Thrones Legends Corp.
     </footer>
 
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: true}, 'google_translate_element');
+        }
+
+        function toggleDrop() { document.getElementById("stockDrop").classList.toggle("show"); }
+
+        function changeChart(symbol, btn) {
+            document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
+            if(btn.classList.contains('asset-btn')) btn.classList.add('active');
+            document.getElementById("stockDrop").classList.remove("show");
+
+            new TradingView.widget({
+                "autosize": true, "symbol": symbol, "interval": "1", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#0d1117", "container_id": "chart_container"
+            });
+        }
+
+        function login(e) { e.preventDefault(); localStorage.setItem('trade_user', 'true'); document.getElementById('loginModal').style.display = 'none'; }
+
+        function pay(amt) {
+            const phone = document.getElementById('pPhone').value;
+            if(!phone) { alert("Enter phone number first!"); return; }
+            window.location.href = "https://paystack.shop/pay/m3gzeovryt?amount=" + (amt*100) + "&phone=" + phone;
+        }
+
+        window.onload = function() {
+            if(localStorage.getItem('trade_user')) document.getElementById('loginModal').style.display = 'none';
+            changeChart('BINANCE:BTCUSDT', document.querySelector('.asset-btn'));
+        }
+    </script>
 </body>
 </html>
