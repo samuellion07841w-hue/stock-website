@@ -6,198 +6,149 @@
     <title>Thrones Trade | Global Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
-            overflow-x: hidden;
-        }
-        .terminal-container {
-            border: 1px solid #30363d;
-            background-color: #161b22;
-            border-radius: 6px;
-        }
-        .market-up { color: #3fb950; }
-        .market-down { color: #f85149; }
-        .btn-trade { transition: all 0.2s; }
-        .btn-trade:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap');
         
-        /* AD SLOT STYLING (A-ADS INTEGRATION) */
-        .ad-slot-frame {
-            border: 1px dashed #30363d;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* RGB LED SHIFTING ANIMATION */
+        @keyframes chroma-shift {
+            0% { border-color: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.3); }
+            33% { border-color: #00ff00; box-shadow: 0 0 15px rgba(0,255,0,0.3); }
+            66% { border-color: #0000ff; box-shadow: 0 0 15px rgba(0,0,255,0.3); }
+            100% { border-color: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.3); }
         }
 
-        /* LIGHT LED GLOW EFFECT */
-        .led-indicator {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
-            animation: pulse-led 2s infinite;
-        }
-        .led-blue { background-color: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
-        .led-green { background-color: #3fb950; box-shadow: 0 0 8px #3fb950; }
+        .led-border { border: 2px solid #ff0000; animation: chroma-shift 8s linear infinite; }
+        .glass { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
         
-        @keyframes pulse-led {
-            0% { opacity: 1; box-shadow: 0 0 5px currentColor; }
-            50% { opacity: 0.6; box-shadow: 0 0 2px currentColor; }
-            100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+        /* LOGIN OVERLAY */
+        #login-screen {
+            position: fixed; inset: 0; background: radial-gradient(circle, #1a1a2e, #0d1117);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
         }
 
-        /* LOGIN OVERLAY (FULL DESKTOP) */
-        #login-overlay {
-            position: fixed; inset: 0;
-            background-color: rgba(13, 17, 23, 0.98);
-            z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(4px);
+        /* MODALS */
+        #funding-modal { 
+            display: none; position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.9); z-index: 10000; 
+            align-items: center; justify-content: center; 
         }
-        #main-terminal { display: none; } /* HIDDEN UNTIL LOGIN */
+
+        #main-app { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col p-2 md:p-4">
+<body class="min-h-screen">
 
-    <div id="login-overlay">
-        <div class="terminal-container p-8 w-full max-w-md border-blue-900 shadow-2xl">
-            <div class="flex items-center mb-6">
-                <span class="led-indicator led-blue"></span>
-                <h2 class="text-xl font-bold text-blue-400 tracking-tight">TERMINAL ACCESS</h2>
+    <div id="login-screen">
+        <div class="glass p-8 w-full max-w-md rounded-2xl led-border">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-black text-white tracking-tighter">THRONES<span class="text-blue-500">TRADE</span></h2>
+                <p class="text-[10px] text-blue-400 uppercase tracking-widest mt-1">Global Node: Lagos_Central</p>
             </div>
-            <p class="text-xs text-gray-500 mb-4">Initialize node: LAGOS_CENTRAL_01</p>
-            <input type="password" id="access-key" placeholder="Enter Secure Access Key" class="w-full bg-black p-3 rounded border border-gray-800 outline-none focus:border-blue-500 text-sm mb-4">
-            <button onclick="unlockTerminal()" class="w-full bg-blue-600 py-3 rounded font-bold text-sm text-white hover:bg-blue-500 transition">INITIALIZE SESSION</button>
-            <p id="login-error" class="text-xs text-red-500 mt-3 text-center hidden">INVALID KEY. ACCESS DENIED.</p>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold">Trader ID</label>
+                    <input type="text" id="trader-id" required class="w-full bg-black border border-gray-800 p-3 rounded-lg text-sm outline-none focus:border-blue-500">
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] text-gray-500 uppercase font-bold">Access Password</label>
+                    <input type="password" id="pass" required class="w-full bg-black border border-gray-800 p-3 rounded-lg text-sm outline-none focus:border-blue-500">
+                    <button type="button" onclick="const p=document.getElementById('pass'); p.type=p.type==='password'?'text':'password'" class="absolute right-3 bottom-3 text-[10px] text-gray-600">SHOW</button>
+                </div>
+                <div class="flex items-center gap-2 bg-gray-900/50 p-2 rounded border border-gray-800">
+                    <input type="checkbox" required>
+                    <span class="text-[10px] text-gray-400">I verify I am a certified trader (ReCAPTCHA)</span>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition">INITIALIZE SESSION</button>
+            </form>
+
+            <div class="mt-6 grid grid-cols-2 gap-2">
+                <button class="bg-white text-black py-2 rounded text-[10px] font-bold uppercase">Google Access</button>
+                <button class="bg-blue-800 text-white py-2 rounded text-[10px] font-bold uppercase">Facebook</button>
+            </div>
         </div>
     </div>
 
-    <div id="main-terminal" class="flex-grow flex flex-col gap-4">
+    <div id="funding-modal">
+        <div class="glass p-6 w-96 rounded-xl led-border">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-2">
+                <h3 class="text-blue-400 font-bold text-xs uppercase">Secure Gateway</h3>
+                <button onclick="closeModal()" class="text-gray-500">✕</button>
+            </div>
+            <div class="space-y-4">
+                <select class="w-full bg-black border border-gray-800 p-3 rounded text-sm">
+                    <option>Select Bank (Nigeria)</option>
+                    <option>GTBank</option>
+                    <option>Zenith Bank</option>
+                    <option>Access Bank</option>
+                </select>
+                <input type="text" placeholder="Phone Number" class="w-full bg-black border border-gray-800 p-3 rounded text-sm">
+                <button onclick="alert('Connecting to Paystack Node...')" class="w-full bg-green-600 py-3 rounded font-bold text-sm text-black">PROCESS DEPOSIT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="p-4 flex flex-col gap-4">
         
-        <header class="terminal-container p-4 flex flex-wrap justify-between items-center gap-2">
-            <div class="flex items-center">
-                <span class="led-indicator led-green"></span>
-                <h1 class="text-xl font-bold text-white tracking-tighter">THRONES<span class="text-blue-500">TRADE</span></h1>
-                <span class="text-[9px] text-gray-600 ml-2">v2.1 // Secure</span>
-            </div>
-            <div class="flex gap-4 text-xs">
-                <div class="market-up">BTC/USD: $64,231 ↑</div>
-                <div class="market-up">ETH/USD: $3,452 ↑</div>
-                <div class="market-down">SOL/USD: $142 ↓</div>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="alert('Arabic interface module loading...')" class="text-[10px] border border-gray-700 px-2 py-1 rounded hover:bg-gray-800">EN/AR</button>
-                <div class="text-[10px] text-gray-500">User: Admin_01</div>
-            </div>
+        <header class="glass p-4 rounded-xl flex justify-between items-center led-border">
+            <h1 class="font-black text-white italic">THRONES<span class="text-blue-500">TRADE</span></h1>
+            <nav class="flex gap-6 text-[10px] font-bold uppercase text-gray-500">
+                <button class="text-blue-400 border-b border-blue-400">Bitcoin</button>
+                <button>Gold</button>
+                <button>Forex</button>
+                <button>Stocks</button>
+            </nav>
         </header>
 
-        <main class="flex-grow grid grid-cols-1 md:grid-cols-12 gap-4">
-            
-            <div class="md:col-span-3 flex flex-col gap-4">
-                <div class="terminal-container p-5 flex-grow">
-                    <h3 class="text-sm font-bold mb-4 text-gray-400 uppercase tracking-wider">Execute Trade</h3>
-                    
-                    <label class="text-xs text-gray-600 mb-1 block">Asset Pair</label>
-                    <select class="w-full bg-black border border-gray-800 p-2 rounded mb-4 text-sm outline-none focus:border-blue-500">
-                        <option>Thrones Token (TRT/USD)</option>
-                        <option>TRT/NGN (Nigeria)</option>
-                        <option>TRT/BTC</option>
-                    </select>
-
-                    <label class="text-xs text-gray-600 mb-1 block">Amount (TRT)</label>
-                    <input type="number" placeholder="0.00" class="w-full bg-black p-3 rounded border border-gray-800 focus:border-blue-500 outline-none text-sm mb-4">
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="btn-trade bg-green-600 text-white py-3 rounded font-bold text-sm">BUY</button>
-                        <button class="btn-trade bg-red-600 text-white py-3 rounded font-bold text-sm">SELL</button>
+        <main class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-3 space-y-4">
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="text-[10px] text-gray-500 uppercase mb-4">Execute Trade</h3>
+                    <div class="space-y-4">
+                        <button onclick="openModal()" class="w-full bg-green-600 py-6 rounded-xl font-black text-2xl text-black shadow-lg">BUY / CALL</button>
+                        <button onclick="openModal()" class="w-full bg-red-600 py-6 rounded-xl font-black text-2xl shadow-lg">SELL / PUT</button>
                     </div>
                 </div>
-
-                <div class="terminal-container ad-slot-frame min-h-[260px]">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+                <div class="glass p-2 rounded-xl flex justify-center">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0px; background:transparent;'></iframe>
                 </div>
             </div>
 
-            <div class="md:col-span-6 flex flex-col gap-4">
-                <div class="terminal-container p-2 flex-grow relative min-h-[400px]">
-                    <div class="absolute top-3 left-3 flex items-center gap-2 bg-black/50 px-2 py-1 rounded text-[10px]">
-                        <span class="led-indicator led-green" style="width:6px;height:6px;"></span>
-                        <span class="text-gray-300">TRT/USD - LIVE STREAM</span>
+            <div class="md:col-span-9 space-y-4">
+                <div class="glass p-4 h-[500px] rounded-xl relative flex items-center justify-center">
+                    <div class="absolute top-4 left-4 flex gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                        <span class="text-[9px] text-green-500 uppercase font-bold">Live Data: TRT/USD</span>
                     </div>
-                    <div class="w-full h-full flex items-center justify-center border-b border-gray-800">
-                        <p class="text-gray-700 animate-pulse text-sm">Initializing High-Frequency Data Stream...</p>
-                    </div>
+                    <p class="text-gray-700 font-mono text-sm uppercase">Synchronizing Market Visualization...</p>
                 </div>
-
-                <div class="terminal-container ad-slot-frame min-h-[100px]">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
-                </div>
-            </div>
-
-            <div class="md:col-span-3 flex flex-col gap-4">
-                <div class="terminal-container p-4 h-1/2 flex flex-col">
-                    <h3 class="text-xs font-bold mb-2 text-gray-400">GLOBAL HUB</h3>
-                    <div id="chat-box" class="flex-grow overflow-y-auto text-[11px] space-y-2 py-2 pr-2 text-gray-500">
-                        <p><span class="text-blue-500">[SYS]</span> Lagos Node Active.</p>
-                        <p><span class="text-green-500">[USER_402]</span> TRT volume spiking.</p>
-                    </div>
-                    <input type="text" id="chat-input" placeholder="Broadcast message..." class="bg-black p-2 rounded text-xs outline-none border border-gray-800 focus:border-blue-500">
-                </div>
-
-                <div class="terminal-container p-4 h-1/2">
-                    <h3 class="text-xs font-bold mb-3 text-gray-400">SECURE DEPOSIT</h3>
-                    <div class="grid grid-cols-1 gap-2">
-                        <button class="bg-gray-800 text-white p-2 rounded text-[10px] border border-gray-700 hover:border-blue-500">NIGERIA (Paystack NGN)</button>
-                        <button class="bg-gray-800 text-white p-2 rounded text-[10px] border border-gray-700 hover:border-blue-500">GLOBAL (Stripe USD)</button>
-                        <button class="bg-blue-950 text-blue-200 p-2 rounded text-[10px] border border-blue-800">CRYPTO (BTC/ETH/USDT)</button>
-                    </div>
-                    <p class="text-[9px] text-gray-600 mt-3 text-center">Multi-currency gateway active.</p>
+                <div class="glass p-2 rounded-xl flex justify-center min-h-[100px]">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0px; background:transparent;'></iframe>
                 </div>
             </div>
         </main>
 
-        <footer class="terminal-container p-3 text-center text-[10px] text-gray-600 uppercase tracking-widest">
-            &copy; 2026 THRONES TRADE // GLOBAL SECURE INFRASTRUCTURE // NODE: LAGOS_CENTRAL
+        <footer class="text-center text-[9px] text-gray-600 uppercase tracking-widest mt-4">
+            &copy; 2026 THRONES TRADE INFRASTRUCTURE | SECURED BY RSA-4096
         </footer>
     </div>
 
     <script>
-        // --- 1. UNLOCK TERMINAL LOGIC ---
-        function unlockTerminal() {
-            const keyInput = document.getElementById('access-key').value;
-            const errorMsg = document.getElementById('login-error');
-            
-            // This is the simple access logic. We can make this secure later.
-            if (keyInput === 'TRADESECURE2026') {
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('main-terminal').style.display = 'flex';
-                // Initialize A-ADS frames once unlocked (helps with loading)
-                const iframes = document.querySelectorAll('iframe[data-aa]');
-                iframes.forEach(iframe => {
-                    iframe.setAttribute('src', iframe.getAttribute('src'));
-                });
+        function handleLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('pass').value;
+            // The master access key
+            if(pass === 'TRADESECURE2026') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
             } else {
-                errorMsg.classList.remove('hidden');
-                document.getElementById('access-key').value = '';
+                alert("ACCESS DENIED: INVALID TRADER KEY");
             }
         }
 
-        // --- 2. GLOBAL HUB CHAT LOGIC ---
-        const chatInput = document.getElementById('chat-input');
-        const chatBox = document.getElementById('chat-box');
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && chatInput.value !== '') {
-                const p = document.createElement('p');
-                p.innerHTML = `<span class="text-blue-400">[You]</span> ${chatInput.value}`;
-                chatBox.appendChild(p);
-                chatInput.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        });
+        function openModal() { document.getElementById('funding-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('funding-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
