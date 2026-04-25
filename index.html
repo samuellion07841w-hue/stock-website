@@ -7,126 +7,192 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
-            color: #e0e0e0;
-            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
             overflow-x: hidden;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+        .terminal-container {
+            border: 1px solid #30363d;
+            background-color: #161b22;
+            border-radius: 6px;
         }
-        .market-up { color: #00ff88; }
-        .market-down { color: #ff4d4d; }
-        .ad-container {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            padding: 10px;
+        .market-up { color: #3fb950; }
+        .market-down { color: #f85149; }
+        .btn-trade { transition: all 0.2s; }
+        .btn-trade:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        
+        /* AD SLOT STYLING (A-ADS INTEGRATION) */
+        .ad-slot-frame {
+            border: 1px dashed #30363d;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
+
+        /* LIGHT LED GLOW EFFECT */
+        .led-indicator {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+            animation: pulse-led 2s infinite;
+        }
+        .led-blue { background-color: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+        .led-green { background-color: #3fb950; box-shadow: 0 0 8px #3fb950; }
+        
+        @keyframes pulse-led {
+            0% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+            50% { opacity: 0.6; box-shadow: 0 0 2px currentColor; }
+            100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+        }
+
+        /* LOGIN OVERLAY (FULL DESKTOP) */
         #login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 15, 26, 0.98);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0;
+            background-color: rgba(13, 17, 23, 0.98);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
         }
+        #main-terminal { display: none; } /* HIDDEN UNTIL LOGIN */
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col p-2 md:p-4">
 
     <div id="login-overlay">
-        <div class="glass p-8 w-96 text-center">
-            <h2 class="text-2xl font-bold mb-6 text-blue-400">THRONES TERMINAL</h2>
-            <input type="password" id="access-key" placeholder="Enter Secure Key" class="w-full bg-gray-900 p-3 rounded mb-4 border border-gray-700 outline-none focus:border-blue-400">
-            <button onclick="document.getElementById('login-overlay').style.display='none'" class="w-full bg-blue-600 py-3 rounded font-bold hover:bg-blue-500 transition">INITIALIZE</button>
+        <div class="terminal-container p-8 w-full max-w-md border-blue-900 shadow-2xl">
+            <div class="flex items-center mb-6">
+                <span class="led-indicator led-blue"></span>
+                <h2 class="text-xl font-bold text-blue-400 tracking-tight">TERMINAL ACCESS</h2>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Initialize node: LAGOS_CENTRAL_01</p>
+            <input type="password" id="access-key" placeholder="Enter Secure Access Key" class="w-full bg-black p-3 rounded border border-gray-800 outline-none focus:border-blue-500 text-sm mb-4">
+            <button onclick="unlockTerminal()" class="w-full bg-blue-600 py-3 rounded font-bold text-sm text-white hover:bg-blue-500 transition">INITIALIZE SESSION</button>
+            <p id="login-error" class="text-xs text-red-500 mt-3 text-center hidden">INVALID KEY. ACCESS DENIED.</p>
         </div>
     </div>
 
-    <nav class="glass m-4 p-4 flex justify-between items-center">
-        <div class="text-2xl font-bold tracking-tighter text-blue-400">THRONES <span class="text-white">TRADE</span></div>
-        <div class="hidden md:flex gap-6 text-xs uppercase tracking-widest">
-            <div class="market-up">BTC: $64,231 ↑</div>
-            <div class="market-up">ETH: $3,452 ↑</div>
-            <div class="market-down">TRT: $1.25 ↓</div>
-        </div>
-        <button onclick="alert('Arabic Interface Loading...')" class="bg-blue-600/20 border border-blue-500/50 px-3 py-1 rounded text-[10px]">EN / AR</button>
-    </nav>
-
-    <main class="flex-grow grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
+    <div id="main-terminal" class="flex-grow flex flex-col gap-4">
         
-        <div class="lg:col-span-1 flex flex-col gap-4">
-            <div class="glass p-6">
-                <h3 class="text-sm font-bold mb-4 uppercase text-blue-400">Trade Assets</h3>
-                <select class="w-full bg-gray-800 border border-gray-700 p-2 rounded mb-4 outline-none text-sm">
-                    <option>Thrones Token (TRT)</option>
-                    <option>Real Estate NFT</option>
-                </select>
-                <div class="space-y-3">
-                    <input type="number" placeholder="0.00" class="w-full bg-gray-900 p-3 rounded border border-gray-800 focus:border-blue-500 outline-none">
-                    <button class="w-full bg-green-600 py-2 rounded font-bold text-sm">BUY</button>
-                    <button class="w-full bg-red-600 py-2 rounded font-bold text-sm">SELL</button>
+        <header class="terminal-container p-4 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center">
+                <span class="led-indicator led-green"></span>
+                <h1 class="text-xl font-bold text-white tracking-tighter">THRONES<span class="text-blue-500">TRADE</span></h1>
+                <span class="text-[9px] text-gray-600 ml-2">v2.1 // Secure</span>
+            </div>
+            <div class="flex gap-4 text-xs">
+                <div class="market-up">BTC/USD: $64,231 ↑</div>
+                <div class="market-up">ETH/USD: $3,452 ↑</div>
+                <div class="market-down">SOL/USD: $142 ↓</div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="alert('Arabic interface module loading...')" class="text-[10px] border border-gray-700 px-2 py-1 rounded hover:bg-gray-800">EN/AR</button>
+                <div class="text-[10px] text-gray-500">User: Admin_01</div>
+            </div>
+        </header>
+
+        <main class="flex-grow grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <div class="md:col-span-3 flex flex-col gap-4">
+                <div class="terminal-container p-5 flex-grow">
+                    <h3 class="text-sm font-bold mb-4 text-gray-400 uppercase tracking-wider">Execute Trade</h3>
+                    
+                    <label class="text-xs text-gray-600 mb-1 block">Asset Pair</label>
+                    <select class="w-full bg-black border border-gray-800 p-2 rounded mb-4 text-sm outline-none focus:border-blue-500">
+                        <option>Thrones Token (TRT/USD)</option>
+                        <option>TRT/NGN (Nigeria)</option>
+                        <option>TRT/BTC</option>
+                    </select>
+
+                    <label class="text-xs text-gray-600 mb-1 block">Amount (TRT)</label>
+                    <input type="number" placeholder="0.00" class="w-full bg-black p-3 rounded border border-gray-800 focus:border-blue-500 outline-none text-sm mb-4">
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="btn-trade bg-green-600 text-white py-3 rounded font-bold text-sm">BUY</button>
+                        <button class="btn-trade bg-red-600 text-white py-3 rounded font-bold text-sm">SELL</button>
+                    </div>
+                </div>
+
+                <div class="terminal-container ad-slot-frame min-h-[260px]">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
                 </div>
             </div>
 
-            <div class="ad-container">
-                <span class="text-[9px] text-gray-500 mb-2">SPONSORED NODE</span>
-                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
-            </div>
-        </div>
-
-        <div class="lg:col-span-2 flex flex-col gap-4">
-            <div class="glass p-4 flex-grow relative min-h-[350px] flex items-center justify-center">
-                <div class="absolute top-4 left-4 flex gap-2">
-                    <span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full text-[9px]">LIVE STREAM</span>
+            <div class="md:col-span-6 flex flex-col gap-4">
+                <div class="terminal-container p-2 flex-grow relative min-h-[400px]">
+                    <div class="absolute top-3 left-3 flex items-center gap-2 bg-black/50 px-2 py-1 rounded text-[10px]">
+                        <span class="led-indicator led-green" style="width:6px;height:6px;"></span>
+                        <span class="text-gray-300">TRT/USD - LIVE STREAM</span>
+                    </div>
+                    <div class="w-full h-full flex items-center justify-center border-b border-gray-800">
+                        <p class="text-gray-700 animate-pulse text-sm">Initializing High-Frequency Data Stream...</p>
+                    </div>
                 </div>
-                <p class="text-gray-700 italic animate-pulse">Connecting to Global Market Hub...</p>
-            </div>
 
-            <div class="ad-container">
-                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
-            </div>
-        </div>
-
-        <div class="lg:col-span-1 flex flex-col gap-4">
-            <div class="glass p-4 h-1/2 flex flex-col">
-                <h3 class="text-xs font-bold mb-2 text-blue-400">GLOBAL HUB</h3>
-                <div id="chat-box" class="flex-grow overflow-y-auto text-[11px] space-y-2 py-2">
-                    <p><span class="text-blue-500">System:</span> Node Lagos Secure.</p>
-                </div>
-                <input type="text" id="chat-input" placeholder="Broadcast..." class="bg-gray-900 p-2 rounded text-xs outline-none border border-gray-800">
-            </div>
-
-            <div class="glass p-4 h-1/2">
-                <h3 class="text-xs font-bold mb-4 text-blue-400">SECURE PAYMENTS</h3>
-                <div class="grid grid-cols-1 gap-2">
-                    <button class="bg-gray-800 p-2 rounded text-[10px] hover:bg-blue-900/40 border border-gray-700">PAYSTACK (NGN)</button>
-                    <button class="bg-gray-800 p-2 rounded text-[10px] hover:bg-blue-900/40 border border-gray-700">STRIPE (USD)</button>
-                    <button class="bg-blue-600/20 p-2 rounded text-[10px] border border-blue-500">CRYPTO DEPOSIT</button>
+                <div class="terminal-container ad-slot-frame min-h-[100px]">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <footer class="p-4 text-center text-[9px] text-gray-600 uppercase tracking-widest">
-        &copy; 2026 THRONES TRADE | GLOBAL TRADING INFRASTRUCTURE
-    </footer>
+            <div class="md:col-span-3 flex flex-col gap-4">
+                <div class="terminal-container p-4 h-1/2 flex flex-col">
+                    <h3 class="text-xs font-bold mb-2 text-gray-400">GLOBAL HUB</h3>
+                    <div id="chat-box" class="flex-grow overflow-y-auto text-[11px] space-y-2 py-2 pr-2 text-gray-500">
+                        <p><span class="text-blue-500">[SYS]</span> Lagos Node Active.</p>
+                        <p><span class="text-green-500">[USER_402]</span> TRT volume spiking.</p>
+                    </div>
+                    <input type="text" id="chat-input" placeholder="Broadcast message..." class="bg-black p-2 rounded text-xs outline-none border border-gray-800 focus:border-blue-500">
+                </div>
+
+                <div class="terminal-container p-4 h-1/2">
+                    <h3 class="text-xs font-bold mb-3 text-gray-400">SECURE DEPOSIT</h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button class="bg-gray-800 text-white p-2 rounded text-[10px] border border-gray-700 hover:border-blue-500">NIGERIA (Paystack NGN)</button>
+                        <button class="bg-gray-800 text-white p-2 rounded text-[10px] border border-gray-700 hover:border-blue-500">GLOBAL (Stripe USD)</button>
+                        <button class="bg-blue-950 text-blue-200 p-2 rounded text-[10px] border border-blue-800">CRYPTO (BTC/ETH/USDT)</button>
+                    </div>
+                    <p class="text-[9px] text-gray-600 mt-3 text-center">Multi-currency gateway active.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="terminal-container p-3 text-center text-[10px] text-gray-600 uppercase tracking-widest">
+            &copy; 2026 THRONES TRADE // GLOBAL SECURE INFRASTRUCTURE // NODE: LAGOS_CENTRAL
+        </footer>
+    </div>
 
     <script>
+        // --- 1. UNLOCK TERMINAL LOGIC ---
+        function unlockTerminal() {
+            const keyInput = document.getElementById('access-key').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            // This is the simple access logic. We can make this secure later.
+            if (keyInput === 'TRADESECURE2026') {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-terminal').style.display = 'flex';
+                // Initialize A-ADS frames once unlocked (helps with loading)
+                const iframes = document.querySelectorAll('iframe[data-aa]');
+                iframes.forEach(iframe => {
+                    iframe.setAttribute('src', iframe.getAttribute('src'));
+                });
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('access-key').value = '';
+            }
+        }
+
+        // --- 2. GLOBAL HUB CHAT LOGIC ---
         const chatInput = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && chatInput.value !== '') {
                 const p = document.createElement('p');
-                p.innerHTML = `<span class="text-blue-400">User:</span> ${chatInput.value}`;
+                p.innerHTML = `<span class="text-blue-400">[You]</span> ${chatInput.value}`;
                 chatBox.appendChild(p);
                 chatInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
