@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Advanced</title>
+    <title>Thrones Trade | Advanced Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
@@ -53,7 +53,7 @@
 
         <main class="flex-1 bg-black">
             <div class="tradingview-widget-container" style="height:100%;width:100%">
-              <div id="tradingview_advanced" style="height:100%;width:100%"></div>
+              <div id="tradingview_pro" style="height:100%;width:100%"></div>
               <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
               <script type="text/javascript">
               new TradingView.widget({
@@ -62,21 +62,24 @@
                 "interval": "1",
                 "timezone": "Africa/Lagos",
                 "theme": "dark",
-                "style": "3", 
+                "style": "1", // Candle Style to match the link better
                 "locale": "en",
-                "toolbar_bg": "#f1f3f6",
+                "toolbar_bg": "#181c26",
                 "enable_publishing": false,
                 "withdateranges": true,
-                "hide_side_toolbar": false,
+                "hide_side_toolbar": false, // SHOWS LEFT DRAWING TOOLS
                 "allow_symbol_change": true,
-                "details": true,
-                "hotlist": true,
-                "calendar": true,
-                "container_id": "tradingview_advanced"
+                "details": true, // SHOWS RIGHT SIDEBAR
+                "hotlist": true, // SHOWS TRENDING LIST
+                "calendar": true, // SHOWS ECONOMIC NEWS
+                "show_popup_button": true,
+                "popup_width": "1000",
+                "popup_height": "650",
+                "container_id": "tradingview_pro"
               });
               </script>
             </div>
-            </main>
+        </main>
 
         <aside class="w-[300px] bg-[#181c26] p-5 flex flex-col gap-5 border-l border-[#2a2e39]">
             <div id="input-led" class="bg-black/50 p-4 rounded-xl border border-white/5 transition-all">
@@ -117,7 +120,7 @@
 
         function refund() {
             demoBal = 10000;
-            addMsg("System", "Demo balance reset!");
+            addMsg("System", "Demo account reset!");
             updateUI();
         }
 
