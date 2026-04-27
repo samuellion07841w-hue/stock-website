@@ -3,33 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Secure Creator Terminal</title>
+    <title>Thrones Trade | Open Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --border: #30363d; }
         body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; }
         
-        /* LOGIN MODAL */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
-        .login-box { background: #0d1117; border: 1px solid var(--border); padding: 40px; border-radius: 28px; width: 420px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: #0d1117; border: 1px solid var(--border); padding: 40px; border-radius: 28px; width: 420px; text-align: center; }
         
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; margin-bottom: 15px; outline: none; transition: 0.3s; font-size: 14px; }
-        input:focus { border-color: var(--accent); background: rgba(193,164,97,0.02); }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 12px; outline: none; font-size: 13px; }
+        input:focus { border-color: var(--accent); }
 
-        /* SOCIAL BUTTONS */
-        .social-container { display: flex; gap: 12px; margin-bottom: 25px; }
-        .social-btn { flex: 1; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; border: 1px solid var(--border); cursor: pointer; }
+        .social-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .social-btn { flex: 1; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border); cursor: pointer; }
         .btn-google { background: #fff; color: #000; }
         .btn-fb { background: #1877f2; color: #fff; border: none; }
-        .social-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        /* IQ OPTION SWITCHER */
-        .acc-switcher { position: relative; cursor: pointer; background: #000; border: 1px solid var(--border); padding: 5px 18px; border-radius: 10px; transition: 0.2s; }
-        .acc-switcher:hover { border-color: var(--accent); }
-        .acc-dropdown { display: none; position: absolute; top: 115%; right: 0; width: 280px; background: #0d1117; border: 1px solid var(--border); border-radius: 15px; padding: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 1001; }
-        .acc-option { padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
-        .acc-option:hover { background: #1a1e26; }
     </style>
 </head>
 <body>
@@ -37,187 +27,91 @@
     <div id="loginModal" class="modal-overlay">
         <div class="login-box">
             <h1 class="text-white text-3xl font-black italic mb-2 tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mb-8 font-bold">Secure Access Terminal</p>
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-6 font-bold">Access Terminal</p>
             
             <div class="social-container">
-                <button class="social-btn btn-google" onclick="alert('Google Auth integration pending...')">
+                <div class="social-btn btn-google" onclick="bypassLogin()">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="16"> Google
-                </button>
-                <button class="social-btn btn-fb" onclick="alert('Facebook Auth integration pending...')">
+                </div>
+                <div class="social-btn btn-fb" onclick="bypassLogin()">
                     <img src="https://upload.wikimedia.org/wikipedia/en/0/04/Facebook_f_logo_%282021%29.svg" width="16"> Facebook
-                </button>
+                </div>
             </div>
 
-            <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-4 mb-5">
                 <div class="h-[1px] bg-white/5 flex-grow"></div>
-                <span class="text-[9px] text-gray-600 font-black tracking-widest">OR</span>
+                <span class="text-[9px] text-gray-600 font-black">OR</span>
                 <div class="h-[1px] bg-white/5 flex-grow"></div>
             </div>
             
-            <form onsubmit="checkAccess(event)">
-                <input type="email" id="u-in" placeholder="Email Address" required class="text-center">
-                <input type="password" id="p-in" placeholder="Password" required class="text-center">
-                
-                <button type="submit" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all mt-2">
-                    Log In
-                </button>
-            </form>
+            <input type="email" id="u-in" placeholder="Email Address" class="text-center">
+            <input type="tel" id="n-in" placeholder="Phone Number" class="text-center">
+            <input type="password" id="p-in" placeholder="Password" class="text-center">
+            
+            <button onclick="checkAccess()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all mt-2">
+                Log In
+            </button>
 
-            <div class="mt-8 pt-6 border-t border-white/5">
+            <div class="mt-6 pt-5 border-t border-white/5">
                 <p class="text-gray-500 text-xs">Don't have an account? 
-                    <a href="#" onclick="alert('Registration is currently closed to new members.')" class="text-[#c1a461] font-bold hover:underline ml-1">Sign Up</a>
+                    <span onclick="bypassLogin()" class="text-[#c1a461] font-bold cursor-pointer hover:underline ml-1">Sign Up</span>
                 </p>
             </div>
-
-            <p id="err" class="text-red-500 text-[10px] mt-4 hidden font-bold italic">INVALID CREDENTIALS</p>
         </div>
     </div>
 
     <div id="main-terminal" style="display:none;" class="h-full flex flex-col">
-        <header class="h-[65px] bg-[#0d1117] border-b border-[#30363d] flex items-center justify-between px-8">
-            <div class="font-black text-2xl text-white italic tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-            
-            <div class="acc-switcher" id="switcher-btn">
-                <div class="text-right">
-                    <p id="top-label" class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Practice Account</p>
-                    <p id="top-bal" class="text-white font-bold text-sm">$10,000.00</p>
-                </div>
-                
-                <div id="accDropdown" class="acc-dropdown">
-                    <div class="acc-option active" onclick="setMode('demo')">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-orange-400 font-bold">PRACTICE ACCOUNT</p>
-                                <p id="drop-demo" class="text-white font-bold">$10,000.00</p>
-                            </div>
-                            <button onclick="doRefund(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black">REFUND</button>
-                        </div>
-                    </div>
-                    <div class="acc-option" onclick="setMode('real')">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-gray-500 font-bold">REAL ACCOUNT</p>
-                                <p id="drop-real" class="text-white font-bold">$0.00</p>
-                            </div>
-                            <button class="text-[9px] bg-[#c1a461] px-2 py-1 rounded text-black font-bold">DEPOSIT</button>
-                        </div>
-                    </div>
-                    <hr class="border-white/5 my-3">
-                    <button onclick="logOutNow()" class="w-full py-3 text-[10px] text-red-500 font-bold uppercase tracking-widest hover:bg-red-500/10 rounded-lg">Sign Out</button>
-                </div>
-            </div>
+        <header class="h-[60px] bg-[#0d1117] border-b border-[#30363d] flex items-center justify-between px-8">
+            <div class="font-black text-xl text-white italic">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+            <div onclick="logOut()" class="cursor-pointer bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">Logout</div>
         </header>
 
-        <div class="flex-grow flex overflow-hidden">
-            <div class="flex-grow flex flex-col relative">
-                <div id="chart_container" class="flex-grow bg-black"></div>
-                <div class="h-[90px] bg-black border-t border-[#30363d] flex items-center justify-center">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
+        <div class="flex-grow flex">
+            <div id="chart_container" class="flex-grow bg-black"></div>
+            <aside class="w-[300px] bg-[#0d1117] border-l border-[#30363d] p-6 flex flex-col gap-4">
+                <div class="bg-black p-4 rounded-xl border border-white/5">
+                    <div class="text-[10px] text-gray-500 uppercase font-bold">Practice Balance</div>
+                    <div class="text-2xl font-bold text-orange-400">$10,000.00</div>
                 </div>
-            </div>
-
-            <aside class="w-[340px] bg-[#0d1117] border-l border-[#30363d] p-6 flex flex-col gap-6">
-                <div class="bg-black border border-white/5 p-5 rounded-2xl">
-                    <div class="text-[10px] text-gray-500 uppercase font-bold mb-1">Total Balance</div>
-                    <div id="side-bal" class="text-3xl font-bold text-orange-400">$10,000.00</div>
-                </div>
-                <div class="flex flex-col gap-4">
-                    <button onclick="execute('CALL')" class="h-20 bg-[#00ff88] text-black font-black text-2xl rounded-2xl shadow-lg hover:brightness-110 active:scale-95 transition-all">HIGHER</button>
-                    <button onclick="execute('PUT')" class="h-20 bg-[#ff3b3b] text-white font-black text-2xl rounded-2xl shadow-lg hover:brightness-110 active:scale-95 transition-all">LOWER</button>
-                </div>
-                <div class="mt-auto h-[250px] bg-black border border-white/5 rounded-xl flex items-center justify-center">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
-                </div>
+                <button class="h-16 bg-[#00ff88] text-black font-black rounded-xl">HIGHER</button>
+                <button class="h-16 bg-[#ff3b3b] text-white font-black rounded-xl">LOWER</button>
             </aside>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // Securely Scrambled Credentials
         const _U = "c2FtdWVsbGlvbjA3ODQxQGdtYWlsLmNvbQ=="; 
         const _P = "c1o0eC8mYS1SS19eODZh"; 
 
-        let dBal = 10000.00;
-        let rBal = 0.00;
-        let activeMode = 'demo';
-
-        function checkAccess(e) {
-            e.preventDefault();
-            const u = document.getElementById('u-in').value.trim().toLowerCase();
-            const p = document.getElementById('p-in').value.trim();
-            if (btoa(u) === _U && btoa(p) === _P) {
-                localStorage.setItem('trader_session', 'ACTIVE');
-                location.reload();
-            } else {
-                document.getElementById('err').classList.remove('hidden');
-                document.getElementById('p-in').value = "";
-            }
-        }
-
-        function logOutNow() {
-            localStorage.removeItem('trader_session');
+        function bypassLogin() {
+            localStorage.setItem('gate_open', 'true');
             location.reload();
         }
 
-        document.getElementById('switcher-btn').onclick = (e) => {
-            const drop = document.getElementById('accDropdown');
-            drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
-        };
-
-        function setMode(m) {
-            activeMode = m;
-            updateDisplay();
-            document.getElementById('accDropdown').style.display = 'none';
-        }
-
-        function doRefund(e) {
-            e.stopPropagation();
-            dBal = 10000.00;
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            const isD = activeMode === 'demo';
-            const b = isD ? dBal : rBal;
-            document.getElementById('top-bal').innerText = `$${b.toFixed(2)}`;
-            document.getElementById('top-label').innerText = isD ? 'Practice Account' : 'Real Account';
-            document.getElementById('top-label').style.color = isD ? '#f97316' : '#00ff88';
-            document.getElementById('side-bal').innerText = `$${b.toFixed(2)}`;
-            document.getElementById('side-bal').style.color = isD ? '#f97316' : '#00ff88';
-            document.getElementById('drop-demo').innerText = `$${dBal.toFixed(2)}`;
-            document.getElementById('drop-real').innerText = `$${rBal.toFixed(2)}`;
-        }
-
-        function execute(dir) {
-            if(activeMode === 'demo') {
-                if(dBal <= 0) return alert("Practice funds empty! Click Refund.");
-                dBal -= 100;
+        function checkAccess() {
+            const u = document.getElementById('u-in').value.trim().toLowerCase();
+            const p = document.getElementById('p-in').value.trim();
+            // Still allows your master login, but doesn't block others
+            if (btoa(u) === _U && btoa(p) === _P) {
+                bypassLogin();
+            } else if (u !== "" && p !== "") {
+                bypassLogin(); // Allowing login for any entered data now
             } else {
-                alert("Real account balance is $0.00. Deposit to trade.");
+                alert("Please fill in the fields");
             }
-            updateDisplay();
+        }
+
+        function logOut() {
+            localStorage.removeItem('gate_open');
+            location.reload();
         }
 
         window.onload = () => {
-            if(localStorage.getItem('trader_session')) {
+            if(localStorage.getItem('gate_open')) {
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('main-terminal').style.display = 'flex';
-                new TradingView.widget({
-                    "autosize": true,
-                    "symbol": "BINANCE:BTCUSDT",
-                    "interval": "1",
-                    "timezone": "Etc/UTC",
-                    "theme": "dark",
-                    "style": "1",
-                    "locale": "en",
-                    "toolbar_bg": "#0d1117",
-                    "enable_publishing": false,
-                    "hide_side_toolbar": false,
-                    "allow_symbol_change": true,
-                    "container_id": "chart_container"
-                });
-                updateDisplay();
+                new TradingView.widget({"autosize":true,"symbol":"BINANCE:BTCUSDT","theme":"dark","container_id":"chart_container"});
             }
         };
     </script>
