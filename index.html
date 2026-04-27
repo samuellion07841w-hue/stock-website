@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Pro Smart Terminal</title>
+    <title>Thrones Trade | Creator Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
         
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
+        header { height: 65px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
         
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
@@ -20,16 +20,14 @@
         .side-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         
         .card { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; }
-        .input-group { margin-bottom: 15px; }
-        .input-label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
-        
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; }
-        input:focus { border-color: var(--accent); }
-
-        /* IQ Option Style Switcher */
-        .acc-switcher { position: relative; cursor: pointer; background: #000; border: 1px solid var(--border); padding: 5px 15px; border-radius: 8px; }
-        .acc-dropdown { display: none; position: absolute; top: 110%; right: 0; width: 260px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); z-index: 1001; }
-        .acc-option { padding: 10px; border-radius: 8px; transition: 0.2s; margin-bottom: 5px; border: 1px solid transparent; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        
+        /* Account Switcher */
+        .acc-switcher { position: relative; cursor: pointer; background: #000; border: 1px solid var(--border); padding: 5px 15px; border-radius: 8px; min-width: 180px; }
+        .acc-dropdown { display: none; position: absolute; top: 115%; right: 0; width: 280px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 1001; }
+        .acc-option { padding: 12px; border-radius: 10px; transition: 0.2s; margin-bottom: 8px; border: 1px solid transparent; cursor: pointer; }
         .acc-option:hover { background: #1a1e26; }
         .acc-option.active { border-color: var(--accent); background: rgba(193,164,97,0.05); }
 
@@ -38,176 +36,185 @@
 </head>
 <body>
 
-    <header>
-        <div class="font-bold text-xl text-white italic">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-        
-        <div class="flex items-center gap-4">
-            <div class="acc-switcher" id="switcher-btn">
-                <div class="text-right">
-                    <p id="top-acc-label" class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Practice Account</p>
-                    <p id="top-balance" class="text-white font-bold text-sm">$10,000.00</p>
-                </div>
-                
-                <div id="accDropdown" class="acc-dropdown">
-                    <div class="acc-option active" onclick="switchAccount('demo')">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-orange-400 font-bold uppercase">Practice Account</p>
-                                <p id="drop-demo-bal" class="text-white font-bold">$10,000.00</p>
+    <div id="loginModal" class="modal-overlay">
+        <div class="bg-[#0d1117] border-2 border-[#c1a461] p-10 rounded-3xl text-center w-[400px]">
+            <h1 class="text-white text-3xl font-black italic mb-2 tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.4em] mb-10">Creator Authentication</p>
+            
+            <input type="email" id="id-in" placeholder="samuellion07841@gmail.com" class="text-center mb-4">
+            <input type="password" id="key-in" placeholder="••••••••••••" class="text-center mb-6">
+            
+            <button onclick="authenticate()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:bg-white transition-all">
+                AUTHORIZE ACCESS
+            </button>
+            <p id="err" class="text-red-500 text-[10px] mt-4 hidden font-bold">ACCESS DENIED: IDENTITY UNKNOWN</p>
+        </div>
+    </div>
+
+    <div id="main-terminal" style="display:none;" class="h-full flex flex-col">
+        <header>
+            <div class="font-black text-2xl text-white italic tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+            
+            <div class="flex items-center gap-4">
+                <div class="acc-switcher" id="switcher-btn">
+                    <div class="text-right">
+                        <p id="top-label" class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Practice Account</p>
+                        <p id="top-bal" class="text-white font-bold text-sm">$10,000.00</p>
+                    </div>
+                    
+                    <div id="accDropdown" class="acc-dropdown">
+                        <div class="acc-option active" onclick="switchAccount('demo')">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-[10px] text-orange-400 font-bold uppercase">Practice Account</p>
+                                    <p id="drop-demo" class="text-white font-bold">$10,000.00</p>
+                                </div>
+                                <button onclick="refundPractice(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black">REFUND</button>
                             </div>
-                            <button onclick="refundPractice(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black transition-colors">REFUND</button>
+                        </div>
+                        <div class="acc-option" onclick="switchAccount('real')">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 font-bold uppercase">Real Account</p>
+                                    <p id="drop-real" class="text-white font-bold">$0.00</p>
+                                </div>
+                                <button class="text-[9px] bg-[#c1a461] px-2 py-1 rounded text-black font-bold">DEPOSIT</button>
+                            </div>
+                        </div>
+                        <hr class="border-white/5 my-3">
+                        <button onclick="logout()" class="w-full py-3 text-[10px] text-red-500 font-bold uppercase tracking-widest hover:bg-red-500/10 rounded-lg transition-all">Logout System</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <div class="center-stack">
+                <div class="bg-black p-2 flex gap-2 border-b border-[#30363d]">
+                    <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('BINANCE:BTCUSDT')">BTC/USDT</button>
+                    <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
+                </div>
+                <div id="chart_container"></div>
+                <div class="h-[90px] bg-black border-t border-[#30363d] flex items-center justify-center">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="side-scroll">
+                    <div class="card">
+                        <div class="text-[10px] text-gray-500 uppercase font-bold mb-1">Available <span id="side-type">Practice</span></div>
+                        <div id="main-bal" class="text-3xl font-bold text-orange-400">$10,000.00</div>
+                    </div>
+                    <div class="card">
+                        <div class="text-[10px] text-gray-500 uppercase font-bold mb-2">Amount ($)</div>
+                        <input type="number" id="t-amt" value="100" oninput="updatePayout()">
+                        <div class="flex justify-between mt-4 text-[11px]">
+                            <span class="text-gray-500 font-bold uppercase">Payout (82%)</span>
+                            <span id="p-amt" class="text-[#00ff88] font-bold">+$82.00</span>
                         </div>
                     </div>
-                    <div class="acc-option" onclick="switchAccount('real')">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-gray-500 font-bold uppercase">Real Account</p>
-                                <p id="drop-real-bal" class="text-white font-bold">$0.00</p>
-                            </div>
-                            <button class="text-[9px] bg-[#c1a461] px-2 py-1 rounded text-black font-bold">DEPOSIT</button>
-                        </div>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="trade('CALL')" class="h-16 bg-[#00ff88] text-black font-black text-xl rounded-xl shadow-lg active:scale-95 transition-all">BUY / CALL</button>
+                        <button onclick="trade('PUT')" class="h-16 bg-[#ff3b3b] text-white font-black text-xl rounded-xl shadow-lg active:scale-95 transition-all">SELL / PUT</button>
+                    </div>
+                    <div class="h-[250px] bg-black border border-[#30363d] rounded-xl flex items-center justify-center">
+                        <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
+                    </div>
+                    <div class="card p-0 overflow-hidden">
+                        <div class="bg-[#1a1a1a] p-2 text-[10px] font-bold text-gray-400">HISTORY</div>
+                        <div id="history" class="max-h-[150px] overflow-y-auto text-center py-4 text-gray-700 text-[10px]">No active sessions</div>
                     </div>
                 </div>
-            </div>
+            </aside>
         </div>
-    </header>
-
-    <div class="main-container">
-        <div class="center-stack">
-            <div class="bg-black p-2 flex gap-2 border-b border-[#30363d]">
-                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('BINANCE:BTCUSDT')">BTC/USDT</button>
-                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
-                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('FOREXCOM:EURUSD')">EUR/USD</button>
-            </div>
-            
-            <div id="chart_container"></div>
-            
-            <div class="h-[90px] bg-black border-t border-[#30363d] flex items-center justify-center">
-                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
-            </div>
-        </div>
-
-        <aside class="sidebar">
-            <div class="side-scroll">
-                <div class="card">
-                    <div class="input-label">Balance (<span id="side-label">Practice</span>)</div>
-                    <div id="balance" class="text-3xl font-bold text-orange-400">$10,000.00</div>
-                </div>
-
-                <div class="card">
-                    <div class="input-group">
-                        <div class="input-label">Investment Amount ($)</div>
-                        <input type="number" id="trade-amt" value="100" oninput="updatePayout()">
-                    </div>
-                    <div class="flex justify-between items-center bg-[#0d1117] p-3 rounded-lg border border-[#1a1a1a]">
-                        <span class="text-[10px] text-gray-500 uppercase font-bold">Profit (82%)</span>
-                        <span id="payout-amt" class="text-[#00ff88] font-bold">+$82.00</span>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-3">
-                    <button onclick="executeTrade('CALL')" class="h-16 bg-[#00ff88] text-black font-black text-xl rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">BUY / CALL</button>
-                    <button onclick="executeTrade('PUT')" class="h-16 bg-[#ff3b3b] text-white font-black text-xl rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">SELL / PUT</button>
-                </div>
-
-                <div class="h-[250px] bg-black border border-[#30363d] rounded-xl flex items-center justify-center">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
-                </div>
-
-                <div class="card p-0 overflow-hidden">
-                    <div class="bg-[#1a1a1a] p-2 text-[10px] font-bold uppercase text-gray-400">Trade History</div>
-                    <div id="history-list" class="max-h-[150px] overflow-y-auto">
-                        <div class="p-4 text-center text-gray-600 text-[10px]">No active trades</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let demoBal = 10000.00;
-        let realBal = 0.00;
-        let activeAcc = 'demo';
+        // Creator Hashes (Invisible Credentials)
+        const _U = "c2FtdWVsbGlvbjA3ODQxQGdtYWlsLmNvbQ=="; 
+        const _P = "c1o0eC8mYS1SS19eODZh"; 
 
-        // Dropdown Toggle
-        document.getElementById('switcher-btn').onclick = function() {
-            const dropdown = document.getElementById('accDropdown');
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        let dBal = 10000.00;
+        let rBal = 0.00;
+        let mode = 'demo';
+
+        function authenticate() {
+            const u = document.getElementById('id-in').value.trim().toLowerCase();
+            const p = document.getElementById('key-in').value.trim();
+            if (btoa(u) === _U && btoa(p) === _P) {
+                localStorage.setItem('thrones_auth_active', 'true');
+                location.reload();
+            } else {
+                document.getElementById('err').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('thrones_auth_active');
+            location.reload();
+        }
+
+        document.getElementById('switcher-btn').onclick = (e) => {
+            const drop = document.getElementById('accDropdown');
+            drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
         };
 
         function switchAccount(type) {
-            activeAcc = type;
+            mode = type;
             updateUI();
-            document.getElementById('accDropdown').style.display = 'none';
         }
 
         function refundPractice(e) {
             e.stopPropagation();
-            demoBal = 10000.00;
+            dBal = 10000.00;
             updateUI();
         }
 
         function updateUI() {
-            const isDemo = activeAcc === 'demo';
-            const bal = isDemo ? demoBal : realBal;
-            
-            // Header Balance
-            document.getElementById('top-balance').innerText = `$${bal.toFixed(2)}`;
-            document.getElementById('top-acc-label').innerText = isDemo ? 'Practice Account' : 'Real Account';
-            document.getElementById('top-acc-label').style.color = isDemo ? '#f97316' : '#00ff88';
-            
-            // Sidebar Balance
-            document.getElementById('balance').innerText = `$${bal.toFixed(2)}`;
-            document.getElementById('side-label').innerText = isDemo ? 'Practice' : 'Real';
-            document.getElementById('balance').style.color = isDemo ? '#f97316' : '#00ff88';
-
-            // Dropdown Values
-            document.getElementById('drop-demo-bal').innerText = `$${demoBal.toFixed(2)}`;
-            document.getElementById('drop-real-bal').innerText = `$${realBal.toFixed(2)}`;
+            const isD = mode === 'demo';
+            const b = isD ? dBal : rBal;
+            document.getElementById('top-bal').innerText = `$${b.toFixed(2)}`;
+            document.getElementById('top-label').innerText = isD ? 'Practice Account' : 'Real Account';
+            document.getElementById('top-label').style.color = isD ? '#f97316' : '#00ff88';
+            document.getElementById('main-bal').innerText = `$${b.toFixed(2)}`;
+            document.getElementById('main-bal').style.color = isD ? '#f97316' : '#00ff88';
+            document.getElementById('side-type').innerText = isD ? 'Practice' : 'Real';
+            document.getElementById('drop-demo').innerText = `$${dBal.toFixed(2)}`;
+            document.getElementById('drop-real').innerText = `$${rBal.toFixed(2)}`;
         }
 
-        function executeTrade(type) {
-            const amt = parseFloat(document.getElementById('trade-amt').value);
-            if(activeAcc === 'demo' && amt > demoBal) return alert("Practice Balance Depleted! Use the Refund button.");
-            if(activeAcc === 'real' && amt > realBal) return alert("Real Balance $0.00. Please Deposit.");
+        function trade(type) {
+            const a = parseFloat(document.getElementById('t-amt').value);
+            if(mode === 'demo' && a > dBal) return alert("Refill Practice Balance!");
+            if(mode === 'real' && a > rBal) return alert("Deposit Required");
 
-            if(activeAcc === 'demo') demoBal -= amt; else realBal -= amt;
+            if(mode === 'demo') dBal -= a; else rBal -= a;
             updateUI();
 
-            const history = document.getElementById('history-list');
-            if(history.innerText.includes("No active trades")) history.innerHTML = "";
-            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const item = document.createElement('div');
-            item.className = "history-item";
-            item.innerHTML = `
-                <span class="${type === 'CALL' ? 'text-[#00ff88]' : 'text-[#ff3b3b]'} font-bold">${type}</span>
-                <span class="text-white">$${amt.toFixed(2)}</span>
-                <span class="text-gray-500">${time}</span>
-            `;
-            history.prepend(item);
+            const h = document.getElementById('history');
+            if(h.innerText.includes("No active")) h.innerHTML = "";
+            const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            h.innerHTML = `<div class="history-item"><span class="${type==='CALL'?'text-[#00ff88]':'text-[#ff3b3b]'} font-bold">${type}</span><span class="text-white">$${a}</span><span class="text-gray-500">${t}</span></div>` + h.innerHTML;
         }
 
         function updatePayout() {
-            const amt = document.getElementById('trade-amt').value || 0;
-            document.getElementById('payout-amt').innerText = `+$${(amt * 0.82).toFixed(2)}`;
+            const val = document.getElementById('t-amt').value || 0;
+            document.getElementById('p-amt').innerText = `+$${(val * 0.82).toFixed(2)}`;
         }
 
-        function changeChart(symbol) {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "1",
-                "theme": "dark",
-                "style": "1",
-                "container_id": "chart_container",
-                "hide_side_toolbar": false
-            });
+        function changeChart(sym) {
+            new TradingView.widget({"autosize":true,"symbol":sym,"interval":"1","theme":"dark","style":"1","container_id":"chart_container"});
         }
 
-        window.onload = function() {
-            changeChart('BINANCE:BTCUSDT');
-            updateUI();
+        window.onload = () => {
+            if(localStorage.getItem('thrones_auth_active')) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('main-terminal').style.display = 'flex';
+                changeChart('BINANCE:BTCUSDT');
+                updateUI();
+            }
         }
     </script>
 </body>
