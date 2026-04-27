@@ -3,162 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Advanced Pro</title>
+    <title>Thrones Trade | Professional Chart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        :root { --bg: #0e121a; --panel: #181c26; --accent: #ff9800; --border: #2a2e39; }
-        body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* LED GLOW LIGHTS */
-        .glow-up { animation: pulse-green 1s forwards; border: 2px solid #00ff88 !important; }
-        .glow-down { animation: pulse-red 1s forwards; border: 2px solid #ff3b3b !important; }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 0px #00ff88; } 50% { box-shadow: 0 0 25px #00ff88; } 100% { box-shadow: 0 0 5px #00ff88; } }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0px #ff3b3b; } 50% { box-shadow: 0 0 25px #ff3b3b; } 100% { box-shadow: 0 0 5px #ff3b3b; } }
-
-        .chat-area { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .msg-box { flex: 1; overflow-y: auto; padding: 12px; font-size: 11px; }
-        .msg { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; border-left: 2px solid var(--accent); }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            background-color: #0e121a; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        header {
+            height: 50px;
+            background: #181c26;
+            border-bottom: 1px solid #2a2e39;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+        .logo {
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            font-style: italic;
+            color: #f0f2f5;
+        }
+        .logo span { color: #ff9800; }
+        #chart-container {
+            flex-grow: 1;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
-    <header class="h-[65px] bg-[#181c26] border-b border-[#2a2e39] flex items-center justify-between px-6">
-        <div class="font-black text-xl italic uppercase tracking-tighter">THRONES <span class="text-[#ff9800]">TRADE</span></div>
-        
-        <div class="flex items-center gap-4">
-            <div class="bg-black/40 border border-white/10 px-4 py-1.5 rounded-xl text-right">
-                <select id="acc-select" onchange="changeAccount()" class="bg-transparent text-orange-400 font-bold text-[10px] uppercase outline-none cursor-pointer">
-                    <option value="demo">Demo Account</option>
-                    <option value="real">Real Account (NGN)</option>
-                </select>
-                <div class="flex items-center justify-end gap-2">
-                    <p id="balance" class="text-white font-bold text-lg">$10,000.00</p>
-                    <button id="refund-btn" onclick="refund()" class="text-[9px] bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">REFUND</button>
-                </div>
-            </div>
-            <button onclick="window.open('https://paystack.shop/pay/m3gzeovryt', '_blank')" class="bg-[#22cc77] text-black px-5 py-2.5 rounded-lg font-black text-[10px] uppercase">Deposit</button>
-        </div>
+    <header>
+        <div class="logo">THRONES <span>TRADE</span></div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <aside class="chat-area">
-            <div id="chat-flow" class="msg-box">
-                <div class="msg"><b>System:</b> Global Chat Online.</div>
-            </div>
-            <div class="p-3 border-t border-white/5">
-                <input type="text" id="chatInput" onkeypress="sendMessage(event)" placeholder="Say something..." class="w-full bg-black border border-white/10 rounded-lg p-2.5 text-[11px] outline-none focus:border-orange-500">
-            </div>
-        </aside>
+    <div id="chart-container">
+        <div class="tradingview-widget-container" style="height:100%;width:100%">
+          <div id="tradingview_thrones" style="height:100%;width:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+          new TradingView.widget({
+            "autosize": true,
+            "symbol": "BINANCE:BTCUSDT",
+            "interval": "1",
+            "timezone": "Africa/Lagos",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#181c26",
+            "enable_publishing": false,
+            "withdateranges": true,
+            "hide_side_toolbar": false, // Left drawing tools
+            "allow_symbol_change": true,
+            "details": true,            // Right sidebar info
+            "hotlist": true,            // Trending list
+            "calendar": true,           // Economic calendar
+            "show_popup_button": true,
+            "container_id": "tradingview_thrones"
+          });
+          </script>
+        </div>
+        </div>
 
-        <main class="flex-1 bg-black">
-            <div class="tradingview-widget-container" style="height:100%;width:100%">
-              <div id="tradingview_pro" style="height:100%;width:100%"></div>
-              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-              <script type="text/javascript">
-              new TradingView.widget({
-                "autosize": true,
-                "symbol": "BINANCE:BTCUSDT",
-                "interval": "1",
-                "timezone": "Africa/Lagos",
-                "theme": "dark",
-                "style": "1", // Candle Style to match the link better
-                "locale": "en",
-                "toolbar_bg": "#181c26",
-                "enable_publishing": false,
-                "withdateranges": true,
-                "hide_side_toolbar": false, // SHOWS LEFT DRAWING TOOLS
-                "allow_symbol_change": true,
-                "details": true, // SHOWS RIGHT SIDEBAR
-                "hotlist": true, // SHOWS TRENDING LIST
-                "calendar": true, // SHOWS ECONOMIC NEWS
-                "show_popup_button": true,
-                "popup_width": "1000",
-                "popup_height": "650",
-                "container_id": "tradingview_pro"
-              });
-              </script>
-            </div>
-        </main>
-
-        <aside class="w-[300px] bg-[#181c26] p-5 flex flex-col gap-5 border-l border-[#2a2e39]">
-            <div id="input-led" class="bg-black/50 p-4 rounded-xl border border-white/5 transition-all">
-                <label class="text-[9px] text-gray-500 font-bold block mb-1 uppercase">Investment Amount</label>
-                <input type="number" id="trade-amt" value="1000" class="w-full text-3xl font-bold text-white bg-transparent outline-none">
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <button onclick="trade('UP')" class="h-20 bg-[#22cc77] text-black rounded-xl font-black text-2xl uppercase italic active:scale-95 transition-all">Higher</button>
-                <button onclick="trade('DOWN')" class="h-20 bg-[#ff3b3b] text-white rounded-xl font-black text-2xl uppercase italic active:scale-95 transition-all">Lower</button>
-            </div>
-        </aside>
-    </div>
-
-    <script>
-        let isReal = false;
-        let demoBal = 10000;
-        let realBal = 0;
-
-        function changeAccount() {
-            isReal = document.getElementById('acc-select').value === 'real';
-            updateUI();
-        }
-
-        function updateUI() {
-            const bal = document.getElementById('balance');
-            const refundBtn = document.getElementById('refund-btn');
-            if(isReal) {
-                bal.innerText = `₦${realBal.toLocaleString()}`;
-                bal.className = "text-[#22cc77] font-bold text-lg";
-                refundBtn.classList.add('hidden');
-            } else {
-                bal.innerText = `$${demoBal.toLocaleString()}`;
-                bal.className = "text-white font-bold text-lg";
-                refundBtn.classList.remove('hidden');
-            }
-        }
-
-        function refund() {
-            demoBal = 10000;
-            addMsg("System", "Demo account reset!");
-            updateUI();
-        }
-
-        function trade(dir) {
-            const box = document.getElementById('input-led');
-            const amt = parseInt(document.getElementById('trade-amt').value);
-            
-            box.classList.remove('glow-up', 'glow-down');
-            void box.offsetWidth; 
-            dir === 'UP' ? box.classList.add('glow-up') : box.classList.add('glow-down');
-
-            if(isReal) {
-                if(realBal >= amt) { realBal -= amt; updateUI(); } 
-                else { addMsg("System", "Insufficient Funds!"); }
-            } else {
-                if(demoBal >= amt) { demoBal -= amt; updateUI(); }
-                else { addMsg("System", "Refill Demo!"); }
-            }
-        }
-
-        function sendMessage(e) {
-            if(e.key === 'Enter') {
-                const input = document.getElementById('chatInput');
-                if(input.value) {
-                    addMsg("Trader", input.value);
-                    input.value = "";
-                }
-            }
-        }
-
-        function addMsg(u, t) {
-            const flow = document.getElementById('chat-flow');
-            const d = document.createElement('div');
-            d.className = "msg";
-            d.innerHTML = `<b>${u}:</b> ${t}`;
-            flow.appendChild(d);
-            flow.scrollTop = flow.scrollHeight;
-        }
-    </script>
 </body>
 </html>
