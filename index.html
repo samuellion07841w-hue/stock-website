@@ -3,54 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Professional Chart</title>
+    <title>Thrones Trade | Advanced Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            width: 100%; 
-            background-color: #0e121a; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            font-family: 'Space Grotesk', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;900&display=swap');
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: #0e121a; overflow: hidden; font-family: 'Space Grotesk', sans-serif; }
+        
+        /* CUSTOM TOP BAR */
         header {
-            height: 50px;
-            background: #181c26;
+            height: 48px;
+            background: #131722;
             border-bottom: 1px solid #2a2e39;
             display: flex;
             align-items: center;
-            padding: 0 20px;
-            flex-shrink: 0;
+            justify-content: space-between;
+            padding: 0 12px;
+            z-index: 100;
         }
-        .logo {
-            font-weight: 900;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            font-style: italic;
-            color: #f0f2f5;
-        }
+
+        .left-controls { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { cursor: pointer; color: #d1d4dc; transition: 0.2s; padding: 5px; border-radius: 4px; }
+        .menu-btn:hover { background: #2a2e39; color: #ff9800; }
+        
+        .logo { font-weight: 900; font-size: 1rem; color: #fff; text-transform: uppercase; letter-spacing: -0.5px; }
         .logo span { color: #ff9800; }
-        #chart-container {
-            flex-grow: 1;
-            width: 100%;
+
+        /* HOME SCREEN OVERLAY */
+        #home-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(14, 18, 26, 0.98);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
         }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
+    <div id="home-overlay" class="fade-in">
+        <h1 class="text-5xl font-black text-white mb-6 uppercase tracking-tighter">THRONES <span class="text-orange-500">TRADE</span></h1>
+        <p class="text-gray-400 max-w-2xl text-lg mb-8 leading-relaxed">
+            Welcome to the future of decentralized asset management. Thrones Trade is the ultimate companion for the 
+            "Thrones of Legends" ecosystem, built for elite traders and gamers in Lagos and beyond.
+        </p>
+        <button onclick="toggleHome()" class="bg-orange-500 text-black font-black px-10 py-4 rounded-full uppercase hover:bg-orange-400 transition-all">Back to Terminal</button>
+    </div>
+
     <header>
-        <div class="logo">THRONES <span>TRADE</span></div>
+        <div class="left-controls">
+            <div class="menu-btn" onclick="toggleHome()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </div>
+            <div class="logo">THRONES <span>TRADE</span></div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1 bg-[#1e222d] rounded border border-white/5">
+                <span class="text-[10px] font-bold text-gray-500 uppercase">BTC/USDT</span>
+                <span class="text-[11px] font-bold text-green-400" id="live-price">---</span>
+            </div>
+            <button onclick="window.print()" class="p-1.5 hover:bg-[#2a2e39] rounded text-gray-400" title="Take Screenshot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </button>
+        </div>
     </header>
 
-    <div id="chart-container">
+    <div style="flex: 1; width: 100%;">
         <div class="tradingview-widget-container" style="height:100%;width:100%">
-          <div id="tradingview_thrones" style="height:100%;width:100%"></div>
+          <div id="tv_chart" style="height:100%;width:100%"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
           <script type="text/javascript">
           new TradingView.widget({
@@ -61,20 +89,31 @@
             "theme": "dark",
             "style": "1",
             "locale": "en",
-            "toolbar_bg": "#181c26",
-            "enable_publishing": false,
+            "enable_publishing": false, // REMOVED PUBLISH AS REQUESTED
             "withdateranges": true,
-            "hide_side_toolbar": false, // Left drawing tools
+            "hide_side_toolbar": false, // LEFT TOOLS
             "allow_symbol_change": true,
-            "details": true,            // Right sidebar info
-            "hotlist": true,            // Trending list
-            "calendar": true,           // Economic calendar
+            "details": true,            // RIGHT TOOLS
+            "hotlist": true,            // WATCHLISTS
+            "calendar": true,           // NEWS
             "show_popup_button": true,
-            "container_id": "tradingview_thrones"
+            "container_id": "tv_chart"
           });
           </script>
         </div>
-        </div>
+    </div>
 
+    <script>
+        function toggleHome() {
+            const overlay = document.getElementById('home-overlay');
+            overlay.style.display = (overlay.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        // Simulating a live price feed for the top bar
+        setInterval(() => {
+            const price = (60000 + Math.random() * 500).toFixed(2);
+            document.getElementById('live-price').innerText = price;
+        }, 2000);
+    </script>
 </body>
 </html>
