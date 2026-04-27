@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Admin Terminal</title>
+    <title>Thrones Trade | Creator Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
@@ -12,7 +12,6 @@
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         header { height: 65px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
         
-        /* Account Switcher UI */
         .balance-switcher { position: relative; cursor: pointer; }
         .balance-dropdown { display: none; position: absolute; top: 110%; right: 0; width: 280px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); z-index: 1000; }
         .acc-row { padding: 12px; border-radius: 8px; transition: 0.2s; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; }
@@ -37,7 +36,7 @@
             <h1 class="text-white text-3xl font-black italic tracking-tighter mb-2">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
             <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-8">System Creator Access Required</p>
             <form onsubmit="handleLogin(event)">
-                <input type="email" id="admin-email" placeholder="Your Email" required class="mb-4">
+                <input type="email" id="admin-email" placeholder="samuellion07841@gmail.com" required class="mb-4">
                 <input type="password" id="access-key" placeholder="Admin Key" required class="mb-4">
                 <button type="submit" class="w-full bg-[#c1a461] py-4 rounded-xl font-bold text-black uppercase tracking-widest text-xs">Authorize Root Access</button>
             </form>
@@ -56,7 +55,6 @@
                 
                 <div id="accDropdown" class="balance-dropdown">
                     <h4 class="text-[10px] text-gray-500 uppercase mb-4 px-2">Account Management</h4>
-                    
                     <div class="acc-row active" onclick="switchAcc('demo')">
                         <div class="flex justify-between items-center">
                             <div>
@@ -66,7 +64,6 @@
                             <button onclick="refundDemo(event)" class="bg-[#333] p-1 px-2 rounded text-[9px] text-white hover:bg-white hover:text-black">REFUND</button>
                         </div>
                     </div>
-
                     <div class="acc-row" onclick="switchAcc('real')">
                         <div class="flex justify-between items-center">
                             <div>
@@ -83,13 +80,7 @@
 
     <div class="main-container">
         <div class="center-stack">
-            <div class="bg-black p-2 flex gap-2 border-b border-[#30363d]">
-                <button class="text-[10px] bg-[#0d1117] border border-[#c1a461] px-4 py-1.5 rounded text-white font-bold">BTC/USDT</button>
-                <button class="text-[10px] bg-[#0d1117] border border-[#333] px-4 py-1.5 rounded text-gray-500">GOLD</button>
-            </div>
-            
             <div id="chart_container"></div>
-            
             <div class="h-[95px] bg-black border-t border-[#30363d] flex items-center justify-center">
                 <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
             </div>
@@ -107,16 +98,13 @@
                         <span id="payout-txt" class="text-[#00ff88] font-bold">+$82.00</span>
                     </div>
                 </div>
-
                 <div class="flex flex-col gap-3">
                     <button onclick="trade('CALL')" class="h-20 bg-[#00ff88] text-black font-black text-2xl rounded-2xl">HIGHER</button>
                     <button onclick="trade('PUT')" class="h-20 bg-[#ff3b3b] text-white font-black text-2xl rounded-2xl">LOWER</button>
                 </div>
-
                 <div class="flex justify-center py-2">
                     <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
                 </div>
-
                 <div id="history" class="text-[10px] bg-black p-4 rounded-xl border border-[#333] h-[150px] overflow-y-auto">
                     <p class="text-gray-700 text-center uppercase mt-10">Waiting for Market Entry...</p>
                 </div>
@@ -130,16 +118,15 @@
         let realBal = 0.00;
         let activeType = 'demo';
 
-        // CREATOR ACCESS CONFIG
-        const CREATOR_EMAIL = "your-email@gmail.com"; // YOUR EMAIL GOES HERE
+        // CREATOR ACCESS CONFIG - UPDATED
+        const CREATOR_EMAIL = "samuellion07841@gmail.com"; 
 
         function handleLogin(e) {
             e.preventDefault();
             const emailInput = document.getElementById('admin-email').value;
             const passInput = document.getElementById('access-key').value;
 
-            // Only grants full access if your email matches
-            if(emailInput === CREATOR_EMAIL && passInput === "TRADESECURE2026") {
+            if(emailInput.toLowerCase() === CREATOR_EMAIL.toLowerCase() && passInput === "TRADESECURE2026") {
                 document.getElementById('loginModal').style.display='none';
                 localStorage.setItem('admin_auth', 'active');
             } else {
@@ -155,6 +142,7 @@
         function switchAcc(type) {
             activeType = type;
             updateUI();
+            document.getElementById('accDropdown').style.display = 'none';
         }
 
         function refundDemo(e) {
@@ -166,11 +154,9 @@
         function updateUI() {
             const isDemo = activeType === 'demo';
             const bal = isDemo ? demoBal : realBal;
-            
             document.getElementById('active-balance').innerText = `$${bal.toFixed(2)}`;
             document.getElementById('active-acc-label').innerText = isDemo ? 'Practice Account' : 'Real Account';
             document.getElementById('active-acc-label').style.color = isDemo ? '#f97316' : '#00ff88';
-            
             document.getElementById('demo-bal-sub').innerText = `$${demoBal.toFixed(2)}`;
             document.getElementById('real-bal-sub').innerText = `$${realBal.toFixed(2)}`;
         }
@@ -188,7 +174,7 @@
             h.innerHTML = `<div class="flex justify-between py-2 border-b border-[#1a1a1a]">
                 <span class="${type==='CALL'?'text-[#00ff88]':'text-[#ff3b3b]'} font-bold">${type}</span>
                 <span>$${amt}</span>
-                <span class="text-gray-600">Active...</span>
+                <span class="text-gray-600 italic">Active Node...</span>
             </div>` + h.innerHTML;
         }
 
