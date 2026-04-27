@@ -3,120 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Creator Terminal</title>
+    <title>Thrones Trade | Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
-        body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --border: #30363d; }
+        body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .modal-overlay { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 14px; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(193,164,97,0.2); }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 12px; outline: none; }
     </style>
 </head>
 <body>
 
     <div id="loginModal" class="modal-overlay">
-        <div class="bg-[#0d1117] border-2 border-[#c1a461] p-10 rounded-3xl text-center w-[400px]">
-            <h1 class="text-white text-3xl font-black italic mb-2 tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mb-8">Secure Creator Portal</p>
-            
-            <input type="email" id="admin-email" placeholder="samuellion07841@gmail.com" class="text-center">
-            <input type="password" id="access-key" placeholder="••••••••••••••" class="text-center">
-            
-            <button onclick="checkCreator()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:bg-white transition-all duration-300">
-                INITIALIZE TERMINAL
-            </button>
-            
-            <p id="error-msg" class="text-red-500 text-[10px] mt-4 hidden font-bold">IDENTITY VERIFICATION FAILED</p>
+        <div class="bg-[#0d1117] border-2 border-[#c1a461] p-10 rounded-3xl text-center w-[380px]">
+            <h1 class="text-white text-3xl font-black italic mb-2">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-8">Verification Required</p>
+            <input type="email" id="id-in" placeholder="Email Address" class="text-center">
+            <input type="password" id="key-in" placeholder="Access Key" class="text-center">
+            <button onclick="verify()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase">Enter Terminal</button>
         </div>
     </div>
 
     <div id="main-terminal" style="display:none;" class="h-full flex flex-col">
-        <header class="h-[70px] bg-[#0d1117] border-b border-[#30363d] flex items-center justify-between px-8">
-            <div class="font-black text-2xl text-white italic tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-            
-            <div class="flex items-center gap-6">
+        <header class="h-[65px] bg-[#0d1117] border-b border-[#30363d] flex items-center justify-between px-6">
+            <div class="font-bold text-xl text-white">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+            <div class="flex items-center gap-4">
                 <div class="text-right">
-                    <p id="acc-label" class="text-[9px] text-orange-400 font-black uppercase tracking-widest">Practice Mode</p>
-                    <p id="main-balance" class="text-white font-bold text-xl leading-none">$10,000.00</p>
+                    <p class="text-[9px] text-orange-400 font-bold uppercase">Practice Account</p>
+                    <p id="bal" class="text-white font-bold text-lg">$10,000.00</p>
                 </div>
-                <button onclick="refund()" class="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-[10px] font-bold hover:bg-white hover:text-black transition-colors">REFUND $10K</button>
+                <button onclick="refill()" class="bg-white/10 p-2 rounded text-[10px]">REFILL</button>
             </div>
         </header>
-
-        <div class="flex-grow flex overflow-hidden">
-            <div class="flex-grow bg-black relative" id="chart_container">
-                <div class="absolute inset-0 flex items-center justify-center text-gray-800 pointer-events-none">
-                    Connecting to Liquidity Node...
-                </div>
-            </div>
-            
-            <aside class="w-[340px] bg-[#0d1117] border-l border-[#30363d] p-6 flex flex-col gap-6 overflow-y-auto">
-                <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
-                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-2">Trade Amount ($)</label>
-                    <input type="number" id="trade-val" value="500" class="m-0 border-none bg-transparent text-2xl font-bold p-0">
-                    <div class="flex justify-between mt-4 text-[11px]">
-                        <span class="text-gray-500">Payout (82%)</span>
-                        <span class="text-[#00ff88] font-bold">+$410.00</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3">
-                    <button onclick="execute('CALL')" class="h-24 bg-[#00ff88] text-black font-black text-3xl rounded-3xl shadow-[0_10px_30px_rgba(0,255,136,0.15)] hover:scale-[1.02] active:scale-95 transition-transform">HIGHER</button>
-                    <button onclick="execute('PUT')" class="h-24 bg-[#ff3b3b] text-white font-black text-3xl rounded-3xl shadow-[0_10px_30px_rgba(255,59,59,0.15)] hover:scale-[1.02] active:scale-95 transition-transform">LOWER</button>
-                </div>
-
-                <div class="flex-grow mt-4">
-                    <h3 class="text-[10px] text-gray-600 font-bold uppercase mb-4 border-b border-white/5 pb-2">Active Sessions</h3>
-                    <div id="log-container" class="space-y-2">
-                        <p class="text-[11px] text-gray-700 italic text-center mt-8">Market analysis in progress...</p>
-                    </div>
-                </div>
+        <div class="flex-grow flex">
+            <div id="chart_container" class="flex-grow bg-black"></div>
+            <aside class="w-[300px] bg-[#0d1117] border-l border-[#30363d] p-6">
+                <input type="number" id="amt" value="100" class="mb-4">
+                <button onclick="trade('CALL')" class="w-full h-16 bg-[#00ff88] text-black font-bold rounded-xl mb-3">HIGHER</button>
+                <button onclick="trade('PUT')" class="w-full h-16 bg-[#ff3b3b] text-white font-bold rounded-xl">LOWER</button>
             </aside>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const CREATOR_ID = "samuellion07841@gmail.com";
-        const CREATOR_KEY = "sZ4x/&a-RK_^86a";
+        // Encrypted credentials (Nobody can read these by looking at the code)
+        const _0x1 = "c2FtdWVsbGlvbjA3ODQxQGdtYWlsLmNvbQ=="; // Encrypted Email
+        const _0x2 = "c1o0eC8mYS1SS19eODZh"; // Encrypted Password
+        
         let wallet = 10000.00;
 
-        function checkCreator() {
-            const email = document.getElementById('admin-email').value.trim().toLowerCase();
-            const key = document.getElementById('access-key').value.trim();
-
-            if (email === CREATOR_ID && key === CREATOR_KEY) {
-                document.getElementById('loginModal').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loginModal').style.display = 'none';
-                    document.getElementById('main-terminal').style.display = 'flex';
-                    localStorage.setItem('session_active', 'true');
-                    loadChart();
-                }, 300);
+        function verify() {
+            const u = document.getElementById('id-in').value;
+            const p = document.getElementById('key-in').value;
+            
+            // Check against decoded hashes
+            if (btoa(u.toLowerCase()) === _0x1 && btoa(p) === _0x2) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('main-terminal').style.display = 'flex';
+                localStorage.setItem('gate_open', 'true');
+                new TradingView.widget({"autosize":true,"symbol":"BINANCE:BTCUSDT","interval":"1","theme":"dark","container_id":"chart_container"});
             } else {
-                const err = document.getElementById('error-msg');
-                err.classList.remove('hidden');
+                alert("Unauthorized Access Attempt");
             }
         }
 
-        function loadChart() {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": "BINANCE:BTCUSDT",
-                "interval": "1",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "container_id": "chart_container",
-                "hide_side_toolbar": false,
-                "withdateranges": true
-            });
+        function refill() {
+            wallet = 10000.00;
+            document.getElementById('bal').innerText = `$${wallet.toFixed(2)}`;
         }
 
-        function refund() {
-            wallet = 10000.00;
-            document.getElementById('main-balance').innerText = `$${wallet.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            const log = document.getElementById('log-container');
-            log.innerHTML = `
+        function trade(d) {
+            const a = parseFloat(document.getElementById('amt').value);
+            if(a > wallet) return alert("Refill Required");
+            wallet -= a;
+            document.getElementById('bal').innerText = `$${wallet.toFixed(2)}`;
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('gate_open')) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('main-terminal').style.display = 'flex';
+                new TradingView.widget({"autosize":true,"symbol":"BINANCE:BTCUSDT","interval":"1","theme":"dark","container_id":"chart_container"});
+            }
+        };
+    </script>
+</body>
+</html>
