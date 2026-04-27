@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | IQ Style</title>
+    <title>Thrones Trade | Advanced Terminal</title>
     
     <meta name="coinzilla" content="267bfcd390619bc586136d62f9e9aded" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,7 @@
         
         body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* PULSING LED LIGHTS */
+        /* LED GLOW EFFECT */
         .glow-up { animation: pulse-green 1.5s infinite; border: 2px solid #00ff88 !important; }
         .glow-down { animation: pulse-red 1.5s infinite; border: 2px solid #ff3b3b !important; }
         @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3); } 50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.7); } }
@@ -24,15 +24,10 @@
         .msg-box { flex: 1; overflow-y: auto; padding: 15px; font-size: 11px; }
         .msg { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--accent); }
         
-        select { background: #000; color: #ff9800; border: 1px solid #333; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        select { background: #000; color: #ff9800; border: 1px solid #333; padding: 4px 8px; border-radius: 4px; font-weight: bold; outline: none; }
     </style>
 </head>
 <body>
-
-    <div class="h-[90px] bg-black flex items-center justify-center border-b border-white/5">
-        <script async src="https://coinzilla.com/ads/js/main.js"></script>
-        <div class="coinzilla-ad" data-zone="728x90"></div>
-    </div>
 
     <header class="h-[70px] bg-[#181c26] border-b border-[#2a2e39] flex items-center justify-between px-6">
         <div class="font-black text-xl italic tracking-tighter uppercase">THRONES <span class="text-[#ff9800]">TRADE</span></div>
@@ -54,7 +49,7 @@
 
     <div class="flex flex-1 overflow-hidden">
         <aside class="chat-area">
-            <div class="p-3 text-[10px] uppercase text-gray-500 font-bold border-b border-white/5">Global Traders Chat</div>
+            <div class="p-3 text-[10px] uppercase text-gray-500 font-bold border-b border-white/5">Global Chat</div>
             <div id="chat-flow" class="msg-box">
                 <div class="msg"><b>System:</b> Log in to start chatting with traders in Lagos!</div>
             </div>
@@ -68,7 +63,7 @@
         </aside>
 
         <main class="flex-1 relative">
-            <div id="tradingview_iq" class="w-full h-full"></div>
+            <div id="tradingview_full" class="w-full h-full"></div>
         </main>
 
         <aside class="w-[320px] bg-[#181c26] p-6 flex flex-col gap-6 border-l border-[#2a2e39]">
@@ -90,7 +85,7 @@
         let demoBal = 10000;
         let realBal = 0;
 
-        // 1. THE IQ OPTION CHART SETUP
+        // UPDATED: ADVANCED CHART WIDGET
         window.onload = () => {
             new TradingView.widget({
                 "autosize": true,
@@ -98,14 +93,17 @@
                 "interval": "1",
                 "timezone": "Africa/Lagos",
                 "theme": "dark",
-                "style": "3", // Area Chart like IQ Option
+                "style": "3", // Area Style
                 "locale": "en",
                 "toolbar_bg": "#181c26",
                 "enable_publishing": false,
-                "hide_top_toolbar": true,
-                "hide_legend": true,
-                "save_image": false,
-                "container_id": "tradingview_iq",
+                "withdateranges": true,
+                "hide_side_toolbar": false, // Shows the tools you requested
+                "allow_symbol_change": true,
+                "details": true,
+                "hotlist": true,
+                "calendar": true,
+                "container_id": "tradingview_full",
                 "backgroundColor": "#0e121a",
                 "gridColor": "rgba(42, 46, 57, 0.5)",
             });
@@ -141,9 +139,8 @@
             const box = document.getElementById('input-led');
             const amt = parseInt(document.getElementById('trade-amt').value);
             
-            // LED Triggers
             box.classList.remove('glow-up', 'glow-down');
-            void box.offsetWidth; // Reset animation
+            void box.offsetWidth; 
             dir === 'UP' ? box.classList.add('glow-up') : box.classList.add('glow-down');
 
             if(isReal) {
