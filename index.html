@@ -3,117 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Open Terminal</title>
+    <title>Thrones Trade | Elite Global Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --border: #30363d; }
-        body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; }
+        :root { --bg: #020408; --panel: #0a1118; --accent: #c1a461; --border: #1e2329; }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: #0d1117; border: 1px solid var(--border); padding: 40px; border-radius: 28px; width: 420px; text-align: center; }
-        
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 12px; outline: none; font-size: 13px; }
-        input:focus { border-color: var(--accent); }
+        body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        .social-container { display: flex; gap: 10px; margin-bottom: 20px; }
-        .social-btn { flex: 1; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border); cursor: pointer; }
-        .btn-google { background: #fff; color: #000; }
-        .btn-fb { background: #1877f2; color: #fff; border: none; }
+        /* PULSING LED LIGHTING */
+        .led-aura-green { box-shadow: inset 0 0 50px rgba(0, 255, 136, 0.1), 0 0 20px rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3) !important; }
+        .led-aura-red { box-shadow: inset 0 0 50px rgba(255, 59, 59, 0.1), 0 0 20px rgba(255, 59, 59, 0.1); border: 1px solid rgba(255, 59, 59, 0.3) !important; }
+        
+        .btn-glow-up { background: #00ff88; color: #000; box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); text-shadow: 0 0 5px rgba(0,0,0,0.2); }
+        .btn-glow-down { background: #ff3b3b; color: #fff; box-shadow: 0 0 25px rgba(255, 59, 59, 0.4); }
+
+        /* GLASSMORPHISM CHAT */
+        .glass-panel { background: rgba(10, 17, 24, 0.7); backdrop-filter: blur(15px); border-right: 1px solid var(--border); }
+        .chat-msg { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-left: 3px solid var(--accent); font-size: 11px; }
+
+        /* MODAL */
+        .modal-overlay { display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .pay-box { background: #0d1117; border: 1px solid var(--accent); padding: 40px; border-radius: 30px; width: 400px; box-shadow: 0 0 40px rgba(193, 164, 97, 0.2); }
+
+        input, select { background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(193, 164, 97, 0.2); }
     </style>
 </head>
 <body>
 
-    <div id="loginModal" class="modal-overlay">
-        <div class="login-box">
-            <h1 class="text-white text-3xl font-black italic mb-2 tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
-            <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-6 font-bold">Access Terminal</p>
-            
-            <div class="social-container">
-                <div class="social-btn btn-google" onclick="bypassLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="16"> Google
+    <div id="payModal" class="modal-overlay">
+        <div class="pay-box text-center">
+            <h2 class="text-white text-3xl font-black italic tracking-tighter mb-2">FUND <span class="text-[#c1a461]">ACCOUNT</span></h2>
+            <p class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-8 font-bold">Secure Gateway 256-Bit</p>
+            <div class="space-y-4">
+                <input type="text" placeholder="Card Number" class="w-full text-center tracking-widest">
+                <div class="flex gap-2">
+                    <input type="text" placeholder="EXP" class="w-1/2 text-center">
+                    <input type="text" placeholder="CVC" class="w-1/2 text-center">
                 </div>
-                <div class="social-btn btn-fb" onclick="bypassLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/0/04/Facebook_f_logo_%282021%29.svg" width="16"> Facebook
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4 mb-5">
-                <div class="h-[1px] bg-white/5 flex-grow"></div>
-                <span class="text-[9px] text-gray-600 font-black">OR</span>
-                <div class="h-[1px] bg-white/5 flex-grow"></div>
-            </div>
-            
-            <input type="email" id="u-in" placeholder="Email Address" class="text-center">
-            <input type="tel" id="n-in" placeholder="Phone Number" class="text-center">
-            <input type="password" id="p-in" placeholder="Password" class="text-center">
-            
-            <button onclick="checkAccess()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all mt-2">
-                Log In
-            </button>
-
-            <div class="mt-6 pt-5 border-t border-white/5">
-                <p class="text-gray-500 text-xs">Don't have an account? 
-                    <span onclick="bypassLogin()" class="text-[#c1a461] font-bold cursor-pointer hover:underline ml-1">Sign Up</span>
-                </p>
+                <button onclick="successPay()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">Complete Deposit</button>
+                <p class="text-[10px] text-gray-600 cursor-pointer hover:text-gray-400" onclick="hidePay()">Cancel Transaction</p>
             </div>
         </div>
     </div>
 
-    <div id="main-terminal" style="display:none;" class="h-full flex flex-col">
-        <header class="h-[60px] bg-[#0d1117] border-b border-[#30363d] flex items-center justify-between px-8">
-            <div class="font-black text-xl text-white italic">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-            <div onclick="logOut()" class="cursor-pointer bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">Logout</div>
-        </header>
-
-        <div class="flex-grow flex">
-            <div id="chart_container" class="flex-grow bg-black"></div>
-            <aside class="w-[300px] bg-[#0d1117] border-l border-[#30363d] p-6 flex flex-col gap-4">
-                <div class="bg-black p-4 rounded-xl border border-white/5">
-                    <div class="text-[10px] text-gray-500 uppercase font-bold">Practice Balance</div>
-                    <div class="text-2xl font-bold text-orange-400">$10,000.00</div>
-                </div>
-                <button class="h-16 bg-[#00ff88] text-black font-black rounded-xl">HIGHER</button>
-                <button class="h-16 bg-[#ff3b3b] text-white font-black rounded-xl">LOWER</button>
-            </aside>
+    <header class="h-[70px] bg-[#0a1118] border-b border-[#1e2329] flex items-center justify-between px-8 z-50">
+        <div class="flex items-center gap-8">
+            <div class="font-black text-2xl italic tracking-tighter text-white">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+            <select class="text-[10px] font-black uppercase tracking-widest px-4 py-2 border border-white/10 rounded-lg cursor-pointer" onchange="changeAsset(this.value)">
+                <option value="BINANCE:BTCUSDT">Bitcoin (BTC/USDT)</option>
+                <option value="OANDA:XAUUSD">Gold (XAU/USD)</option>
+                <option value="FX:EURUSD">Euro (EUR/USD)</option>
+                <option value="BINANCE:ETHUSDT">Ethereum (ETH)</option>
+            </select>
         </div>
+
+        <div class="flex items-center gap-4">
+            <div class="cursor-pointer bg-black border border-white/10 p-2 rounded-xl text-right min-w-[180px] hover:border-[#c1a461] transition-all" onclick="switchAcc()">
+                <p id="accTxt" class="text-[8px] text-orange-400 font-black uppercase tracking-widest">Practice Mode</p>
+                <p id="balTxt" class="text-white font-bold text-lg">$10,000.00</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside class="w-[280px] glass-panel flex flex-col">
+            <div class="p-4 border-b border-white/5 flex items-center justify-between">
+                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Global Hub</span>
+                <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+            </div>
+            <div id="chatFlow" class="flex-1 overflow-y-auto p-4 flex flex-col-reverse">
+                </div>
+            <div class="p-4 bg-black/40 border-t border-white/5">
+                <input type="text" placeholder="Broadcast message..." class="w-full text-[11px] border-none bg-transparent">
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col relative bg-black">
+            <div id="tv_chart" class="flex-1"></div>
+            <div class="h-[100px] border-t border-white/5 flex items-center justify-center bg-[#020408]">
+                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
+            </div>
+        </main>
+
+        <aside class="w-[340px] bg-[#0a1118] border-l border-[#1e2329] p-6 flex flex-col gap-6">
+            <div class="bg-black p-5 rounded-2xl border border-white/5 led-aura-green" id="inputContainer">
+                <label class="text-[10px] text-gray-500 font-bold uppercase block mb-2 tracking-widest">Trade Amount ($)</label>
+                <input type="number" value="1000" class="w-full text-4xl font-black text-white bg-transparent border-none p-0 focus:ring-0">
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <button onclick="trade('CALL')" class="btn-glow-up h-20 rounded-2xl font-black text-2xl uppercase italic tracking-tighter active:scale-95 transition-all">Higher</button>
+                <button onclick="trade('PUT')" class="btn-glow-down h-20 rounded-2xl font-black text-2xl uppercase italic tracking-tighter active:scale-95 transition-all">Lower</button>
+            </div>
+
+            <div class="mt-auto border border-white/10 rounded-2xl overflow-hidden">
+                <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
+            </div>
+        </aside>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const _U = "c2FtdWVsbGlvbjA3ODQxQGdtYWlsLmNvbQ=="; 
-        const _P = "c1o0eC8mYS1SS19eODZh"; 
+        let mode = 'demo';
+        let demoBal = 10000.00;
+        let realBal = 0.00;
 
-        function bypassLogin() {
-            localStorage.setItem('gate_open', 'true');
-            location.reload();
+        function switchAcc() {
+            mode = (mode === 'demo') ? 'real' : 'demo';
+            document.getElementById('accTxt').innerText = mode === 'demo' ? "Practice Mode" : "Real Account";
+            document.getElementById('accTxt').style.color = mode === 'demo' ? "#fb923c" : "#22c55e";
+            updateDisplay();
         }
 
-        function checkAccess() {
-            const u = document.getElementById('u-in').value.trim().toLowerCase();
-            const p = document.getElementById('p-in').value.trim();
-            // Still allows your master login, but doesn't block others
-            if (btoa(u) === _U && btoa(p) === _P) {
-                bypassLogin();
-            } else if (u !== "" && p !== "") {
-                bypassLogin(); // Allowing login for any entered data now
+        function updateDisplay() {
+            document.getElementById('balTxt').innerText = mode === 'demo' ? `$${demoBal.toFixed(2)}` : `$${realBal.toFixed(2)}`;
+        }
+
+        function trade(dir) {
+            if (mode === 'real' && realBal <= 0) {
+                document.getElementById('payModal').style.display = 'flex';
             } else {
-                alert("Please fill in the fields");
+                const amt = 100;
+                if(mode === 'demo') demoBal -= amt; else realBal -= amt;
+                updateDisplay();
+                
+                // LED Flash Effect
+                const box = document.getElementById('inputContainer');
+                box.className = dir === 'CALL' ? 'bg-black p-5 rounded-2xl led-aura-green' : 'bg-black p-5 rounded-2xl led-aura-red';
             }
         }
 
-        function logOut() {
-            localStorage.removeItem('gate_open');
-            location.reload();
+        function successPay() {
+            realBal += 500.00;
+            hidePay();
+            updateDisplay();
         }
 
-        window.onload = () => {
-            if(localStorage.getItem('gate_open')) {
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('main-terminal').style.display = 'flex';
-                new TradingView.widget({"autosize":true,"symbol":"BINANCE:BTCUSDT","theme":"dark","container_id":"chart_container"});
-            }
-        };
+        function hidePay() { document.getElementById('payModal').style.display = 'none'; }
+
+        function changeAsset(sym) {
+            new TradingView.widget({
+                "autosize": true, "symbol": sym, "interval": "1", "theme": "dark", "style": "1",
+                "container_id": "tv_chart", "hide_side_toolbar": false, "allow_symbol_change": true
+            });
+        }
+
+        // Auto-Chat Logic
+        const users = ["LagosWolf", "TradeKing", "BTC_Ninja", "GoldDigger", "Sammy_UE5"];
+        const texts = ["Massive green candle coming!", "Support is holding well.", "Who else caught that move?", "Thrones Trade is flying today!", "Waiting for the dip to buy more."];
+        
+        setInterval(() => {
+            const flow = document.getElementById('chatFlow');
+            const div = document.createElement('div');
+            div.className = "chat-msg";
+            div.innerHTML = `<b>${users[Math.floor(Math.random()*users.length)]}:</b> ${texts[Math.floor(Math.random()*texts.length)]}`;
+            flow.prepend(div);
+            if(flow.childElementCount > 15) flow.removeChild(flow.lastChild);
+        }, 3500);
+
+        window.onload = () => changeAsset("BINANCE:BTCUSDT");
     </script>
 </body>
 </html>
