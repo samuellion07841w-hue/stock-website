@@ -28,15 +28,16 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
         /* AD SLOTS */
-        .ad-banner { height: 90px; width: 728px; background: #000; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; }
-        .ad-square { width: 300px; height: 250px; background: #000; border: 1px dashed #333; border-radius: 15px; margin-top: auto; display: flex; align-items: center; justify-content: center; }
+        .ad-banner { height: 90px; width: 728px; background: #000; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .ad-square { width: 300px; height: 250px; background: #000; border: 1px dashed #333; border-radius: 15px; margin-top: auto; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     </style>
 </head>
 <body>
 
     <div class="h-[110px] bg-black flex items-center justify-center border-b border-white/5">
         <div class="ad-banner">
-            <p class="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Coinzilla Leaderboard Ad</p>
+            <script async src="https://coinzilla.com/ads/js/main.js"></script>
+            <div class="coinzilla-ad" data-zone="728x90"></div>
         </div>
     </div>
 
@@ -83,7 +84,7 @@
             </div>
 
             <div class="ad-square">
-                 <p class="text-[9px] text-gray-600 font-bold uppercase">Coinzilla Sidebar Ad</p>
+                <div class="coinzilla-ad" data-zone="300x250"></div>
             </div>
         </aside>
     </div>
@@ -94,7 +95,6 @@
         let dBal = 10000.00;
         let rBal = 0.00;
 
-        // --- CHAT LOGIC ---
         const chatInput = document.getElementById('chatInput');
         const chatFlow = document.getElementById('chat-flow');
 
@@ -102,7 +102,6 @@
             if (e.key === 'Enter' && this.value.trim() !== "") {
                 addMessage("Me", this.value);
                 this.value = "";
-                // Auto-reply simulation
                 setTimeout(() => addMessage("LagosTrader", "Nice move! 🚀"), 1000);
             }
         });
@@ -115,7 +114,6 @@
             chatFlow.scrollTop = chatFlow.scrollHeight;
         }
 
-        // --- TRADING LOGIC ---
         function switchAcc() {
             realAcc = !realAcc;
             document.getElementById('acc-label').innerText = realAcc ? "Real Account" : "Demo Account";
