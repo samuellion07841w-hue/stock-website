@@ -3,212 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | IQ-Elite Terminal</title>
+    <title>Thrones Trade | Pro Smart Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
         
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { height: 65px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 100; }
+        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
         
-        /* Account Switcher UI */
-        .balance-switcher { position: relative; cursor: pointer; }
-        .balance-dropdown { display: none; position: absolute; top: 110%; right: 0; width: 280px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); z-index: 1000; }
-        .acc-row { padding: 12px; border-radius: 8px; transition: 0.2s; margin-bottom: 8px; cursor: pointer; border: 1px solid transparent; }
-        .acc-row:hover { background: #1a1e26; border-color: #333; }
-        .acc-row.active { border-color: var(--accent); background: rgba(193,164,97,0.05); }
-
         .main-container { display: flex; flex: 1; overflow: hidden; }
         .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
         #chart_container { flex: 1; background: #000; }
         
-        .sidebar { width: 320px; background: var(--panel); display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+        .sidebar { width: 340px; background: var(--panel); display: flex; flex-direction: column; }
         .side-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         
-        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; }
+        .card { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; }
+        .input-group { margin-bottom: 15px; }
+        .input-label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--accent); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        
+        /* IQ Option Style Switcher */
+        .acc-switcher { position: relative; cursor: pointer; background: #000; border: 1px solid var(--border); padding: 5px 15px; border-radius: 8px; }
+        .acc-dropdown { display: none; position: absolute; top: 110%; right: 0; width: 260px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); z-index: 1001; }
+        .acc-option { padding: 10px; border-radius: 8px; transition: 0.2s; margin-bottom: 5px; border: 1px solid transparent; }
+        .acc-option:hover { background: #1a1e26; }
+        .acc-option.active { border-color: var(--accent); background: rgba(193,164,97,0.05); }
+
+        .history-item { font-size: 11px; padding: 8px; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <div id="loginModal" class="modal-overlay">
-        <div class="bg-[#0d1117] border border-[#c1a461] p-12 rounded-3xl text-center w-[400px]">
-            <h1 class="text-white text-3xl font-black italic tracking-tighter mb-2">THRONES <span class="text-[#c1a461]">TRADE</span></h1>
-            <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-8">Authorizing Secure Session...</p>
+        <div class="bg-[#0d1117] border border-[#c1a461] p-10 rounded-3xl text-center w-80">
+            <h1 class="text-white text-2xl font-bold mb-6 italic">THRONES TRADE</h1>
             <form onsubmit="handleLogin(event)">
-                <input type="password" id="access-key" placeholder="Terminal Password" required class="mb-4 text-center">
-                <button type="submit" class="w-full bg-[#c1a461] py-4 rounded-xl font-bold text-black uppercase tracking-widest text-xs">Initialize Node</button>
+                <input type="email" id="admin-id" placeholder="Creator Email" required class="mb-4 text-center">
+                <input type="password" id="admin-pass" placeholder="Password" required class="mb-4 text-center">
+                <button type="submit" class="w-full bg-[#c1a461] py-3 rounded-xl font-bold text-black">SIGN IN</button>
             </form>
+            <p id="err" class="text-red-500 text-[10px] mt-4 hidden">INVALID ACCESS CREDENTIALS</p>
         </div>
     </div>
 
     <header>
+        <div class="font-bold text-xl text-white">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+        
         <div class="flex items-center gap-4">
-            <div class="font-bold text-xl text-white italic">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <div class="balance-switcher" onclick="toggleDropdown()">
-                <div class="bg-black border border-[#333] px-4 py-2 rounded-lg flex flex-col items-end">
-                    <div id="active-acc-label" class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">Demo Account</div>
-                    <div id="active-balance" class="text-[#00ff88] font-bold text-sm">$10,000.00</div>
+            <div class="acc-switcher" id="switcher-btn">
+                <div class="text-right">
+                    <p id="top-acc-label" class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Practice Account</p>
+                    <p id="top-balance" class="text-white font-bold text-sm">$10,000.00</p>
                 </div>
                 
-                <div id="accDropdown" class="balance-dropdown">
-                    <h4 class="text-[10px] text-gray-500 uppercase mb-4 px-2">Your Accounts</h4>
-                    
-                    <div class="acc-row active" onclick="switchAcc('demo')">
+                <div id="accDropdown" class="acc-dropdown">
+                    <div class="acc-option active" onclick="switchAccount('demo')">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-xs font-bold">Practice Account</p>
-                                <p id="demo-bal-sub" class="text-[#00ff88] text-sm font-bold">$10,000.00</p>
+                                <p class="text-[10px] text-orange-400 font-bold uppercase">Practice Account</p>
+                                <p id="drop-demo-bal" class="text-white font-bold">$10,000.00</p>
                             </div>
-                            <button onclick="refundDemo(event)" class="bg-[#333] p-1 rounded text-[9px] text-white hover:bg-white hover:text-black">REFILL</button>
+                            <button onclick="refundPractice(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black">REFUND</button>
                         </div>
                     </div>
-
-                    <div class="acc-row" onclick="switchAcc('real')">
+                    <div class="acc-option" onclick="switchAccount('real')">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-xs font-bold text-gray-400">Real Account</p>
-                                <p id="real-bal-sub" class="text-white text-sm font-bold">$0.00</p>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase">Real Account</p>
+                                <p id="drop-real-bal" class="text-white font-bold">$0.00</p>
                             </div>
-                            <button onclick="location.reload()" class="bg-[#c1a461] p-1 rounded text-[9px] text-black font-bold">DEPOSIT</button>
+                            <button class="text-[9px] bg-[#c1a461] px-2 py-1 rounded text-black font-bold">DEPOSIT</button>
                         </div>
                     </div>
+                    <button onclick="logout()" class="w-full mt-4 py-2 text-[10px] text-red-500 font-bold border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-white transition-all">LOGOUT</button>
                 </div>
             </div>
-            
-            <button class="bg-[#c1a461] px-5 py-2 rounded-lg text-black font-black text-xs uppercase">Deposit</button>
         </div>
     </header>
 
     <div class="main-container">
         <div class="center-stack">
             <div class="bg-black p-2 flex gap-2 border-b border-[#30363d]">
-                <button class="text-[10px] bg-[#0d1117] border border-[#c1a461] px-4 py-1.5 rounded text-white font-bold" onclick="changeChart('BINANCE:BTCUSDT')">BITCOIN</button>
-                <button class="text-[10px] bg-[#0d1117] border border-[#333] px-4 py-1.5 rounded text-gray-500" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
+                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('BINANCE:BTCUSDT')">BTC/USDT</button>
+                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
             </div>
             
             <div id="chart_container"></div>
             
-            <div class="h-[95px] bg-black border-t border-[#30363d] flex items-center justify-center">
+            <div class="h-[90px] bg-black border-t border-[#30363d] flex items-center justify-center">
                 <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
             </div>
         </div>
 
         <aside class="sidebar">
             <div class="side-scroll">
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold mb-2 block">Amount</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-3 text-gray-500">$</span>
-                            <input type="number" id="trade-amt" value="100" class="pl-7" oninput="updatePayout()">
-                        </div>
+                <div class="card">
+                    <div class="input-label">Current Balance (<span id="side-label">Practice</span>)</div>
+                    <div id="balance" class="text-3xl font-bold text-[#00ff88]">$10,000.00</div>
+                </div>
+
+                <div class="card">
+                    <div class="input-group">
+                        <div class="input-label">Investment Amount ($)</div>
+                        <input type="number" id="trade-amt" value="100" oninput="updatePayout()">
                     </div>
-
-                    <div>
-                        <label class="text-[10px] text-gray-500 uppercase font-bold mb-2 block">Time</label>
-                        <select>
-                            <option>1 Minute</option>
-                            <option>5 Minutes</option>
-                        </select>
-                    </div>
-
-                    <div class="bg-black p-4 rounded-xl border border-[#333] flex justify-between">
-                        <span class="text-xs text-gray-500">Payout</span>
-                        <span id="payout-txt" class="text-[#00ff88] font-bold">+82% ($82.00)</span>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-3">
-                    <button onclick="trade('CALL')" class="h-20 bg-[#00ff88] text-black font-black text-2xl rounded-2xl shadow-[0_0_20px_rgba(0,255,136,0.2)]">HIGHER</button>
-                    <button onclick="trade('PUT')" class="h-20 bg-[#ff3b3b] text-white font-black text-2xl rounded-2xl shadow-[0_0_20px_rgba(255,59,59,0.2)]">LOWER</button>
-                </div>
-
-                <div class="flex justify-center py-2 bg-black rounded-xl">
-                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
-                </div>
-
-                <div id="history" class="text-[10px] bg-black p-4 rounded-xl border border-[#333] h-[150px] overflow-y-auto">
-                    <p class="text-gray-700 text-center uppercase tracking-widest mt-10">No Open Positions</p>
-                </div>
-            </div>
-        </aside>
-    </div>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let demoBal = 10000.00;
-        let realBal = 0.00;
-        let activeType = 'demo'; // Default
-
-        function handleLogin(e) { e.preventDefault(); if(document.getElementById('access-key').value === 'TRADESECURE2026') { document.getElementById('loginModal').style.display='none'; localStorage.setItem('auth', '1'); } }
-        
-        function toggleDropdown() { document.getElementById('accDropdown').style.toggle('display', 'block'); }
-        // Force display toggle helper
-        document.querySelector('.balance-switcher').onclick = () => {
-            const d = document.getElementById('accDropdown');
-            d.style.display = d.style.display === 'block' ? 'none' : 'block';
-        };
-
-        function switchAcc(type) {
-            activeType = type;
-            updateUI();
-            document.getElementById('accDropdown').style.display = 'none';
-        }
-
-        function refundDemo(e) {
-            e.stopPropagation();
-            demoBal = 10000.00;
-            updateUI();
-            alert("Demo Refilled to $10,000.00");
-        }
-
-        function updateUI() {
-            const bal = activeType === 'demo' ? demoBal : realBal;
-            document.getElementById('active-balance').innerText = `$${bal.toFixed(2)}`;
-            document.getElementById('active-balance').style.color = activeType === 'demo' ? '#ffaa00' : '#00ff88';
-            document.getElementById('active-acc-label').innerText = activeType === 'demo' ? 'Practice Account' : 'Real Account';
-            
-            document.getElementById('demo-bal-sub').innerText = `$${demoBal.toFixed(2)}`;
-            document.getElementById('real-bal-sub').innerText = `$${realBal.toFixed(2)}`;
-        }
-
-        function trade(type) {
-            const amt = parseFloat(document.getElementById('trade-amt').value);
-            if(activeType === 'demo' && amt > demoBal) return alert("Insufficient Practice Funds");
-            if(activeType === 'real' && amt > realBal) return alert("Insufficient Real Balance. Please Deposit.");
-
-            if(activeType === 'demo') demoBal -= amt; else realBal -= amt;
-            updateUI();
-            
-            const h = document.getElementById('history');
-            if(h.innerText.includes("No Open Positions")) h.innerHTML = "";
-            h.innerHTML = `<div class="flex justify-between py-1 border-b border-[#1a1a1a]">
-                <span class="${type==='CALL'?'text-[#00ff88]':'text-[#ff3b3b]'} font-bold">${type}</span>
-                <span>$${amt}</span>
-                <span class="text-gray-600">Pending...</span>
-            </div>` + h.innerHTML;
-        }
-
-        function changeChart(symbol) {
-            new TradingView.widget({ "autosize": true, "symbol": symbol, "interval": "1", "theme": "dark", "style": "1", "container_id": "chart_container" });
-        }
-
-        function updatePayout() {
-            const amt = document.getElementById('trade-amt').value;
-            document.getElementById('payout-txt').innerText = `+82% ($${(amt * 0.82).toFixed(2)})`;
-        }
-
-        window.onload = () => { 
-            if(localStorage.getItem('auth')) document.getElementById('loginModal').style.display='none';
-            changeChart('BINANCE:BTCUSDT'); 
-            updateUI();
-        };
-    </script>
-</body>
-</html>
+                    <div class="flex justify-between items-center bg-[#0d1117] p-3 rounded-lg border border-[#1a1a1a]">
+                        <span
