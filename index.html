@@ -26,8 +26,6 @@
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; outline: none; }
         input:focus { border-color: var(--accent); }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
-        
         /* IQ Option Style Switcher */
         .acc-switcher { position: relative; cursor: pointer; background: #000; border: 1px solid var(--border); padding: 5px 15px; border-radius: 8px; }
         .acc-dropdown { display: none; position: absolute; top: 110%; right: 0; width: 260px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); z-index: 1001; }
@@ -40,20 +38,8 @@
 </head>
 <body>
 
-    <div id="loginModal" class="modal-overlay">
-        <div class="bg-[#0d1117] border border-[#c1a461] p-10 rounded-3xl text-center w-80">
-            <h1 class="text-white text-2xl font-bold mb-6 italic">THRONES TRADE</h1>
-            <form onsubmit="handleLogin(event)">
-                <input type="email" id="admin-id" placeholder="Creator Email" required class="mb-4 text-center">
-                <input type="password" id="admin-pass" placeholder="Password" required class="mb-4 text-center">
-                <button type="submit" class="w-full bg-[#c1a461] py-3 rounded-xl font-bold text-black">SIGN IN</button>
-            </form>
-            <p id="err" class="text-red-500 text-[10px] mt-4 hidden">INVALID ACCESS CREDENTIALS</p>
-        </div>
-    </div>
-
     <header>
-        <div class="font-bold text-xl text-white">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+        <div class="font-bold text-xl text-white italic">THRONES <span class="text-[#c1a461]">TRADE</span></div>
         
         <div class="flex items-center gap-4">
             <div class="acc-switcher" id="switcher-btn">
@@ -69,7 +55,7 @@
                                 <p class="text-[10px] text-orange-400 font-bold uppercase">Practice Account</p>
                                 <p id="drop-demo-bal" class="text-white font-bold">$10,000.00</p>
                             </div>
-                            <button onclick="refundPractice(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black">REFUND</button>
+                            <button onclick="refundPractice(event)" class="text-[9px] bg-white/10 px-2 py-1 rounded hover:bg-white hover:text-black transition-colors">REFUND</button>
                         </div>
                     </div>
                     <div class="acc-option" onclick="switchAccount('real')">
@@ -81,7 +67,6 @@
                             <button class="text-[9px] bg-[#c1a461] px-2 py-1 rounded text-black font-bold">DEPOSIT</button>
                         </div>
                     </div>
-                    <button onclick="logout()" class="w-full mt-4 py-2 text-[10px] text-red-500 font-bold border border-red-500/20 rounded-lg hover:bg-red-500 hover:text-white transition-all">LOGOUT</button>
                 </div>
             </div>
         </div>
@@ -90,8 +75,9 @@
     <div class="main-container">
         <div class="center-stack">
             <div class="bg-black p-2 flex gap-2 border-b border-[#30363d]">
-                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('BINANCE:BTCUSDT')">BTC/USDT</button>
-                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
+                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('BINANCE:BTCUSDT')">BTC/USDT</button>
+                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('OANDA:XAUUSD')">GOLD</button>
+                <button class="text-[11px] bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded text-white hover:border-[#c1a461]" onclick="changeChart('FOREXCOM:EURUSD')">EUR/USD</button>
             </div>
             
             <div id="chart_container"></div>
@@ -104,8 +90,8 @@
         <aside class="sidebar">
             <div class="side-scroll">
                 <div class="card">
-                    <div class="input-label">Current Balance (<span id="side-label">Practice</span>)</div>
-                    <div id="balance" class="text-3xl font-bold text-[#00ff88]">$10,000.00</div>
+                    <div class="input-label">Balance (<span id="side-label">Practice</span>)</div>
+                    <div id="balance" class="text-3xl font-bold text-orange-400">$10,000.00</div>
                 </div>
 
                 <div class="card">
@@ -114,4 +100,115 @@
                         <input type="number" id="trade-amt" value="100" oninput="updatePayout()">
                     </div>
                     <div class="flex justify-between items-center bg-[#0d1117] p-3 rounded-lg border border-[#1a1a1a]">
-                        <span
+                        <span class="text-[10px] text-gray-500 uppercase font-bold">Profit (82%)</span>
+                        <span id="payout-amt" class="text-[#00ff88] font-bold">+$82.00</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="executeTrade('CALL')" class="h-16 bg-[#00ff88] text-black font-black text-xl rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">BUY / CALL</button>
+                    <button onclick="executeTrade('PUT')" class="h-16 bg-[#ff3b3b] text-white font-black text-xl rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">SELL / PUT</button>
+                </div>
+
+                <div class="h-[250px] bg-black border border-[#30363d] rounded-xl flex items-center justify-center">
+                    <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=300x250' style='width:300px; height:250px; border:0; background:transparent;'></iframe>
+                </div>
+
+                <div class="card p-0 overflow-hidden">
+                    <div class="bg-[#1a1a1a] p-2 text-[10px] font-bold uppercase text-gray-400">Trade History</div>
+                    <div id="history-list" class="max-h-[150px] overflow-y-auto">
+                        <div class="p-4 text-center text-gray-600 text-[10px]">No active trades</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let demoBal = 10000.00;
+        let realBal = 0.00;
+        let activeAcc = 'demo';
+
+        // Dropdown Toggle
+        document.getElementById('switcher-btn').onclick = function() {
+            const dropdown = document.getElementById('accDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        function switchAccount(type) {
+            activeAcc = type;
+            updateUI();
+            document.getElementById('accDropdown').style.display = 'none';
+        }
+
+        function refundPractice(e) {
+            e.stopPropagation();
+            demoBal = 10000.00;
+            updateUI();
+        }
+
+        function updateUI() {
+            const isDemo = activeAcc === 'demo';
+            const bal = isDemo ? demoBal : realBal;
+            
+            // Header Balance
+            document.getElementById('top-balance').innerText = `$${bal.toFixed(2)}`;
+            document.getElementById('top-acc-label').innerText = isDemo ? 'Practice Account' : 'Real Account';
+            document.getElementById('top-acc-label').style.color = isDemo ? '#f97316' : '#00ff88';
+            
+            // Sidebar Balance
+            document.getElementById('balance').innerText = `$${bal.toFixed(2)}`;
+            document.getElementById('side-label').innerText = isDemo ? 'Practice' : 'Real';
+            document.getElementById('balance').style.color = isDemo ? '#f97316' : '#00ff88';
+
+            // Dropdown Values
+            document.getElementById('drop-demo-bal').innerText = `$${demoBal.toFixed(2)}`;
+            document.getElementById('drop-real-bal').innerText = `$${realBal.toFixed(2)}`;
+        }
+
+        function executeTrade(type) {
+            const amt = parseFloat(document.getElementById('trade-amt').value);
+            if(activeAcc === 'demo' && amt > demoBal) return alert("Practice Balance Depleted! Use the Refund button.");
+            if(activeAcc === 'real' && amt > realBal) return alert("Real Balance $0.00. Please Deposit.");
+
+            if(activeAcc === 'demo') demoBal -= amt; else realBal -= amt;
+            updateUI();
+
+            const history = document.getElementById('history-list');
+            if(history.innerText.includes("No active trades")) history.innerHTML = "";
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const item = document.createElement('div');
+            item.className = "history-item";
+            item.innerHTML = `
+                <span class="${type === 'CALL' ? 'text-[#00ff88]' : 'text-[#ff3b3b]'} font-bold">${type}</span>
+                <span class="text-white">$${amt.toFixed(2)}</span>
+                <span class="text-gray-500">${time}</span>
+            `;
+            history.prepend(item);
+        }
+
+        function updatePayout() {
+            const amt = document.getElementById('trade-amt').value || 0;
+            document.getElementById('payout-amt').innerText = `+$${(amt * 0.82).toFixed(2)}`;
+        }
+
+        function changeChart(symbol) {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "1",
+                "theme": "dark",
+                "style": "1",
+                "container_id": "chart_container",
+                "hide_side_toolbar": false
+            });
+        }
+
+        window.onload = function() {
+            changeChart('BINANCE:BTCUSDT');
+            updateUI();
+        }
+    </script>
+</body>
+</html>
