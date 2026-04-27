@@ -3,119 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Advanced Terminal</title>
-    
-    <meta name="coinzilla" content="267bfcd390619bc586136d62f9e9aded" />
+    <title>Thrones Trade | Advanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #0e121a; --panel: #181c26; --accent: #ff9800; --border: #2a2e39; }
-        
         body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* LED GLOW EFFECT */
-        .glow-up { animation: pulse-green 1.5s infinite; border: 2px solid #00ff88 !important; }
-        .glow-down { animation: pulse-red 1.5s infinite; border: 2px solid #ff3b3b !important; }
-        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3); } 50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.7); } }
-        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 5px rgba(255, 59, 59, 0.3); } 50% { box-shadow: 0 0 30px rgba(255, 59, 59, 0.7); } }
+        /* LED GLOW LIGHTS */
+        .glow-up { animation: pulse-green 1s forwards; border: 2px solid #00ff88 !important; }
+        .glow-down { animation: pulse-red 1s forwards; border: 2px solid #ff3b3b !important; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0px #00ff88; } 50% { box-shadow: 0 0 25px #00ff88; } 100% { box-shadow: 0 0 5px #00ff88; } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0px #ff3b3b; } 50% { box-shadow: 0 0 25px #ff3b3b; } 100% { box-shadow: 0 0 5px #ff3b3b; } }
 
-        .chat-area { width: 280px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .msg-box { flex: 1; overflow-y: auto; padding: 15px; font-size: 11px; }
-        .msg { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--accent); }
-        
-        select { background: #000; color: #ff9800; border: 1px solid #333; padding: 4px 8px; border-radius: 4px; font-weight: bold; outline: none; }
+        .chat-area { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .msg-box { flex: 1; overflow-y: auto; padding: 12px; font-size: 11px; }
+        .msg { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; margin-bottom: 6px; border-left: 2px solid var(--accent); }
     </style>
 </head>
 <body>
 
-    <header class="h-[70px] bg-[#181c26] border-b border-[#2a2e39] flex items-center justify-between px-6">
-        <div class="font-black text-xl italic tracking-tighter uppercase">THRONES <span class="text-[#ff9800]">TRADE</span></div>
+    <header class="h-[65px] bg-[#181c26] border-b border-[#2a2e39] flex items-center justify-between px-6">
+        <div class="font-black text-xl italic uppercase tracking-tighter">THRONES <span class="text-[#ff9800]">TRADE</span></div>
         
         <div class="flex items-center gap-4">
-            <div class="bg-black/40 border border-white/10 px-4 py-2 rounded-xl text-right">
-                <select id="acc-select" onchange="changeAccount()">
-                    <option value="demo">Practice Account</option>
+            <div class="bg-black/40 border border-white/10 px-4 py-1.5 rounded-xl text-right">
+                <select id="acc-select" onchange="changeAccount()" class="bg-transparent text-orange-400 font-bold text-[10px] uppercase outline-none cursor-pointer">
+                    <option value="demo">Demo Account</option>
                     <option value="real">Real Account (NGN)</option>
                 </select>
-                <div class="flex items-center justify-end gap-2 mt-1">
+                <div class="flex items-center justify-end gap-2">
                     <p id="balance" class="text-white font-bold text-lg">$10,000.00</p>
                     <button id="refund-btn" onclick="refund()" class="text-[9px] bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">REFUND</button>
                 </div>
             </div>
-            <button onclick="paystackDeposit()" class="bg-[#22cc77] hover:bg-[#1eb368] text-black px-6 py-3 rounded-lg font-black text-xs uppercase transition-all">Deposit</button>
+            <button onclick="window.open('https://paystack.shop/pay/m3gzeovryt', '_blank')" class="bg-[#22cc77] text-black px-5 py-2.5 rounded-lg font-black text-[10px] uppercase">Deposit</button>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         <aside class="chat-area">
-            <div class="p-3 text-[10px] uppercase text-gray-500 font-bold border-b border-white/5">Global Chat</div>
             <div id="chat-flow" class="msg-box">
-                <div class="msg"><b>System:</b> Log in to start chatting with traders in Lagos!</div>
+                <div class="msg"><b>System:</b> Global Chat Online.</div>
             </div>
-            <div class="p-4 bg-black/20">
-                <div id="auth-box" class="flex flex-col gap-2">
-                    <button onclick="doLogin('Google')" class="bg-white text-black py-2 rounded font-bold text-[10px]">Google Login</button>
-                    <button onclick="doLogin('Facebook')" class="bg-[#1877F2] text-white py-2 rounded font-bold text-[10px]">Facebook Login</button>
-                </div>
-                <input type="text" id="chatInput" onkeypress="sendMessage(event)" placeholder="Type message..." class="hidden w-full bg-black border border-white/10 rounded-lg p-3 text-xs outline-none focus:border-orange-500">
+            <div class="p-3 border-t border-white/5">
+                <input type="text" id="chatInput" onkeypress="sendMessage(event)" placeholder="Say something..." class="w-full bg-black border border-white/10 rounded-lg p-2.5 text-[11px] outline-none focus:border-orange-500">
             </div>
         </aside>
 
-        <main class="flex-1 relative">
-            <div id="tradingview_full" class="w-full h-full"></div>
-        </main>
-
-        <aside class="w-[320px] bg-[#181c26] p-6 flex flex-col gap-6 border-l border-[#2a2e39]">
-            <div id="input-led" class="bg-black/50 p-5 rounded-2xl border border-white/5 transition-all">
-                <label class="text-[10px] text-gray-500 font-bold block mb-1 uppercase">Amount</label>
-                <input type="number" id="trade-amt" value="1000" class="w-full text-4xl font-bold text-white bg-transparent outline-none">
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <button onclick="placeTrade('UP')" class="h-20 bg-[#22cc77] hover:bg-[#1eb368] text-black rounded-xl font-black text-2xl uppercase italic transition-all active:scale-95">Higher</button>
-                <button onclick="placeTrade('DOWN')" class="h-20 bg-[#ff3b3b] hover:bg-[#e63535] text-white rounded-xl font-black text-2xl uppercase italic transition-all active:scale-95">Lower</button>
-            </div>
-        </aside>
-    </div>
-
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let isReal = false;
-        let demoBal = 10000;
-        let realBal = 0;
-
-        // UPDATED: ADVANCED CHART WIDGET
-        window.onload = () => {
-            new TradingView.widget({
+        <main class="flex-1 bg-black">
+            <div class="tradingview-widget-container" style="height:100%;width:100%">
+              <div id="tradingview_advanced" style="height:100%;width:100%"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+              <script type="text/javascript">
+              new TradingView.widget({
                 "autosize": true,
                 "symbol": "BINANCE:BTCUSDT",
                 "interval": "1",
                 "timezone": "Africa/Lagos",
                 "theme": "dark",
-                "style": "3", // Area Style
+                "style": "3", 
                 "locale": "en",
-                "toolbar_bg": "#181c26",
+                "toolbar_bg": "#f1f3f6",
                 "enable_publishing": false,
                 "withdateranges": true,
-                "hide_side_toolbar": false, // Shows the tools you requested
+                "hide_side_toolbar": false,
                 "allow_symbol_change": true,
                 "details": true,
                 "hotlist": true,
                 "calendar": true,
-                "container_id": "tradingview_full",
-                "backgroundColor": "#0e121a",
-                "gridColor": "rgba(42, 46, 57, 0.5)",
-            });
-            updateBalanceUI();
-        };
+                "container_id": "tradingview_advanced"
+              });
+              </script>
+            </div>
+            </main>
+
+        <aside class="w-[300px] bg-[#181c26] p-5 flex flex-col gap-5 border-l border-[#2a2e39]">
+            <div id="input-led" class="bg-black/50 p-4 rounded-xl border border-white/5 transition-all">
+                <label class="text-[9px] text-gray-500 font-bold block mb-1 uppercase">Investment Amount</label>
+                <input type="number" id="trade-amt" value="1000" class="w-full text-3xl font-bold text-white bg-transparent outline-none">
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="trade('UP')" class="h-20 bg-[#22cc77] text-black rounded-xl font-black text-2xl uppercase italic active:scale-95 transition-all">Higher</button>
+                <button onclick="trade('DOWN')" class="h-20 bg-[#ff3b3b] text-white rounded-xl font-black text-2xl uppercase italic active:scale-95 transition-all">Lower</button>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        let isReal = false;
+        let demoBal = 10000;
+        let realBal = 0;
 
         function changeAccount() {
             isReal = document.getElementById('acc-select').value === 'real';
-            updateBalanceUI();
+            updateUI();
         }
 
-        function updateBalanceUI() {
+        function updateUI() {
             const bal = document.getElementById('balance');
             const refundBtn = document.getElementById('refund-btn');
             if(isReal) {
@@ -131,11 +117,11 @@
 
         function refund() {
             demoBal = 10000;
-            addMsg("System", "Practice balance refilled to $10,000!");
-            updateBalanceUI();
+            addMsg("System", "Demo balance reset!");
+            updateUI();
         }
 
-        function placeTrade(dir) {
+        function trade(dir) {
             const box = document.getElementById('input-led');
             const amt = parseInt(document.getElementById('trade-amt').value);
             
@@ -144,18 +130,12 @@
             dir === 'UP' ? box.classList.add('glow-up') : box.classList.add('glow-down');
 
             if(isReal) {
-                if(realBal >= amt) { realBal -= amt; updateBalanceUI(); } 
-                else { addMsg("System", "Insufficient real funds. Please Deposit."); }
+                if(realBal >= amt) { realBal -= amt; updateUI(); } 
+                else { addMsg("System", "Insufficient Funds!"); }
             } else {
-                if(demoBal >= amt) { demoBal -= amt; updateBalanceUI(); }
-                else { addMsg("System", "Practice account empty. Click Refund!"); }
+                if(demoBal >= amt) { demoBal -= amt; updateUI(); }
+                else { addMsg("System", "Refill Demo!"); }
             }
-        }
-
-        function doLogin(type) {
-            document.getElementById('auth-box').classList.add('hidden');
-            document.getElementById('chatInput').classList.remove('hidden');
-            addMsg("System", `Logged in with ${type}. Welcome!`);
         }
 
         function sendMessage(e) {
@@ -175,10 +155,6 @@
             d.innerHTML = `<b>${u}:</b> ${t}`;
             flow.appendChild(d);
             flow.scrollTop = flow.scrollHeight;
-        }
-
-        function paystackDeposit() {
-            window.open("https://paystack.shop/pay/m3gzeovryt", "_blank");
         }
     </script>
 </body>
