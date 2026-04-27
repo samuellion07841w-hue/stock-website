@@ -3,99 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Elite Global Terminal</title>
+    <title>Thrones Trade | Dual Gateway</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #020408; --panel: #0a1118; --accent: #c1a461; --border: #1e2329; }
         
         body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* PULSING LED LIGHTING */
-        .led-aura-green { box-shadow: inset 0 0 50px rgba(0, 255, 136, 0.1), 0 0 20px rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3) !important; }
-        .led-aura-red { box-shadow: inset 0 0 50px rgba(255, 59, 59, 0.1), 0 0 20px rgba(255, 59, 59, 0.1); border: 1px solid rgba(255, 59, 59, 0.3) !important; }
-        
-        .btn-glow-up { background: #00ff88; color: #000; box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); text-shadow: 0 0 5px rgba(0,0,0,0.2); }
-        .btn-glow-down { background: #ff3b3b; color: #fff; box-shadow: 0 0 25px rgba(255, 59, 59, 0.4); }
+        /* NEON LIGHTING */
+        .led-gold { box-shadow: 0 0 20px rgba(193, 164, 97, 0.2); border: 1px solid var(--accent) !important; }
+        .glow-green { box-shadow: 0 0 30px rgba(0, 255, 136, 0.3); border: 1px solid #00ff88 !important; }
+        .glow-red { box-shadow: 0 0 30px rgba(255, 59, 59, 0.3); border: 1px solid #ff3b3b !important; }
 
-        /* GLASSMORPHISM CHAT */
-        .glass-panel { background: rgba(10, 17, 24, 0.7); backdrop-filter: blur(15px); border-right: 1px solid var(--border); }
-        .chat-msg { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-left: 3px solid var(--accent); font-size: 11px; }
+        /* PAYMENT MODAL */
+        .modal-overlay { display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .pay-card { background: #0d1117; border: 1px solid var(--accent); padding: 40px; border-radius: 30px; width: 440px; }
 
-        /* MODAL */
-        .modal-overlay { display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .pay-box { background: #0d1117; border: 1px solid var(--accent); padding: 40px; border-radius: 30px; width: 400px; box-shadow: 0 0 40px rgba(193, 164, 97, 0.2); }
-
-        input, select { background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(193, 164, 97, 0.2); }
+        .gate-btn { padding: 15px; border-radius: 12px; font-weight: 900; text-transform: uppercase; transition: 0.3s; width: 100%; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
     <div id="payModal" class="modal-overlay">
-        <div class="pay-box text-center">
-            <h2 class="text-white text-3xl font-black italic tracking-tighter mb-2">FUND <span class="text-[#c1a461]">ACCOUNT</span></h2>
-            <p class="text-[9px] text-gray-500 uppercase tracking-[0.3em] mb-8 font-bold">Secure Gateway 256-Bit</p>
-            <div class="space-y-4">
-                <input type="text" placeholder="Card Number" class="w-full text-center tracking-widest">
-                <div class="flex gap-2">
-                    <input type="text" placeholder="EXP" class="w-1/2 text-center">
-                    <input type="text" placeholder="CVC" class="w-1/2 text-center">
-                </div>
-                <button onclick="successPay()" class="w-full bg-[#c1a461] py-4 rounded-xl font-black text-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">Complete Deposit</button>
-                <p class="text-[10px] text-gray-600 cursor-pointer hover:text-gray-400" onclick="hidePay()">Cancel Transaction</p>
-            </div>
+        <div class="pay-card text-center led-gold">
+            <h2 class="text-white text-3xl font-black italic mb-2">CHOOSE <span class="text-[#c1a461]">GATEWAY</span></h2>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8">Fast Funding for Lagos Operators</p>
+            
+            <button onclick="paystackFlow()" class="gate-btn bg-[#00ff88] text-black">Pay with Paystack</button>
+            <button onclick="cozillaFlow()" class="gate-btn bg-white text-black">Pay with Cozilla</button>
+            
+            <p class="mt-6 text-[11px] text-gray-600 cursor-pointer hover:text-white" onclick="closePay()">Back to Terminal</p>
         </div>
     </div>
 
-    <header class="h-[70px] bg-[#0a1118] border-b border-[#1e2329] flex items-center justify-between px-8 z-50">
-        <div class="flex items-center gap-8">
-            <div class="font-black text-2xl italic tracking-tighter text-white">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-            <select class="text-[10px] font-black uppercase tracking-widest px-4 py-2 border border-white/10 rounded-lg cursor-pointer" onchange="changeAsset(this.value)">
-                <option value="BINANCE:BTCUSDT">Bitcoin (BTC/USDT)</option>
-                <option value="OANDA:XAUUSD">Gold (XAU/USD)</option>
-                <option value="FX:EURUSD">Euro (EUR/USD)</option>
-                <option value="BINANCE:ETHUSDT">Ethereum (ETH)</option>
+    <header class="h-[70px] bg-[#0a1118] border-b border-[#1e2329] flex items-center justify-between px-8">
+        <div class="flex items-center gap-6">
+            <div class="font-black text-2xl italic tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></div>
+            <select class="bg-black text-[10px] border border-white/10 rounded p-2">
+                <option>BTC/USDT</option>
+                <option>XAU/USD</option>
+                <option>NAS100</option>
             </select>
         </div>
 
         <div class="flex items-center gap-4">
-            <div class="cursor-pointer bg-black border border-white/10 p-2 rounded-xl text-right min-w-[180px] hover:border-[#c1a461] transition-all" onclick="switchAcc()">
-                <p id="accTxt" class="text-[8px] text-orange-400 font-black uppercase tracking-widest">Practice Mode</p>
-                <p id="balTxt" class="text-white font-bold text-lg">$10,000.00</p>
+            <div class="cursor-pointer bg-black border border-white/10 p-2 rounded-xl text-right min-w-[180px]" onclick="toggleMode()">
+                <p id="mode-lab" class="text-[8px] text-orange-400 font-black uppercase tracking-widest">Practice Mode</p>
+                <p id="bal-lab" class="text-white font-bold text-lg">$10,000.00</p>
             </div>
+            <button onclick="showPay()" class="bg-[#c1a461] text-black px-6 py-2 rounded-lg font-black text-xs uppercase tracking-tighter">Deposit</button>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        <aside class="w-[280px] glass-panel flex flex-col">
-            <div class="p-4 border-b border-white/5 flex items-center justify-between">
-                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Global Hub</span>
-                <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-            </div>
-            <div id="chatFlow" class="flex-1 overflow-y-auto p-4 flex flex-col-reverse">
-                </div>
-            <div class="p-4 bg-black/40 border-t border-white/5">
-                <input type="text" placeholder="Broadcast message..." class="w-full text-[11px] border-none bg-transparent">
-            </div>
+        <aside class="w-[280px] bg-black/40 border-r border-[#1e2329] flex flex-col">
+            <div class="p-4 border-b border-white/5 text-[9px] font-black text-gray-500 uppercase">Live Network</div>
+            <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
         </aside>
 
-        <main class="flex-1 flex flex-col relative bg-black">
+        <main class="flex-1 flex flex-col bg-black">
             <div id="tv_chart" class="flex-1"></div>
-            <div class="h-[100px] border-t border-white/5 flex items-center justify-center bg-[#020408]">
+            <div class="h-[100px] border-t border-white/5 flex items-center justify-center bg-black">
                 <iframe data-aa='2431311' src='//ad.a-ads.com/2431311?size=728x90' style='width:728px; height:90px; border:0; background:transparent;'></iframe>
             </div>
         </main>
 
         <aside class="w-[340px] bg-[#0a1118] border-l border-[#1e2329] p-6 flex flex-col gap-6">
-            <div class="bg-black p-5 rounded-2xl border border-white/5 led-aura-green" id="inputContainer">
-                <label class="text-[10px] text-gray-500 font-bold uppercase block mb-2 tracking-widest">Trade Amount ($)</label>
-                <input type="number" value="1000" class="w-full text-4xl font-black text-white bg-transparent border-none p-0 focus:ring-0">
+            <div id="glow-box" class="bg-black p-5 rounded-2xl border border-white/5 transition-all duration-500">
+                <label class="text-[10px] text-gray-500 font-bold block mb-2 uppercase">Amount (NGN)</label>
+                <input type="number" value="10000" class="w-full text-4xl font-black text-white bg-transparent border-none p-0 focus:ring-0">
             </div>
 
             <div class="flex flex-col gap-4">
-                <button onclick="trade('CALL')" class="btn-glow-up h-20 rounded-2xl font-black text-2xl uppercase italic tracking-tighter active:scale-95 transition-all">Higher</button>
-                <button onclick="trade('PUT')" class="btn-glow-down h-20 rounded-2xl font-black text-2xl uppercase italic tracking-tighter active:scale-95 transition-all">Lower</button>
+                <button onclick="trade('UP')" class="h-20 bg-[#00ff88] text-black rounded-2xl font-black text-2xl uppercase italic">Higher</button>
+                <button onclick="trade('DOWN')" class="h-20 bg-[#ff3b3b] text-white rounded-2xl font-black text-2xl uppercase italic">Lower</button>
             </div>
 
             <div class="mt-auto border border-white/10 rounded-2xl overflow-hidden">
@@ -106,64 +89,64 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let mode = 'demo';
-        let demoBal = 10000.00;
-        let realBal = 0.00;
+        let isReal = false;
+        let pBal = 10000.00;
+        let rBal = 0.00;
 
-        function switchAcc() {
-            mode = (mode === 'demo') ? 'real' : 'demo';
-            document.getElementById('accTxt').innerText = mode === 'demo' ? "Practice Mode" : "Real Account";
-            document.getElementById('accTxt').style.color = mode === 'demo' ? "#fb923c" : "#22c55e";
-            updateDisplay();
+        function toggleMode() {
+            isReal = !isReal;
+            document.getElementById('mode-lab').innerText = isReal ? "Real Account" : "Practice Mode";
+            document.getElementById('mode-lab').style.color = isReal ? "#22c55e" : "#fb923c";
+            updateUI();
         }
 
-        function updateDisplay() {
-            document.getElementById('balTxt').innerText = mode === 'demo' ? `$${demoBal.toFixed(2)}` : `$${realBal.toFixed(2)}`;
+        function updateUI() {
+            document.getElementById('bal-lab').innerText = isReal ? `$${rBal.toFixed(2)}` : `$${pBal.toFixed(2)}`;
         }
 
         function trade(dir) {
-            if (mode === 'real' && realBal <= 0) {
-                document.getElementById('payModal').style.display = 'flex';
+            if(isReal && rBal <= 0) {
+                showPay();
             } else {
-                const amt = 100;
-                if(mode === 'demo') demoBal -= amt; else realBal -= amt;
-                updateDisplay();
-                
-                // LED Flash Effect
-                const box = document.getElementById('inputContainer');
-                box.className = dir === 'CALL' ? 'bg-black p-5 rounded-2xl led-aura-green' : 'bg-black p-5 rounded-2xl led-aura-red';
+                const box = document.getElementById('glow-box');
+                box.className = (dir === 'UP') ? 'bg-black p-5 rounded-2xl glow-green' : 'bg-black p-5 rounded-2xl glow-red';
+                if(isReal) rBal -= 50; else pBal -= 50;
+                updateUI();
             }
         }
 
-        function successPay() {
-            realBal += 500.00;
-            hidePay();
-            updateDisplay();
-        }
+        function showPay() { document.getElementById('payModal').style.display = 'flex'; }
+        function closePay() { document.getElementById('payModal').style.display = 'none'; }
 
-        function hidePay() { document.getElementById('payModal').style.display = 'none'; }
-
-        function changeAsset(sym) {
-            new TradingView.widget({
-                "autosize": true, "symbol": sym, "interval": "1", "theme": "dark", "style": "1",
-                "container_id": "tv_chart", "hide_side_toolbar": false, "allow_symbol_change": true
+        // GATEWAY LOGIC
+        function paystackFlow() {
+            let handler = PaystackPop.setup({
+                key: 'pk_test_YOUR_KEY', email: 'user@email.com', amount: 100000, currency: "NGN",
+                callback: function() { rBal += 1000; isReal = true; updateUI(); closePay(); }
             });
+            handler.openIframe();
         }
 
-        // Auto-Chat Logic
-        const users = ["LagosWolf", "TradeKing", "BTC_Ninja", "GoldDigger", "Sammy_UE5"];
-        const texts = ["Massive green candle coming!", "Support is holding well.", "Who else caught that move?", "Thrones Trade is flying today!", "Waiting for the dip to buy more."];
-        
-        setInterval(() => {
-            const flow = document.getElementById('chatFlow');
-            const div = document.createElement('div');
-            div.className = "chat-msg";
-            div.innerHTML = `<b>${users[Math.floor(Math.random()*users.length)]}:</b> ${texts[Math.floor(Math.random()*texts.length)]}`;
-            flow.prepend(div);
-            if(flow.childElementCount > 15) flow.removeChild(flow.lastChild);
-        }, 3500);
+        function cozillaFlow() {
+            alert("Redirecting to Cozilla Checkout...");
+            // Simulated Success
+            setTimeout(() => { rBal += 1000; isReal = true; updateUI(); closePay(); }, 2000);
+        }
 
-        window.onload = () => changeAsset("BINANCE:BTCUSDT");
+        // CHAT SIMULATION
+        const chatBox = document.getElementById('chat');
+        const msgs = ["Cozilla is fast o!", "Caught the pump!", "Lagos Traders 🚀", "Big profit today"];
+        setInterval(() => {
+            const div = document.createElement('div');
+            div.className = "bg-white/5 p-3 rounded-lg text-[11px] border-l-2 border-[#c1a461]";
+            div.innerHTML = `<b>User_${Math.floor(Math.random()*999)}:</b> ${msgs[Math.floor(Math.random()*4)]}`;
+            chatBox.prepend(div);
+            if(chatBox.childElementCount > 10) chatBox.removeChild(chatBox.lastChild);
+        }, 3000);
+
+        window.onload = () => {
+            new TradingView.widget({ "autosize": true, "symbol": "BINANCE:BTCUSDT", "theme": "dark", "container_id": "tv_chart" });
+        };
     </script>
 </body>
 </html>
