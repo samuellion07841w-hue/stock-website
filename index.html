@@ -6,92 +6,62 @@
     <title>Thrones Trade | Master Terminal</title>
     
     <meta name="coinzilla" content="267bfcd390619bc586136d62f9e9aded" />
-
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         :root { --bg: #020408; --panel: #0a1118; --accent: #c1a461; --border: #1e2329; }
-        
         body { background: var(--bg); color: #f0f2f5; font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-        /* PULSING LED LIGHTS */
+        
+        /* LED GLOW LIGHTS */
         .glow-up { animation: pulse-green 1.5s infinite; border: 2px solid #00ff88 !important; }
         .glow-down { animation: pulse-red 1.5s infinite; border: 2px solid #ff3b3b !important; }
+        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.4); } 50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.8); } }
+        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 5px rgba(255, 59, 59, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 59, 59, 0.8); } }
 
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.8); }
-            100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.4); }
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 5px rgba(255, 59, 59, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(255, 59, 59, 0.8); }
-            100% { box-shadow: 0 0 5px rgba(255, 59, 59, 0.4); }
-        }
-
-        /* LAYOUT & CHAT */
         .chat-area { width: 280px; background: rgba(10, 17, 24, 0.8); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
         .msg-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; font-size: 11px; }
         .msg { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; border-left: 3px solid var(--accent); }
-        
-        .ad-banner { height: 90px; width: 728px; background: #000; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; }
-        .ad-square { width: 300px; height: 250px; background: #000; border: 1px dashed #333; border-radius: 15px; margin-top: auto; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div class="h-[110px] bg-black flex items-center justify-center border-b border-white/5">
-        <div class="ad-banner">
-            <script async src="https://coinzilla.com/ads/js/main.js"></script>
-            <div class="coinzilla-ad" data-zone="728x90"></div>
-        </div>
+        <script async src="https://coinzilla.com/ads/js/main.js"></script>
+        <div class="coinzilla-ad" data-zone="728x90"></div>
     </div>
 
     <header class="h-[65px] bg-[#0a1118] border-b border-[#1e2329] flex items-center justify-between px-8">
-        <div class="flex items-center gap-6">
-            <div class="font-black text-2xl italic tracking-tighter">THRONES <span class="text-[#c1a461]">TRADE</span></div>
-            <div class="text-[10px] text-gray-500 font-bold px-3 py-1 bg-white/5 rounded border border-white/10 uppercase">Live Hub</div>
-        </div>
-
+        <div class="font-black text-2xl italic tracking-tighter uppercase">THRONES <span class="text-[#c1a461]">TRADE</span></div>
         <div class="flex items-center gap-4">
-            <div class="cursor-pointer bg-black border border-white/10 p-2 rounded-xl text-right min-w-[170px]" onclick="switchAcc()">
+            <div class="bg-black border border-white/10 p-2 rounded-xl text-right min-w-[170px]" onclick="switchAcc()">
                 <p id="acc-label" class="text-[8px] text-orange-400 font-black uppercase">Demo Account</p>
                 <p id="bal-label" class="text-white font-bold text-lg">$10,000.00</p>
             </div>
-            <button onclick="paystackDeposit()" class="bg-[#00ff88] text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase">Deposit NGN</button>
+            <button onclick="paystackDeposit()" class="bg-[#00ff88] text-black px-6 py-2 rounded-lg font-black text-[10px] uppercase hover:scale-105 transition-all">Deposit NGN</button>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         <aside class="chat-area">
-            <div class="p-4 border-b border-white/5 text-[9px] font-black text-gray-500 uppercase tracking-widest">Global World Chat</div>
             <div id="chat-flow" class="msg-box">
-                <div class="msg"><b>System:</b> Terminal online. Ads verifying...</div>
+                <div class="msg"><b>System:</b> Terminal Online. Welcome, Trader.</div>
             </div>
-            <div class="p-4 bg-black/40 border-t border-white/5">
-                <input type="text" id="chatInput" placeholder="Send message..." class="w-full text-[11px] bg-black/60 border border-white/10 rounded-lg p-3 outline-none focus:border-[#c1a461]">
-            </div>
+            <div class="p-4"><input type="text" id="chatInput" placeholder="Enter message..." class="w-full text-[11px] bg-black/60 border border-white/10 rounded-lg p-3 outline-none"></div>
         </aside>
 
         <main class="flex-1 bg-black">
             <div id="tv_widget" class="h-full"></div>
         </main>
 
-        <aside class="w-[340px] bg-[#0a1118] border-l border-[#1e2329] p-6 flex flex-col gap-6">
-            <div id="input-led" class="bg-black p-5 rounded-2xl border border-white/5 transition-all">
-                <label class="text-[10px] text-gray-500 font-bold block mb-2 uppercase">Trade Amount (NGN)</label>
-                <input type="number" value="5000" class="w-full text-4xl font-black text-white bg-transparent border-none p-0 outline-none">
+        <aside class="w-[340px] bg-[#0a1118] p-6 flex flex-col gap-6">
+            <div id="input-led" class="bg-black p-5 rounded-2xl border border-white/5">
+                <label class="text-[10px] text-gray-500 font-bold block mb-2">AMOUNT (NGN)</label>
+                <input type="number" value="5000" class="w-full text-4xl font-black text-white bg-transparent outline-none">
             </div>
-
             <div class="flex flex-col gap-3">
-                <button onclick="trade('UP')" class="h-20 bg-[#00ff88] text-black rounded-2xl font-black text-2xl uppercase italic active:scale-95 transition-all">Higher</button>
-                <button onclick="trade('DOWN')" class="h-20 bg-[#ff3b3b] text-white rounded-2xl font-black text-2xl uppercase italic active:scale-95 transition-all">Lower</button>
-            </div>
-
-            <div class="ad-square">
-                <div class="coinzilla-ad" data-zone="300x250"></div>
+                <button onclick="trade('UP')" class="h-20 bg-[#00ff88] text-black rounded-2xl font-black text-2xl italic uppercase">Higher</button>
+                <button onclick="trade('DOWN')" class="h-20 bg-[#ff3b3b] text-white rounded-2xl font-black text-2xl italic uppercase">Lower</button>
             </div>
         </aside>
     </div>
@@ -102,17 +72,8 @@
         let dBal = 10000.00;
         let rBal = 0.00;
 
-        function trade(dir) {
-            const box = document.getElementById('input-led');
-            box.classList.remove('glow-up', 'glow-down');
-            dir === 'UP' ? box.classList.add('glow-up') : box.classList.add('glow-down');
-            
-            if(realAcc && rBal <= 0) {
-                paystackDeposit();
-            } else {
-                if(realAcc) rBal -= 100; else dBal -= 100;
-                updateUI();
-            }
+        function updateUI() {
+            document.getElementById('bal-label').innerText = realAcc ? `₦${rBal.toLocaleString()}` : `$${dBal.toLocaleString()}`;
         }
 
         function switchAcc() {
@@ -122,21 +83,14 @@
             updateUI();
         }
 
-        function updateUI() {
-            document.getElementById('bal-label').innerText = realAcc ? `$${rBal.toFixed(2)}` : `$${dBal.toFixed(2)}`;
+        function trade(dir) {
+            const box = document.getElementById('input-led');
+            box.classList.remove('glow-up', 'glow-down');
+            dir === 'UP' ? box.classList.add('glow-up') : box.classList.add('glow-down');
         }
 
-        function addMessage(user, text) {
-            const div = document.createElement('div');
-            div.className = "msg";
-            div.innerHTML = `<b>${user}:</b> ${text}`;
-            document.getElementById('chat-flow').appendChild(div);
-            document.getElementById('chat-flow').scrollTop = document.getElementById('chat-flow').scrollHeight;
-        }
-
-        // REDIRECT TO YOUR PAYSTACK SHOP LINK
+        // NO KEYS NEEDED - THIS JUST OPENS THE LINK
         function paystackDeposit() {
-            addMessage("System", "Opening secure Paystack page...");
             window.open("https://paystack.shop/pay/m3gzeovryt", "_blank");
         }
 
