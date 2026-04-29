@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Global Smart Terminal</title>
+    <title>Thrones Trade </title>
 
     <meta name="coinzilla" content="267bfcd390619bc586136d62f9e9aded" />
 
@@ -41,18 +41,18 @@
     <div id="loginModal" class="modal-overlay">
         <div class="login-card">
             <h1 style="color:#fff; margin:0;">THRONES TRADE</h1>
-            <p style="color:var(--accent); font-size:10px; letter-spacing:2px; margin-bottom:25px;">SECURE GLOBAL ACCESS</p>
+            <p style="color:var(--accent); font-size:10px; letter-spacing:2px; margin-bottom:25px;">GLOBAL ACCESS PROTOCOL</p>
             <form onsubmit="handleLogin(event)">
                 <input type="text" id="user" placeholder="Trader ID" required>
-                <input type="password" id="pass" placeholder="Password" required>
-                <button type="submit" style="background:var(--accent); width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">AUTHORIZE</button>
+                <input type="password" id="pass" placeholder="Access Key" required>
+                <button type="submit" style="background:var(--accent); width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">AUTHORIZE TERMINAL</button>
             </form>
         </div>
     </div>
 
     <header>
         <div style="font-weight: 700; font-size: 20px; color:#fff;">THRONES <span style="color:var(--accent)">TRADE</span></div>
-        <div id="status" style="color: var(--green); font-size: 11px;">● GLOBAL TERMINAL ONLINE</div>
+        <div id="status" style="color: var(--green); font-size: 11px;">● LIVE CLOUD TERMINAL</div>
     </header>
 
     <div class="main-container">
@@ -65,7 +65,7 @@
             </div>
             <div id="chart_container"></div>
             <div style="height:90px; background:#000; display:flex; align-items:center; justify-content:center; color:#222; font-size:9px; border-top:1px solid var(--border);">
-                COINZILLA_LEADERBOARD_PLACEMENT
+                [ COINZILLA 728x90 PLACEMENT ]
             </div>
         </div>
 
@@ -76,7 +76,7 @@
                 <button onclick="alert('Enter Phone Below')" style="width:100%; padding:10px; background:rgba(193,164,97,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; margin-top:10px;">DEPOSIT FUNDS</button>
             </div>
             <div class="card" style="height: 250px; display:flex; align-items:center; justify-content:center; color:#222; font-size:9px; text-align:center; padding:0; overflow:hidden;">
-                COINZILLA_SIDEBAR_PLACEMENT
+                [ COINZILLA 300x250 PLACEMENT ]
             </div>
             <input type="tel" id="pPhone" placeholder="Your Phone Number" style="margin:0;">
             <button onclick="pay(1000)" style="background:var(--green); color:#000; height:50px; border-radius:12px; border:none; font-weight:700; cursor:pointer;">BUY / LONG</button>
@@ -96,7 +96,7 @@
             localStorage.setItem('trade_user', 'true');
             document.getElementById('loginModal').style.display = 'none';
 
-            // AUTO-LANGUAGE DETECT FOR ARABIC/GLOBAL USERS
+            // AUTO-LANGUAGE DETECT FOR GLOBAL/ARABIC USERS
             const userLang = navigator.language || navigator.userLanguage; 
             if (!userLang.startsWith('en')) {
                 const translateSelect = document.querySelector(".goog-te-combo");
