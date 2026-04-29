@@ -10,24 +10,29 @@
         :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
         
         body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        header { height: 55px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; position: relative; }
+        header { height: 55px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; }
         .main-container { display: flex; flex: 1; overflow: hidden; }
         
-        /* HAMBURGER MENU */
-        .menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
-        .menu-icon span { width: 25px; height: 2px; background: var(--accent); border-radius: 2px; transition: 0.3s; }
-        .side-menu { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: var(--panel); border-left: 1px solid var(--border); transition: 0.4s; z-index: 1000; padding: 80px 25px; box-sizing: border-box; }
-        .side-menu.active { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
-        .menu-link { display: block; color: var(--text); text-decoration: none; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 14px; cursor: pointer; }
-        .menu-link:hover { color: var(--accent); }
+        /* PREMIUM SIDE MENU */
+        .menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1001; padding: 10px; }
+        .menu-icon span { width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
+        
+        .side-menu { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: var(--panel); border-left: 1px solid var(--border); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; padding: 70px 20px; box-sizing: border-box; }
+        .side-menu.active { right: 0; box-shadow: -15px 0 40px rgba(0,0,0,0.7); }
+        
+        .menu-item { margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .menu-label { color: var(--accent); font-size: 13px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .menu-content { max-height: 0; overflow: hidden; transition: 0.3s ease-out; font-size: 11px; color: #888; line-height: 1.6; margin-top: 5px; }
+        .menu-item.open .menu-content { max-height: 200px; margin-top: 10px; }
 
+        /* CHART & NAV */
         .market-nav { background: #000; padding: 8px; display: flex; gap: 8px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; }
         .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; white-space: nowrap; }
         .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; }
-
         .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
         #chart_container { flex: 1; background: #000; min-height: 350px; }
         
+        /* SIDEBAR */
         .sidebar { width: 320px; min-width: 320px; background: var(--panel); padding: 15px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; box-sizing: border-box; }
         .card { background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 10px; }
         
@@ -35,39 +40,48 @@
         .acc-btn { flex: 1; padding: 8px; text-align: center; font-size: 10px; cursor: pointer; border-radius: 6px; color: #555; }
         .acc-btn.active { background: var(--panel); color: var(--accent); border: 1px solid var(--accent); }
 
+        .primary-btn { background: var(--accent); color: #000; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .deposit-btn { background: var(--green); color: #000; padding: 10px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; font-size: 11px; border: none; }
+
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .login-card { background: var(--panel); border: 1px solid var(--accent); width: 320px; padding: 30px; border-radius: 20px; text-align: center; }
         input { width: 100%; padding: 12px; margin: 6px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-        
-        .primary-btn { background: var(--accent); color: #000; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .deposit-btn { background: var(--green); color: #000; padding: 10px; border-radius: 6px; font-weight: bold; border: none; width: 100%; cursor: pointer; margin-top: 10px; font-size: 11px; }
 
         .ticker-wrap { background: #000; color: var(--green); padding: 5px 0; font-size: 11px; border-top: 1px solid var(--border); }
-        #google_translate_element { display: none; }
-        body { top: 0px !important; }
-        
         .ad-slot-top { height: 95px; background: #000; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .ad-slot-side { min-height: 260px; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div id="google_translate_element"></div>
-
     <div id="sideMenu" class="side-menu">
-        <h3 style="color:var(--accent); font-size:16px;">TERMINAL SETTINGS</h3>
-        <div class="menu-link" onclick="alert('Thrones Trade v2.4: A high-performance institutional trading terminal built for rapid market analysis and real-time execution simulation.')">About the Terminal</div>
-        <div class="menu-link" onclick="alert('Connected to Global Liquidity Hub (Lagos Node). Status: Optimized.')">Server Status</div>
-        <div class="menu-link" onclick="alert('All trades are simulated for analytical purposes. Real funding represents equity allocation.')">User Agreement</div>
-        <div class="menu-link" onclick="location.reload()">Refresh Connection</div>
+        <h2 style="color:#fff; font-size:18px; margin-bottom:30px;">Terminal Menu</h2>
+        
+        <div class="menu-item" onclick="this.classList.toggle('open')">
+            <div class="menu-label">ABOUT THE SITE <span>+</span></div>
+            <div class="menu-content">
+                Thrones Trade is a high-fidelity institutional terminal designed for rapid market visualization. It bridges professional TradingView analytics with local liquidity gateways.
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="this.classList.toggle('open')">
+            <div class="menu-label">LEGAL DISCLAIMER <span>+</span></div>
+            <div class="menu-content">
+                All trading involves risk. This terminal provides simulation and analytical tools. Equity deposits are used for live node allocation and market access fees.
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="location.reload()">
+            <div class="menu-label">REFRESH TERMINAL</div>
+        </div>
     </div>
 
     <div id="loginModal" class="modal-overlay">
         <div class="login-card">
-            <h1 style="color:#fff; margin:0; letter-spacing: 2px; font-size: 24px;">THRONES <span style="color:var(--accent)">TRADE</span></h1>
-            <p style="color:#555; font-size:9px; letter-spacing:2px; margin-bottom:20px;">INSTITUTIONAL ACCESS</p>
+            <h1 style="color:#fff; margin:0; font-size: 24px;">THRONES <span style="color:var(--accent)">TRADE</span></h1>
+            <p style="color:#555; font-size:9px; margin-bottom:20px;">INSTITUTIONAL ACCESS</p>
             <form onsubmit="handleLogin(event)">
-                <input type="text" id="loginUser" placeholder="Trader ID" required>
+                <input type="text" id="loginUser" placeholder="Trader ID / Email" required>
                 <input type="password" placeholder="Access Key" required>
                 <button type="submit" class="primary-btn">AUTHORIZE</button>
             </form>
@@ -85,7 +99,7 @@
         <div class="center-stack">
             <div class="market-nav">
                 <button class="asset-btn active" onclick="changeChart('BINANCE:BTCUSDT', this)">BITCOIN</button>
-                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD (XAU)</button>
+                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD</button>
                 <button class="asset-btn" onclick="changeChart('NYSE:SNAP', this)">SNAPCHAT</button>
                 <button class="asset-btn" onclick="changeChart('NASDAQ:NVDA', this)">NVIDIA</button>
                 <button class="asset-btn" onclick="changeChart('NASDAQ:TSLA', this)">TESLA</button>
@@ -108,7 +122,7 @@
                 <div style="text-align: center;">
                     <div style="font-size: 9px; color: #888;" id="balLabel">PRACTICE BALANCE</div>
                     <div style="font-size:24px; font-weight:700; color:var(--text);" id="balanceText">$10,000.00</div>
-                    <button class="deposit-btn" onclick="initiatePayment()">DEPOSIT FUNDS</button>
+                    <button class="deposit-btn" onclick="initiatePayment()">FUND ACCOUNT</button>
                 </div>
             </div>
 
@@ -119,7 +133,7 @@
             <div class="card">
                 <div style="font-size: 10px; color: var(--accent); margin-bottom: 5px;">MARKET STATUS</div>
                 <div style="font-size: 9px; color: var(--green);">Execution: Instant</div>
-                <div style="font-size: 9px; color: #666;">Region: Global Hub</div>
+                <div style="font-size: 9px; color: #666;">Global Liquidity Active</div>
             </div>
         </div>
     </div>
@@ -149,37 +163,31 @@
         }
 
         function initiatePayment() {
-            // UI Update
             document.getElementById('realBtn').classList.add('active');
             document.getElementById('demoBtn').classList.remove('active');
             document.getElementById('balLabel').innerText = "REAL EQUITY";
             document.getElementById('balanceText').innerText = "$0.00";
             document.getElementById('balanceText').style.color = "var(--red)";
 
-            // PAYSTACK FIX: We use a prompt to ensure a valid email is present
             let userEmail = localStorage.getItem('trader_email') || "investor@thronestrade.com";
 
             let handler = PaystackPop.setup({
-                key: 'pk_live_xxxx', // REPLACE THIS WITH YOUR REAL PAYSTACK PUBLIC KEY
+                key: 'pk_live_xxxx', // YOUR REAL KEY HERE
                 email: userEmail,
-                amount: 500000, // 5000 Naira
+                amount: 500000, 
                 currency: 'NGN',
-                ref: 'TT-' + Math.floor((Math.random() * 1000000000) + 1), // Dynamic Reference
-                callback: function(response) {
-                    alert('Deposit Successful! Reference: ' + response.reference);
-                },
-                onClose: function() {
-                    alert('Transaction incomplete. Real Account requires equity funding.');
-                }
+                ref: 'TT-' + Math.floor((Math.random() * 1000000000) + 1),
+                callback: function(res) { alert('Ref: ' + res.reference); },
+                onClose: function() { console.log('Window closed'); }
             });
             handler.openIframe();
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const user = document.getElementById('loginUser').value;
+            const email = document.getElementById('loginUser').value;
             localStorage.setItem('trade_user', 'true');
-            localStorage.setItem('trader_email', user.includes('@') ? user : user + "@thronestrade.com");
+            localStorage.setItem('trader_email', email.includes('@') ? email : email + "@thronestrade.com");
             document.getElementById('loginModal').style.display = 'none';
         }
 
