@@ -3,117 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrones Trade | Advanced Interface</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Thrones Trade | Global Smart Terminal</title>
+
+    <meta name="coinzilla" content="267bfcd390619bc586136d62f9e9aded" />
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;900&display=swap');
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: #0e121a; overflow: hidden; font-family: 'Space Grotesk', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        :root { --bg: #04060a; --panel: #0d1117; --accent: #c1a461; --green: #00ff88; --red: #ff3b3b; --text: #f0f2f5; --border: #30363d; }
         
-        /* CUSTOM TOP BAR */
-        header {
-            height: 48px;
-            background: #131722;
-            border-bottom: 1px solid #2a2e39;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 12px;
-            z-index: 100;
-        }
+        body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        header { height: 60px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; flex-shrink: 0; }
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        .market-nav { background: #000; padding: 10px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .asset-btn { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap; transition: 0.3s; }
+        .asset-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .asset-btn.active { background: var(--accent); color: #000; font-weight: bold; }
 
-        .left-controls { display: flex; align-items: center; gap: 15px; }
-        .menu-btn { cursor: pointer; color: #d1d4dc; transition: 0.2s; padding: 5px; border-radius: 4px; }
-        .menu-btn:hover { background: #2a2e39; color: #ff9800; }
+        .center-stack { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+        #chart_container { flex: 3; background: #000; }
+        .sidebar { width: 320px; background: var(--panel); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .card { background: #000; border: 1px solid var(--border); padding: 20px; border-radius: 16px; }
         
-        .logo { font-weight: 900; font-size: 1rem; color: #fff; text-transform: uppercase; letter-spacing: -0.5px; }
-        .logo span { color: #ff9800; }
-
-        /* HOME SCREEN OVERLAY */
-        #home-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(14, 18, 26, 0.98);
-            z-index: 200;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .login-card { background: var(--panel); border: 1px solid var(--accent); width: 350px; padding: 40px; border-radius: 24px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 12px; box-sizing: border-box; }
         
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        #google_translate_element { display: none; }
+        .goog-te-banner-frame.skiptranslate { display: none !important; } 
+        body { top: 0px !important; }
     </style>
 </head>
 <body>
 
-    <div id="home-overlay" class="fade-in">
-        <h1 class="text-5xl font-black text-white mb-6 uppercase tracking-tighter">THRONES <span class="text-orange-500">TRADE</span></h1>
-        <p class="text-gray-400 max-w-2xl text-lg mb-8 leading-relaxed">
-            Welcome to the future of decentralized asset management. Thrones Trade is the ultimate companion for the 
-            "Thrones of Legends" ecosystem, built for elite traders and gamers in Lagos and beyond.
-        </p>
-        <button onclick="toggleHome()" class="bg-orange-500 text-black font-black px-10 py-4 rounded-full uppercase hover:bg-orange-400 transition-all">Back to Terminal</button>
+    <div id="google_translate_element"></div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="login-card">
+            <h1 style="color:#fff; margin:0;">THRONES TRADE</h1>
+            <p style="color:var(--accent); font-size:10px; letter-spacing:2px; margin-bottom:25px;">SECURE GLOBAL ACCESS</p>
+            <form onsubmit="handleLogin(event)">
+                <input type="text" id="user" placeholder="Trader ID" required>
+                <input type="password" id="pass" placeholder="Password" required>
+                <button type="submit" style="background:var(--accent); width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-top:10px;">AUTHORIZE</button>
+            </form>
+        </div>
     </div>
 
     <header>
-        <div class="left-controls">
-            <div class="menu-btn" onclick="toggleHome()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            </div>
-            <div class="logo">THRONES <span>TRADE</span></div>
-        </div>
-        
-        <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2 px-3 py-1 bg-[#1e222d] rounded border border-white/5">
-                <span class="text-[10px] font-bold text-gray-500 uppercase">BTC/USDT</span>
-                <span class="text-[11px] font-bold text-green-400" id="live-price">---</span>
-            </div>
-            <button onclick="window.print()" class="p-1.5 hover:bg-[#2a2e39] rounded text-gray-400" title="Take Screenshot">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            </button>
-        </div>
+        <div style="font-weight: 700; font-size: 20px; color:#fff;">THRONES <span style="color:var(--accent)">TRADE</span></div>
+        <div id="status" style="color: var(--green); font-size: 11px;">● GLOBAL TERMINAL ONLINE</div>
     </header>
 
-    <div style="flex: 1; width: 100%;">
-        <div class="tradingview-widget-container" style="height:100%;width:100%">
-          <div id="tv_chart" style="height:100%;width:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-          <script type="text/javascript">
-          new TradingView.widget({
-            "autosize": true,
-            "symbol": "BINANCE:BTCUSDT",
-            "interval": "1",
-            "timezone": "Africa/Lagos",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "enable_publishing": false, // REMOVED PUBLISH AS REQUESTED
-            "withdateranges": true,
-            "hide_side_toolbar": false, // LEFT TOOLS
-            "allow_symbol_change": true,
-            "details": true,            // RIGHT TOOLS
-            "hotlist": true,            // WATCHLISTS
-            "calendar": true,           // NEWS
-            "show_popup_button": true,
-            "container_id": "tv_chart"
-          });
-          </script>
+    <div class="main-container">
+        <div class="center-stack">
+            <div class="market-nav">
+                <button class="asset-btn active" onclick="changeChart('BINANCE:BTCUSDT', this)">BITCOIN</button>
+                <button class="asset-btn" onclick="changeChart('OANDA:XAUUSD', this)">GOLD (XAU)</button>
+                <button class="asset-btn" onclick="changeChart('NYSE:SNAP', this)">SNAP STOCK</button>
+                <button class="asset-btn" onclick="changeChart('NASDAQ:NVDA', this)">NVIDIA</button>
+            </div>
+            <div id="chart_container"></div>
+            <div style="height:90px; background:#000; display:flex; align-items:center; justify-content:center; color:#222; font-size:9px; border-top:1px solid var(--border);">
+                COINZILLA_LEADERBOARD_PLACEMENT
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div style="font-size: 10px; color: #888;">Equity Balance (USD)</div>
+                <div id="balance" style="font-size:32px; font-weight:700; color:var(--red);">$0.00</div>
+                <button onclick="alert('Enter Phone Below')" style="width:100%; padding:10px; background:rgba(193,164,97,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; margin-top:10px;">DEPOSIT FUNDS</button>
+            </div>
+            <div class="card" style="height: 250px; display:flex; align-items:center; justify-content:center; color:#222; font-size:9px; text-align:center; padding:0; overflow:hidden;">
+                COINZILLA_SIDEBAR_PLACEMENT
+            </div>
+            <input type="tel" id="pPhone" placeholder="Your Phone Number" style="margin:0;">
+            <button onclick="pay(1000)" style="background:var(--green); color:#000; height:50px; border-radius:12px; border:none; font-weight:700; cursor:pointer;">BUY / LONG</button>
         </div>
     </div>
 
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
     <script>
-        function toggleHome() {
-            const overlay = document.getElementById('home-overlay');
-            overlay.style.display = (overlay.style.display === 'flex') ? 'none' : 'flex';
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: true}, 'google_translate_element');
         }
 
-        // Simulating a live price feed for the top bar
-        setInterval(() => {
-            const price = (60000 + Math.random() * 500).toFixed(2);
-            document.getElementById('live-price').innerText = price;
-        }, 2000);
+        function handleLogin(e) {
+            e.preventDefault();
+            localStorage.setItem('trade_user', 'true');
+            document.getElementById('loginModal').style.display = 'none';
+
+            // AUTO-LANGUAGE DETECT FOR ARABIC/GLOBAL USERS
+            const userLang = navigator.language || navigator.userLanguage; 
+            if (!userLang.startsWith('en')) {
+                const translateSelect = document.querySelector(".goog-te-combo");
+                if (translateSelect) {
+                    translateSelect.value = userLang.split('-')[0];
+                    translateSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
+        function changeChart(symbol, btn) {
+            document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            new TradingView.widget({
+                "autosize": true, "symbol": symbol, "interval": "1", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#0d1117", "container_id": "chart_container"
+            });
+        }
+
+        function pay(amt) {
+            const phone = document.getElementById('pPhone').value;
+            if(!phone) { alert("Enter phone number!"); return; }
+            window.location.href = "https://paystack.shop/pay/m3gzeovryt?amount=" + (amt*100) + "&phone=" + phone;
+        }
+
+        window.onload = function() {
+            if(localStorage.getItem('trade_user')) document.getElementById('loginModal').style.display = 'none';
+            changeChart('BINANCE:BTCUSDT', document.querySelector('.asset-btn'));
+        }
     </script>
 </body>
 </html>
